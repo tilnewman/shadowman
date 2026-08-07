@@ -46,13 +46,16 @@ namespace shadowman
 
             for (const auto & path : imagePaths)
             {
-                util::TextureLoader::load(textures.emplace_back(), path);
+                util::TextureLoader::load(textures.emplace_back(), path, true);
             }
         }
 
         // setup sprite
         m_sprite.setTexture(m_animTextures.at(static_cast<std::size_t>(m_anim)).at(0), true);
-        m_sprite.scale({0.5f, 0.5f});
+
+        const float scale{ t_context.setting.avatar_scale };
+        m_sprite.scale({ scale, scale });
+
         util::centerInside(m_sprite, t_context.layout.wholeRect());
     }
 
