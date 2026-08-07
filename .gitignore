@@ -67,3 +67,20 @@ vcpkg_installed/
 # test output & cache
 Testing/
 .cache/
+
+
+**/build
+**/xcode
+**/Release
+**/Debug
+**/.vscode
+*.DS_Store
+*.oa
+*.ncb
+*.sln
+*.suo
+*.vap
+*.dbp
+*.ilk
+src/.clang-tidy
+*.cpt_backup
