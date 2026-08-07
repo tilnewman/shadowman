@@ -3,6 +3,7 @@
 //
 #include "subsystem/coordinator.hpp"
 
+#include "util/sfml-defaults.hpp"
 #include "util/sfml-util.hpp"
 
 #include <iostream>
@@ -19,6 +20,8 @@ namespace shadowman
         , m_windowUPtr{}
         , m_randomUPtr{}
         , m_soundPlayerUPtr{}
+        , m_screenLayoutUPtr{}
+        , m_avatarUPtr{}
         , m_contextUPtr{}
     {}
 
@@ -31,17 +34,22 @@ namespace shadowman
         m_windowUPtr->setKeyRepeatEnabled(false);
         m_windowUPtr->setFramerateLimit(0);
 
+        util::SfmlDefaults::instance().setup();
+
         m_randomUPtr       = std::make_unique<util::Random>();
         m_soundPlayerUPtr  = std::make_unique<util::SoundPlayer>(*m_randomUPtr);
         m_screenLayoutUPtr = std::make_unique<ScreenLayout>();
+        m_avatarUPtr       = std::make_unique<Avatar>();
 
-        m_contextUPtr = std::make_unique<Context>(m_setting, *m_randomUPtr, *m_soundPlayerUPtr);
+        m_contextUPtr = std::make_unique<Context>(
+            m_setting, *m_randomUPtr, *m_soundPlayerUPtr, *m_screenLayoutUPtr);
 
         m_soundPlayerUPtr->mediaPath(m_setting.media_path / "sound");
         m_soundPlayerUPtr->loadAll();
         m_soundPlayerUPtr->willLoop("walk", true);
 
         m_screenLayoutUPtr->setup(m_windowUPtr->getSize());
+        m_avatarUPtr->setup(*m_contextUPtr);
     }
 
     void Coordinator::teardown()
@@ -49,11 +57,14 @@ namespace shadowman
         m_soundPlayerUPtr->stopAll();
         m_soundPlayerUPtr->stopAllLooped();
 
+        m_avatarUPtr->teardown();
+
         m_screenLayoutUPtr.reset();
         m_soundPlayerUPtr.reset();
         m_randomUPtr.reset();
+        m_avatarUPtr.reset();
 
-        // util::SfmlDefaults::instance().teardown();
+        util::SfmlDefaults::instance().teardown();
 
         m_contextUPtr.reset();
 
@@ -112,7 +123,8 @@ namespace shadowman
 
     void Coordinator::draw()
     {
-        m_windowUPtr->clear(sf::Color::Black);
+        m_windowUPtr->clear(sf::Color::White);
+        m_avatarUPtr->draw(*m_windowUPtr, m_renderStates);
         // m_stateUPtr->current().draw(*m_contextUPtr, *m_windowUPtr, m_renderStates);
         // m_framerateDisplayUPtr->draw(*m_contextUPtr, *m_windowUPtr, m_renderStates);
         m_windowUPtr->display();

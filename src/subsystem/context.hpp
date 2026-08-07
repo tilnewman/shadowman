@@ -15,22 +15,25 @@ namespace shadowman
 
     struct Settings;
 
-    //
-
+    class ScreenLayout;
+    
     struct Context
     {
         Context(
             const Settings & t_settings,
             util::Random & t_random,
-            util::SoundPlayer & t_soundPlayer)
+            util::SoundPlayer & t_soundPlayer,
+            const ScreenLayout & t_screenLayout)
             : setting{ t_settings }
             , random{ t_random }
             , audio{ t_soundPlayer }
+            , layout{ t_screenLayout }
         {}
 
         const Settings & setting;
         util::Random & random;
         util::SoundPlayer & audio;
+        const ScreenLayout & layout;
     };
 
 } // namespace shadowman
