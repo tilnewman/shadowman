@@ -6,6 +6,7 @@
 #include "avatar/avatar.hpp"
 #include "shadowman/settings.hpp"
 #include "subsystem/context.hpp"
+#include "subsystem/font.hpp"
 #include "subsystem/screen-layout.hpp"
 #include "util/sound-player.hpp"
 
@@ -46,6 +47,7 @@ namespace shadowman
         std::unique_ptr<util::SoundPlayer> m_soundPlayerUPtr;
         std::unique_ptr<ScreenLayout> m_screenLayoutUPtr;
         std::unique_ptr<Avatar> m_avatarUPtr;
+        std::unique_ptr<FontManager> m_fontManagerUPtr;
         // std::unique_ptr<StateManager> m_stateUPtr;
 
         std::unique_ptr<Context> m_contextUPtr;

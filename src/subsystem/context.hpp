@@ -16,6 +16,7 @@ namespace shadowman
     struct Settings;
 
     class ScreenLayout;
+    class FontManager;
     
     struct Context
     {
@@ -23,17 +24,20 @@ namespace shadowman
             const Settings & t_settings,
             util::Random & t_random,
             util::SoundPlayer & t_soundPlayer,
-            const ScreenLayout & t_screenLayout)
+            const ScreenLayout & t_screenLayout,
+            const FontManager & t_fontManager)
             : setting{ t_settings }
             , random{ t_random }
             , audio{ t_soundPlayer }
             , layout{ t_screenLayout }
+            , font{t_fontManager}
         {}
 
         const Settings & setting;
         util::Random & random;
         util::SoundPlayer & audio;
         const ScreenLayout & layout;
+        const FontManager & font;
     };
 
 } // namespace shadowman

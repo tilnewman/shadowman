@@ -22,6 +22,7 @@ namespace shadowman
         , m_soundPlayerUPtr{}
         , m_screenLayoutUPtr{}
         , m_avatarUPtr{}
+        , m_fontManagerUPtr{}
         , m_contextUPtr{}
     {}
 
@@ -30,9 +31,9 @@ namespace shadowman
         m_windowUPtr = std::make_unique<sf::RenderWindow>();
         setupRenderWindow(m_setting.video_mode);
         m_windowUPtr->setMouseCursorVisible(false);
-        m_windowUPtr->setVerticalSyncEnabled(false);
+        m_windowUPtr->setVerticalSyncEnabled(true);
         m_windowUPtr->setKeyRepeatEnabled(false);
-        m_windowUPtr->setFramerateLimit(0);
+        m_windowUPtr->setFramerateLimit(60);
 
         util::SfmlDefaults::instance().setup();
 
@@ -40,15 +41,17 @@ namespace shadowman
         m_soundPlayerUPtr  = std::make_unique<util::SoundPlayer>(*m_randomUPtr);
         m_screenLayoutUPtr = std::make_unique<ScreenLayout>();
         m_avatarUPtr       = std::make_unique<Avatar>();
+        m_fontManagerUPtr  = std::make_unique<FontManager>();
 
         m_contextUPtr = std::make_unique<Context>(
-            m_setting, *m_randomUPtr, *m_soundPlayerUPtr, *m_screenLayoutUPtr);
+            m_setting, *m_randomUPtr, *m_soundPlayerUPtr, *m_screenLayoutUPtr, *m_fontManagerUPtr);
 
         m_soundPlayerUPtr->mediaPath(m_setting.media_path / "sound");
         m_soundPlayerUPtr->loadAll();
         m_soundPlayerUPtr->willLoop("walk", true);
 
         m_screenLayoutUPtr->setup(m_windowUPtr->getSize());
+        m_fontManagerUPtr->setup(m_setting);
         m_avatarUPtr->setup(*m_contextUPtr);
     }
 
@@ -59,6 +62,7 @@ namespace shadowman
 
         m_avatarUPtr->teardown();
 
+        m_fontManagerUPtr.reset();
         m_screenLayoutUPtr.reset();
         m_soundPlayerUPtr.reset();
         m_randomUPtr.reset();

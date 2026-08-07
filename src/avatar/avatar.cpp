@@ -52,6 +52,7 @@ namespace shadowman
 
         // setup sprite
         m_sprite.setTexture(m_animTextures.at(static_cast<std::size_t>(m_anim)).at(0), true);
+        m_sprite.scale({0.5f, 0.5f});
         util::centerInside(m_sprite, t_context.layout.wholeRect());
     }
 
