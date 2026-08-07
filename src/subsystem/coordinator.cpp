@@ -23,6 +23,7 @@ namespace shadowman
         , m_screenLayoutUPtr{}
         , m_avatarUPtr{}
         , m_fontManagerUPtr{}
+        , m_framerateDisplayUPtr{}
         , m_contextUPtr{}
     {}
 
@@ -31,17 +32,18 @@ namespace shadowman
         m_windowUPtr = std::make_unique<sf::RenderWindow>();
         setupRenderWindow(m_setting.video_mode);
         m_windowUPtr->setMouseCursorVisible(false);
-        m_windowUPtr->setVerticalSyncEnabled(true);
+        m_windowUPtr->setVerticalSyncEnabled(false);
         m_windowUPtr->setKeyRepeatEnabled(false);
-        m_windowUPtr->setFramerateLimit(60);
+        m_windowUPtr->setFramerateLimit(0);
 
         util::SfmlDefaults::instance().setup();
 
-        m_randomUPtr       = std::make_unique<util::Random>();
-        m_soundPlayerUPtr  = std::make_unique<util::SoundPlayer>(*m_randomUPtr);
-        m_screenLayoutUPtr = std::make_unique<ScreenLayout>();
-        m_avatarUPtr       = std::make_unique<Avatar>();
-        m_fontManagerUPtr  = std::make_unique<FontManager>();
+        m_randomUPtr           = std::make_unique<util::Random>();
+        m_soundPlayerUPtr      = std::make_unique<util::SoundPlayer>(*m_randomUPtr);
+        m_screenLayoutUPtr     = std::make_unique<ScreenLayout>();
+        m_avatarUPtr           = std::make_unique<Avatar>();
+        m_fontManagerUPtr      = std::make_unique<FontManager>();
+        m_framerateDisplayUPtr = std::make_unique<FramerateDisplay>();
 
         m_contextUPtr = std::make_unique<Context>(
             m_setting, *m_randomUPtr, *m_soundPlayerUPtr, *m_screenLayoutUPtr, *m_fontManagerUPtr);
@@ -62,6 +64,7 @@ namespace shadowman
 
         m_avatarUPtr->teardown();
 
+        m_framerateDisplayUPtr.reset();
         m_fontManagerUPtr.reset();
         m_screenLayoutUPtr.reset();
         m_soundPlayerUPtr.reset();
@@ -90,10 +93,8 @@ namespace shadowman
         sf::Clock frameClock;
         while (m_windowUPtr->isOpen())
         {
-            frameClock.restart();
-
             handleEvents();
-            update(frameClock.getElapsedTime().asSeconds());
+            update(frameClock.restart().asSeconds());
             draw();
         }
     }
@@ -129,14 +130,15 @@ namespace shadowman
     {
         m_windowUPtr->clear(sf::Color(100, 100, 127));
         m_avatarUPtr->draw(*m_windowUPtr, m_renderStates);
-        // m_stateUPtr->current().draw(*m_contextUPtr, *m_windowUPtr, m_renderStates);
-        // m_framerateDisplayUPtr->draw(*m_contextUPtr, *m_windowUPtr, m_renderStates);
+        m_framerateDisplayUPtr->draw(*m_windowUPtr, m_renderStates);
         m_windowUPtr->display();
     }
 
     void Coordinator::update(const float t_elapsedSec)
     {
         m_avatarUPtr->update(*m_contextUPtr, t_elapsedSec);
+        m_framerateDisplayUPtr->update(*m_contextUPtr, t_elapsedSec);
+
         // m_stateUPtr->current().update(*m_contextUPtr, t_frameTimeSec);
         // m_stateUPtr->changeIfPending(*m_contextUPtr);
     }

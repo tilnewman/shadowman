@@ -62,7 +62,7 @@ namespace shadowman
     void Avatar::update(const Context &, const float t_elapsedSec)
     {
         m_animElapsedSec += t_elapsedSec;
-        const float timePerFrameSec{ 0.0008f };
+        const float timePerFrameSec{ 0.08f };
         if (m_animElapsedSec > timePerFrameSec)
         {
             m_animElapsedSec -= timePerFrameSec;
