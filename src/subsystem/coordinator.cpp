@@ -17,7 +17,9 @@ namespace shadowman
         : m_setting{ t_setting }
         , m_renderStates{}
         , m_windowUPtr{}
-    //, m_contextUPtr{}
+        , m_randomUPtr{}
+        , m_soundPlayerUPtr{}
+        , m_contextUPtr{}
     {}
 
     void Coordinator::setup()
@@ -29,22 +31,31 @@ namespace shadowman
         m_windowUPtr->setKeyRepeatEnabled(false);
         m_windowUPtr->setFramerateLimit(0);
 
-        // m_randomUPtr            = std::make_unique<util::Random>();
-        // m_layoutUPtr            = std::make_unique<ScreenLayout>();
+        m_randomUPtr       = std::make_unique<util::Random>();
+        m_soundPlayerUPtr  = std::make_unique<util::SoundPlayer>(*m_randomUPtr);
+        m_screenLayoutUPtr = std::make_unique<ScreenLayout>();
 
-        // m_contextUPtr = std::make_unique<Context>(m_setting, *m_randomUPtr);
+        m_contextUPtr = std::make_unique<Context>(m_setting, *m_randomUPtr, *m_soundPlayerUPtr);
 
-        // m_layoutUPtr->setup(m_windowUPtr->getSize());
+        m_soundPlayerUPtr->mediaPath(m_setting.media_path / "sound");
+        m_soundPlayerUPtr->loadAll();
+        m_soundPlayerUPtr->willLoop("walk", true);
+
+        m_screenLayoutUPtr->setup(m_windowUPtr->getSize());
     }
 
     void Coordinator::teardown()
     {
+        m_soundPlayerUPtr->stopAll();
+        m_soundPlayerUPtr->stopAllLooped();
 
-        // m_randomUPtr.reset();
+        m_screenLayoutUPtr.reset();
+        m_soundPlayerUPtr.reset();
+        m_randomUPtr.reset();
 
         // util::SfmlDefaults::instance().teardown();
 
-        // m_contextUPtr.reset();
+        m_contextUPtr.reset();
 
         m_windowUPtr->close();
         m_windowUPtr.reset();
@@ -107,7 +118,7 @@ namespace shadowman
         m_windowUPtr->display();
     }
 
-    void Coordinator::update(const float t_frameTimeSec)
+    void Coordinator::update(const float)
     {
         // m_stateUPtr->current().update(*m_contextUPtr, t_frameTimeSec);
         // m_stateUPtr->changeIfPending(*m_contextUPtr);

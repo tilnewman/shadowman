@@ -4,6 +4,9 @@
 // coordinator.hpp
 //
 #include "shadowman/settings.hpp"
+#include "subsystem/context.hpp"
+#include "subsystem/screen-layout.hpp"
+#include "util/sound-player.hpp"
 
 #include <memory>
 #include <vector>
@@ -38,12 +41,12 @@ namespace shadowman
         sf::RenderStates m_renderStates;
 
         std::unique_ptr<sf::RenderWindow> m_windowUPtr;
-        //std::unique_ptr<util::Random> m_randomUPtr;
-        //std::unique_ptr<util::SoundPlayer> m_sfxUPtr;
-        //std::unique_ptr<StateManager> m_stateUPtr;
-        //std::unique_ptr<ScreenLayout> m_layoutUPtr;
-        
-        //std::unique_ptr<Context> m_contextUPtr;
+        std::unique_ptr<util::Random> m_randomUPtr;
+        std::unique_ptr<util::SoundPlayer> m_soundPlayerUPtr;
+        std::unique_ptr<ScreenLayout> m_screenLayoutUPtr;
+        // std::unique_ptr<StateManager> m_stateUPtr;
+
+        std::unique_ptr<Context> m_contextUPtr;
     };
 
 } // namespace shadowman
