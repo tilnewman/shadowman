@@ -123,15 +123,16 @@ namespace shadowman
 
     void Coordinator::draw()
     {
-        m_windowUPtr->clear(sf::Color::White);
+        m_windowUPtr->clear(sf::Color(100, 100, 127));
         m_avatarUPtr->draw(*m_windowUPtr, m_renderStates);
         // m_stateUPtr->current().draw(*m_contextUPtr, *m_windowUPtr, m_renderStates);
         // m_framerateDisplayUPtr->draw(*m_contextUPtr, *m_windowUPtr, m_renderStates);
         m_windowUPtr->display();
     }
 
-    void Coordinator::update(const float)
+    void Coordinator::update(const float t_elapsedSec)
     {
+        m_avatarUPtr->update(*m_contextUPtr, t_elapsedSec);
         // m_stateUPtr->current().update(*m_contextUPtr, t_frameTimeSec);
         // m_stateUPtr->changeIfPending(*m_contextUPtr);
     }

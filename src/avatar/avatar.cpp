@@ -19,7 +19,10 @@ namespace shadowman
 {
 
     Avatar::Avatar()
-        : m_sprite{ util::SfmlDefaults::instance().texture() }
+        : m_anim{ AvatarAnim::Jump }
+        , m_sprite{ util::SfmlDefaults::instance().texture() }
+        , m_animElapsedSec{ 0.0f }
+        , m_frameIndex{ 0 }
         , m_animTextures{}
     {}
 
@@ -48,13 +51,35 @@ namespace shadowman
         }
 
         // setup sprite
-        m_sprite.setTexture(
-            m_animTextures.at(static_cast<std::size_t>(AvatarAnim::Idle)).at(0), true);
-
+        m_sprite.setTexture(m_animTextures.at(static_cast<std::size_t>(m_anim)).at(0), true);
         util::centerInside(m_sprite, t_context.layout.wholeRect());
     }
 
-    void Avatar::update(const Context &, const float) {}
+    void Avatar::update(const Context &, const float t_elapsedSec)
+    {
+        m_animElapsedSec += t_elapsedSec;
+        const float timePerFrameSec{ 0.0008f };
+        if (m_animElapsedSec > timePerFrameSec)
+        {
+            m_animElapsedSec -= timePerFrameSec;
+
+            if (++m_frameIndex >= m_animTextures.at(static_cast<std::size_t>(m_anim)).size())
+            {
+                m_frameIndex = 0;
+
+                std::size_t animIndex{ static_cast<std::size_t>(m_anim) };
+                if (++animIndex >= static_cast<std::size_t>(AvatarAnim::Count))
+                {
+                    animIndex = 0;
+                }
+
+                m_anim = static_cast<AvatarAnim>(animIndex);
+            }
+
+            m_sprite.setTexture(
+                m_animTextures.at(static_cast<std::size_t>(m_anim)).at(m_frameIndex), true);
+        }
+    }
 
     void Avatar::draw(sf::RenderTarget & t_target, sf::RenderStates t_states) const
     {

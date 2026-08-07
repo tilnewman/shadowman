@@ -84,11 +84,14 @@ namespace shadowman
 
         void setup(const Context & t_context);
         void teardown() { m_animTextures.clear(); }
-        void update(const Context & t_context, const float m_elapsedSec);
+        void update(const Context & t_context, const float t_elapsedSec);
         void draw(sf::RenderTarget & t_target, sf::RenderStates t_states) const;
 
       private:
+        AvatarAnim m_anim;
         sf::Sprite m_sprite;
+        float m_animElapsedSec;
+        std::size_t m_frameIndex;
         std::vector<std::vector<sf::Texture>> m_animTextures;
     };
 } // namespace shadowman
