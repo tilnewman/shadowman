@@ -1,4 +1,4 @@
-project("bramblefore" VERSION 0.1.0 LANGUAGES CXX)
+project("shadowman" VERSION 0.1.0 LANGUAGES CXX)
 file(GLOB source_files *.?pp)
 add_executable(${PROJECT_NAME} ${source_files})
 setup_target(${PROJECT_NAME})

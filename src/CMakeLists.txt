@@ -6,11 +6,11 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 
 #list of library names (also the directory name)
-set(library_names avatar map monster player state subsystem ui util)
+set(library_names subsystem util)
 
 
 #list of directories with executables
-set(executable_directory_names bramblefore)
+set(executable_directory_names shadowman)
 
 
 #list of all sub-directories

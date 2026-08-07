@@ -1,12 +1,14 @@
-#include "subsystem/coordinator.hpp"
-#include "util/check-macros.hpp"
 //
 // main.cpp
 //
+#include "shadowman/settings.hpp"
+#include "subsystem/coordinator.hpp"
+#include "util/check-macros.hpp"
+
+#include <exception>
 #include <filesystem>
 #include <iostream>
 #include <memory>
-#include <exception>
 
 int main(const int argc, const char * const argv[])
 {

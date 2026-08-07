@@ -3,6 +3,8 @@
 //
 // coordinator.hpp
 //
+#include "shadowman/settings.hpp"
+
 #include <memory>
 #include <vector>
 
@@ -29,7 +31,6 @@ namespace shadowman
         void handleEvent(const sf::Event & t_event);
         void update(const float t_frameTimeSec);
         void draw();
-        void handleEndOfFrameTasks(const float t_actualFrameTimeSec);
         void setupRenderWindow(sf::VideoMode & t_videoMode);
 
       private:

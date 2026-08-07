@@ -3,21 +3,21 @@
 //
 #include "subsystem/coordinator.hpp"
 
-//#include "util/sfml-util.hpp"
+#include "util/sfml-util.hpp"
 
 #include <iostream>
 
 #include <SFML/System/Clock.hpp>
 #include <SFML/System/Sleep.hpp>
 
-namespace bramblefore
+namespace shadowman
 {
 
     Coordinator::Coordinator(const Settings & t_setting)
         : m_setting{ t_setting }
         , m_renderStates{}
         , m_windowUPtr{}
-        //, m_contextUPtr{}
+    //, m_contextUPtr{}
     {}
 
     void Coordinator::setup()
@@ -29,22 +29,22 @@ namespace bramblefore
         m_windowUPtr->setKeyRepeatEnabled(false);
         m_windowUPtr->setFramerateLimit(0);
 
-        //m_randomUPtr            = std::make_unique<util::Random>();
-        //m_layoutUPtr            = std::make_unique<ScreenLayout>();
-        
-        //m_contextUPtr = std::make_unique<Context>(m_setting, *m_randomUPtr);
+        // m_randomUPtr            = std::make_unique<util::Random>();
+        // m_layoutUPtr            = std::make_unique<ScreenLayout>();
 
-        //m_layoutUPtr->setup(m_windowUPtr->getSize());
+        // m_contextUPtr = std::make_unique<Context>(m_setting, *m_randomUPtr);
+
+        // m_layoutUPtr->setup(m_windowUPtr->getSize());
     }
 
     void Coordinator::teardown()
     {
-        
-        m_randomUPtr.reset();
 
-        //util::SfmlDefaults::instance().teardown();
+        // m_randomUPtr.reset();
 
-        //m_contextUPtr.reset();
+        // util::SfmlDefaults::instance().teardown();
+
+        // m_contextUPtr.reset();
 
         m_windowUPtr->close();
         m_windowUPtr.reset();
@@ -85,7 +85,7 @@ namespace bramblefore
         if (t_event.is<sf::Event::Closed>())
         {
             m_windowUPtr->close();
-            //m_stateUPtr->setChangePending(State::Shutdown);
+            // m_stateUPtr->setChangePending(State::Shutdown);
         }
         else if (const auto * const keyPtr = t_event.getIf<sf::Event::KeyPressed>())
         {
@@ -96,7 +96,7 @@ namespace bramblefore
             }
         }
 
-        //m_stateUPtr->current().handleEvent(*m_contextUPtr, t_event);
+        // m_stateUPtr->current().handleEvent(*m_contextUPtr, t_event);
     }
 
     void Coordinator::draw()
@@ -150,4 +150,4 @@ namespace bramblefore
         }
     }
 
-} // namespace bramblefore
+} // namespace shadowman
