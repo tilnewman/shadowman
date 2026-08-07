@@ -6,7 +6,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 
 #list of library names (also the directory name)
-set(library_names avatar subsystem util)
+set(library_names avatar state subsystem util)
 
 
 #list of directories with executables

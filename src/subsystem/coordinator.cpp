@@ -24,6 +24,7 @@ namespace shadowman
         , m_avatarUPtr{}
         , m_fontManagerUPtr{}
         , m_framerateDisplayUPtr{}
+        , m_stateManagerUPtr{}
         , m_contextUPtr{}
     {}
 
@@ -44,9 +45,16 @@ namespace shadowman
         m_avatarUPtr           = std::make_unique<Avatar>();
         m_fontManagerUPtr      = std::make_unique<FontManager>();
         m_framerateDisplayUPtr = std::make_unique<FramerateDisplay>();
+        m_stateManagerUPtr     = std::make_unique<StateManager>();
 
         m_contextUPtr = std::make_unique<Context>(
-            m_setting, *m_randomUPtr, *m_soundPlayerUPtr, *m_screenLayoutUPtr, *m_fontManagerUPtr);
+            m_setting,
+            *m_randomUPtr,
+            *m_soundPlayerUPtr,
+            *m_screenLayoutUPtr,
+            *m_fontManagerUPtr,
+            *m_stateManagerUPtr,
+            *m_avatarUPtr);
 
         m_soundPlayerUPtr->mediaPath(m_setting.media_path / "sound");
         m_soundPlayerUPtr->loadAll();
@@ -55,6 +63,8 @@ namespace shadowman
         m_screenLayoutUPtr->setup(m_windowUPtr->getSize());
         m_fontManagerUPtr->setup(m_setting);
         m_avatarUPtr->setup(*m_contextUPtr);
+
+        m_stateManagerUPtr->setChangePending(State::Play);
     }
 
     void Coordinator::teardown()
@@ -64,6 +74,7 @@ namespace shadowman
 
         m_avatarUPtr->teardown();
 
+        m_stateManagerUPtr.reset();
         m_framerateDisplayUPtr.reset();
         m_fontManagerUPtr.reset();
         m_screenLayoutUPtr.reset();
@@ -91,7 +102,8 @@ namespace shadowman
     void Coordinator::gameLoop()
     {
         sf::Clock frameClock;
-        while (m_windowUPtr->isOpen())
+        while (m_windowUPtr->isOpen() and
+               (m_stateManagerUPtr->current().which() != State::Shutdown))
         {
             handleEvents();
             update(frameClock.restart().asSeconds());
@@ -112,7 +124,7 @@ namespace shadowman
         if (t_event.is<sf::Event::Closed>())
         {
             m_windowUPtr->close();
-            // m_stateUPtr->setChangePending(State::Shutdown);
+            m_stateManagerUPtr->setChangePending(State::Shutdown);
         }
         else if (const auto * const keyPtr = t_event.getIf<sf::Event::KeyPressed>())
         {
@@ -123,24 +135,22 @@ namespace shadowman
             }
         }
 
-        // m_stateUPtr->current().handleEvent(*m_contextUPtr, t_event);
+        m_stateManagerUPtr->current().handleEvent(*m_contextUPtr, t_event);
     }
 
     void Coordinator::draw()
     {
         m_windowUPtr->clear(sf::Color(100, 100, 127));
-        m_avatarUPtr->draw(*m_windowUPtr, m_renderStates);
+        m_stateManagerUPtr->current().draw(*m_contextUPtr, *m_windowUPtr, m_renderStates);
         m_framerateDisplayUPtr->draw(*m_windowUPtr, m_renderStates);
         m_windowUPtr->display();
     }
 
     void Coordinator::update(const float t_elapsedSec)
     {
-        m_avatarUPtr->update(*m_contextUPtr, t_elapsedSec);
+        m_stateManagerUPtr->current().update(*m_contextUPtr, t_elapsedSec);
         m_framerateDisplayUPtr->update(*m_contextUPtr, t_elapsedSec);
-
-        // m_stateUPtr->current().update(*m_contextUPtr, t_frameTimeSec);
-        // m_stateUPtr->changeIfPending(*m_contextUPtr);
+        m_stateManagerUPtr->changeIfPending(*m_contextUPtr);
     }
 
     void Coordinator::setupRenderWindow(sf::VideoMode & t_videoMode)

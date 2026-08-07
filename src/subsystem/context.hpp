@@ -17,7 +17,9 @@ namespace shadowman
 
     class ScreenLayout;
     class FontManager;
-    
+    class StateManager;
+    class Avatar;
+
     struct Context
     {
         Context(
@@ -25,12 +27,16 @@ namespace shadowman
             util::Random & t_random,
             util::SoundPlayer & t_soundPlayer,
             const ScreenLayout & t_screenLayout,
-            const FontManager & t_fontManager)
+            const FontManager & t_fontManager,
+            StateManager & t_stateManager,
+            Avatar & t_avatar)
             : setting{ t_settings }
             , random{ t_random }
             , audio{ t_soundPlayer }
             , layout{ t_screenLayout }
-            , font{t_fontManager}
+            , font{ t_fontManager }
+            , state{ t_stateManager }
+            , avatar{ t_avatar }
         {}
 
         const Settings & setting;
@@ -38,6 +44,8 @@ namespace shadowman
         util::SoundPlayer & audio;
         const ScreenLayout & layout;
         const FontManager & font;
+        StateManager & state;
+        Avatar & avatar;
     };
 
 } // namespace shadowman
