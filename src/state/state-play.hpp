@@ -4,6 +4,7 @@
 // state-play.hpp
 //
 #include "state/state.hpp"
+#include "subsystem/cave-background.hpp"
 
 #include <SFML/Graphics/RenderStates.hpp>
 
@@ -32,6 +33,9 @@ namespace shadowman
 
         void draw(const Context & t_context, sf::RenderTarget & t_target, sf::RenderStates t_states)
             const final;
+
+      private:
+        CaveBackground m_caveBackground;
     };
 
 } // namespace shadowman

@@ -16,7 +16,7 @@ namespace shadowman
         // see main.cpp for where this is really set
         std::filesystem::path media_path{ "./media" };
 
-        sf::VideoMode video_mode{ { 1920u, 1080u }, 32u };
+        sf::VideoMode video_mode{ { 2056u, 1329u }, 32u };
 
         float avatar_scale{ 0.5f };
     };
