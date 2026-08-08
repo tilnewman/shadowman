@@ -106,8 +106,7 @@ namespace shadowman
         }
 
         // moon
-        m_willShowMoon = true;
-        // t_context.random.boolean();
+        m_willShowMoon = true; // t_context.random.boolean();
         if (m_willShowMoon)
         {
             m_moonSprite.setTexture(m_moonTexture, true);
