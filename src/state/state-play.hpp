@@ -4,7 +4,7 @@
 // state-play.hpp
 //
 #include "state/state.hpp"
-#include "subsystem/cave-background.hpp"
+#include "subsystem/sky-background.hpp"
 
 #include <SFML/Graphics/RenderStates.hpp>
 
@@ -35,7 +35,7 @@ namespace shadowman
             const final;
 
       private:
-        CaveBackground m_caveBackground;
+        SkyBackground m_skyBackground;
     };
 
 } // namespace shadowman
