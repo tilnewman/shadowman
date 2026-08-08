@@ -81,9 +81,6 @@ namespace shadowman
             }
             else if (!sourceStr.empty())
             {
-                // parseTilesetAsSeparateFile(
-                //     t_context, gid, sourceStr, tileImage, transparentColorStr);
-
                 parseTilesetAsOrig(tilesetJson, gid, sourceStr, tileImage, transparentColorStr);
             }
             else
