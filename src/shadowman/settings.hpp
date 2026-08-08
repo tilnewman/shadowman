@@ -22,6 +22,8 @@ namespace shadowman
         float map_tile_scale{ 1.0f };
         float avatar_walk_moves_map_ratio{ 0.5f };
 
+        float avatar_gravity{ 1.0f };
+
         sf::Color map_outline_color{ 127, 127, 127 };
     };
 

@@ -91,11 +91,26 @@ namespace shadowman
             sf::RenderTarget & t_target,
             sf::RenderStates t_states) const;
 
+        [[nodiscard]] const sf::FloatRect collisionRect() const;
+        void setPositionOnNewLevel(const sf::Vector2f & t_position);
+
+      private:
+        void resetAnimation(const AvatarAnim t_anim);
+        void processCollisions(const Context & t_context);
+
+        void collide(
+            const Context & t_context,
+            const sf::FloatRect & t_intersectionRect,
+            const sf::Vector2f & t_avatarCenter,
+            bool & t_detectLanding);
+
       private:
         AvatarAnim m_anim;
         sf::Sprite m_sprite;
         float m_animElapsedSec;
         std::size_t m_frameIndex;
+        sf::Vector2f m_velocity;
+        bool m_isLanded;
         std::vector<std::vector<sf::Texture>> m_animTextures;
     };
 } // namespace shadowman
