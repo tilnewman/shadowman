@@ -83,6 +83,8 @@ namespace shadowman
             {
                 // parseTilesetAsSeparateFile(
                 //     t_context, gid, sourceStr, tileImage, transparentColorStr);
+
+                parseTilesetAsOrig(tilesetJson, gid, sourceStr, tileImage, transparentColorStr);
             }
             else
             {
@@ -93,6 +95,7 @@ namespace shadowman
 
             if (tileImage != TileImage::Count)
             {
+                //std::cout << "tileimage=" << toString(tileImage) << ", gid=" << gid << std::endl;
                 MapTextureManager::instance().setGid(tileImage, gid);
             }
         }
