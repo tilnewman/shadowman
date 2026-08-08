@@ -24,7 +24,8 @@ namespace shadowman
     //
 
     SkyBackground::SkyBackground()
-        : m_skyVerts{}
+        : m_offscreenRect{}
+        , m_skyVerts{}
         , m_cloud1Texture{}
         , m_cloud2Texture{}
         , m_cloud3Texture{}
@@ -34,14 +35,17 @@ namespace shadowman
         , m_willShowMoon{ false }
     {}
 
-    void SkyBackground::setup(const Context & t_context)
+    void SkyBackground::setup(const Context & t_context, const sf::Vector2f & t_size)
     {
+        m_offscreenRect.position = { 0.0f, 0.0f };
+        m_offscreenRect.size     = t_size;
+
         // sky color verts
         const sf::Color botColor(136, 136, 136);
         const sf::Color topColor(254, 204, 0);
 
-        // TODO use mapRect
-        util::appendTriangleVerts(t_context.layout.wholeRect(), m_skyVerts, botColor);
+        m_skyVerts.clear();
+        util::appendTriangleVerts(m_offscreenRect, m_skyVerts, botColor);
 
         m_skyVerts.at(0).color = topColor;
         m_skyVerts.at(1).color = topColor;
@@ -69,7 +73,7 @@ namespace shadowman
             true);
 
         // cloud animations
-        const sf::FloatRect wholeRect{ t_context.layout.wholeRect() };
+        m_cloudAnims.clear();
         const std::size_t cloudCount{ t_context.random.fromTo(4_st, 8_st) };
         for (std::size_t i{ 0 }; i < cloudCount; ++i)
         {
@@ -97,9 +101,10 @@ namespace shadowman
                 anim.sprite.scale({ -1.0f, 1.0f });
             }
 
-            const sf::Vector2f position{ t_context.random.fromTo(0.0f, util::right(wholeRect)),
-                                         t_context.random.fromTo(
-                                             0.0f, (wholeRect.size.y * 0.75f)) };
+            const sf::Vector2f position{
+                t_context.random.fromTo(0.0f, util::right(m_offscreenRect)),
+                t_context.random.fromTo(0.0f, (m_offscreenRect.size.y * 0.75f))
+            };
 
             anim.sprite.setPosition(position);
 
@@ -122,7 +127,7 @@ namespace shadowman
             const sf::FloatRect moonBounds{ m_moonSprite.getGlobalBounds() };
             sf::FloatRect rect;
             rect.position = moonBounds.size;
-            rect.size     = (wholeRect.size - (moonBounds.size * 2.0f));
+            rect.size     = (m_offscreenRect.size - (moonBounds.size * 2.0f));
             rect.size.y -= moonBounds.size.y;
 
             m_moonSprite.setPosition(
@@ -133,17 +138,16 @@ namespace shadowman
 
     void SkyBackground::update(const Context & t_context, const float t_elapsedSec)
     {
-        const sf::FloatRect wholeRect{ t_context.layout.wholeRect() };
-
         for (CloudAnim & anim : m_cloudAnims)
         {
             anim.sprite.move({ -(anim.speed * t_elapsedSec), 0.0f });
 
-            if (not wholeRect.findIntersection(anim.sprite.getGlobalBounds()))
+            if (not m_offscreenRect.findIntersection(anim.sprite.getGlobalBounds()))
             {
                 anim.sprite.setPosition(
-                    { (util::right(wholeRect) + (anim.sprite.getGlobalBounds().size.x * 0.5f)),
-                      t_context.random.fromTo(0.0f, (wholeRect.size.y * 0.75f)) });
+                    { (util::right(m_offscreenRect) +
+                       (anim.sprite.getGlobalBounds().size.x * 0.5f)),
+                      t_context.random.fromTo(0.0f, (m_offscreenRect.size.y * 0.75f)) });
             }
         }
     }

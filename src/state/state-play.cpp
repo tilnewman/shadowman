@@ -14,13 +14,10 @@
 namespace shadowman
 {
 
-    StatePlay::StatePlay()
-        : m_skyBackground{}
-    {}
+    StatePlay::StatePlay() {}
 
-    void StatePlay::onEnter(const Context & t_context) 
-    { 
-        m_skyBackground.setup(t_context);
+    void StatePlay::onEnter(const Context & t_context)
+    {
         t_context.level.load(t_context, "", "level-1.json");
     }
 
@@ -29,10 +26,10 @@ namespace shadowman
     void StatePlay::update(const Context & t_context, const float t_elapsedSec)
     {
         t_context.avatar.update(t_context, t_elapsedSec);
-        m_skyBackground.update(t_context, t_elapsedSec);
+        t_context.level.update(t_context, t_elapsedSec);
     }
 
-    void StatePlay::handleEvent(const Context & t_context, const sf::Event & t_event) 
+    void StatePlay::handleEvent(const Context & t_context, const sf::Event & t_event)
     {
         t_context.level.handleEvent(t_context, t_event);
     }
@@ -40,7 +37,6 @@ namespace shadowman
     void StatePlay::draw(
         const Context & t_context, sf::RenderTarget & t_target, sf::RenderStates t_states) const
     {
-        m_skyBackground.draw(t_target, t_states);
         t_context.level.draw(t_context, t_target, t_states);
     }
 

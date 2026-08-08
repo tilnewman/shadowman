@@ -33,11 +33,12 @@ namespace shadowman
       public:
         SkyBackground();
 
-        void setup(const Context & t_context);
+        void setup(const Context & t_context, const sf::Vector2f & t_size);
         void update(const Context & t_context, const float t_elapsedSec);
         void draw(sf::RenderTarget & t_target, sf::RenderStates t_states) const;
 
       private:
+        sf::FloatRect m_offscreenRect;
         std::vector<sf::Vertex> m_skyVerts;
         sf::Texture m_cloud1Texture;
         sf::Texture m_cloud2Texture;

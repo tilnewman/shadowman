@@ -41,12 +41,15 @@ namespace shadowman
         , m_moveScreenRectUp{}
         , m_moveScreenRectDown{}
         , m_fileLoader{}
+        , m_skyBackground{}
     {
         // harmless guesses based on what I know is in typical map files
         m_lowerTileLayers.reserve(16);
         m_upperTileLayers.reserve(16);
         m_collisions.reserve(512);
     }
+
+    void IndirectLevel::setup(const Context & t_context) {}
 
     void IndirectLevel::reset(const Context & t_context)
     {
@@ -116,9 +119,9 @@ namespace shadowman
         setupOffscreenTileRange(t_context, entryPos);
         // TODO t_context.avatar.setPosition(entryPos);
 
-        const sf::Vector2u renderTextureSize{ m_screenTileSize *
-                                              sf::Vector2f{ m_offscreenTileRange.size } };
+        m_skyBackground.setup(t_context, offscreenTextureSize());
 
+        const sf::Vector2u renderTextureSize{ offscreenTextureSize() };
         const bool didTextureResizeSucceed{ m_renderTexture.resize(renderTextureSize) };
 
         M_CHECK(
@@ -199,6 +202,7 @@ namespace shadowman
         }
 
         m_renderTexture.clear(sf::Color::Black);
+        m_skyBackground.draw(m_renderTexture, m_renderStates);
         drawLowerLayers(m_renderTexture, m_renderStates);
         t_context.avatar.draw(mapToOffscreenOffset(), m_renderTexture, m_renderStates);
         drawUpperLayers(m_renderTexture, m_renderStates);
@@ -341,6 +345,8 @@ namespace shadowman
 
     void IndirectLevel::update(const Context & t_context, const float t_frameTimeSec)
     {
+        m_skyBackground.update(t_context, t_frameTimeSec);
+
         for (auto & layerUPtr : m_lowerTileLayers)
         {
             layerUPtr->update(t_context, t_frameTimeSec);

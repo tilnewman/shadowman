@@ -5,6 +5,7 @@
 //
 #include "map/file-loader.hpp"
 #include "map/tile-layer.hpp"
+#include "subsystem/sky-background.hpp"
 #include "util/sfml-util.hpp"
 
 #include <memory>
@@ -30,6 +31,8 @@ namespace shadowman
       public:
         IndirectLevel();
 
+        void setup(const Context & t_context);
+        
         void load(
             const Context & t_context,
             const std::string & t_filenameFrom,
@@ -129,6 +132,11 @@ namespace shadowman
         void moveAllLayers(const sf::Vector2f & t_move);
         void moveAll(const Context & t_context, const sf::Vector2f & t_move);
 
+        [[nodiscard]] inline const sf::Vector2f offscreenTextureSize() const 
+        {
+            return (m_screenTileSize * sf::Vector2f{ m_offscreenTileRange.size });
+        }
+
       private:
         std::string m_name;
 
@@ -171,6 +179,7 @@ namespace shadowman
         sf::FloatRect m_exitRect;
 
         FileLoader m_fileLoader;
+        SkyBackground m_skyBackground;
     };
 
 } // namespace shadowman
