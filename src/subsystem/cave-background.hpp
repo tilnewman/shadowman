@@ -28,12 +28,20 @@ namespace shadowman
         void draw(sf::RenderTarget & t_target, sf::RenderStates t_states) const;
 
       private:
-        void composeBackground(
+        // returns true if it ended in a solid pillar
+        bool composeBackground(
             const Context & t_context,
             sf::RenderTexture & t_offscreenTexture,
-            sf::Sprite & t_sprite);
+            sf::Sprite & t_sprite,
+            const bool t_didPrevEndInPillar);
 
-        void composePillars(const Context & t_context, sf::RenderTexture & t_offscreenTexture);
+        // returns true if it ended in a solid pillar
+        bool composePillars(
+            const Context & t_context,
+            sf::RenderTexture & t_offscreenTexture,
+            int & t_horisPos,
+            const bool t_didPrevEndInPillar);
+
         void composeStalactites(const Context & t_context, sf::RenderTexture & t_offscreenTexture);
         [[nodiscard]] const sf::IntRect getRandomPillarRectLeft(const Context & t_context) const;
         [[nodiscard]] const sf::IntRect getRandomPillarRectRight(const Context & t_context) const;

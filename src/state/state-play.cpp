@@ -24,7 +24,7 @@ namespace shadowman
     void StatePlay::update(const Context & t_context, const float t_elapsedSec)
     {
         t_context.avatar.update(t_context, t_elapsedSec);
-        m_caveBackground.move(0.1f);
+        m_caveBackground.move(0.075f);
     }
 
     void StatePlay::handleEvent(const Context &, const sf::Event &)

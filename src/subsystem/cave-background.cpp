@@ -36,7 +36,11 @@ namespace shadowman
             (t_context.setting.media_path / "image" / "stalactites.png"),
             true);
 
-        composeBackground(t_context, m_offscreenTexture1, m_sprite1);
+        const bool didEndInPillar{ composeBackground(
+            t_context, m_offscreenTexture1, m_sprite1, false) };
+
+        composeBackground(t_context, m_offscreenTexture2, m_sprite2, didEndInPillar);
+        m_sprite2.setPosition({ m_sprite1.getGlobalBounds().size.x, 0.0f });
     }
 
     void CaveBackground::move(const float t_amount)
@@ -48,51 +52,91 @@ namespace shadowman
     void CaveBackground::draw(sf::RenderTarget & t_target, sf::RenderStates t_states) const
     {
         t_target.draw(m_sprite1, t_states);
-        // t_target.draw(m_sprite2, t_states);
+        t_target.draw(m_sprite2, t_states);
     }
 
-    void CaveBackground::composeBackground(
-        const Context & t_context, sf::RenderTexture & t_offscreenTexture, sf::Sprite & t_sprite)
+    bool CaveBackground::composeBackground(
+        const Context & t_context,
+        sf::RenderTexture & t_offscreenTexture,
+        sf::Sprite & t_sprite,
+        const bool t_didPrevEndInPillar)
     {
         if (not t_offscreenTexture.resize({ 2048u, 1024u }))
         {
             M_LOG("Your graphics card sucks.  Failed to make an offscreen sf::RenderTexture.");
-            return;
+            return false;
         }
 
         t_offscreenTexture.setSmooth(true);
         t_offscreenTexture.clear(m_backgroundColor);
-        composePillars(t_context, t_offscreenTexture);
+
+        int horizPos{ 0 };
+        const bool didEndInPillar{ composePillars(
+            t_context, t_offscreenTexture, horizPos, t_didPrevEndInPillar) };
+
         composeStalactites(t_context, t_offscreenTexture);
         t_offscreenTexture.display();
+
         t_sprite.setTexture(t_offscreenTexture.getTexture(), true);
         t_sprite.setPosition({ 0.0f, 0.0f });
         const float scale{ t_context.layout.wholeRect().size.y / t_sprite.getLocalBounds().size.y };
         t_sprite.scale({ scale, scale });
+
+        return didEndInPillar;
     }
 
-    void CaveBackground::composePillars(
-        const Context & t_context, sf::RenderTexture & t_offscreenTexture)
+    bool CaveBackground::composePillars(
+        const Context & t_context,
+        sf::RenderTexture & t_offscreenTexture,
+        int & t_horizPos,
+        const bool t_didPrevEndInPillar)
     {
-        int horizPos{ 0 };
-        const sf::IntRect leftRect{ getRandomPillarRectLeft(t_context) };
-        sf::Sprite transferSprite(m_caveBgTexture);
-        transferSprite.setTextureRect(leftRect);
-        t_offscreenTexture.draw(transferSprite);
-        horizPos += leftRect.size.x;
+        const int remainingSpaceLeft{ (
+            static_cast<int>(t_offscreenTexture.getSize().x) - t_horizPos) };
 
-        const int betweenDistance{ t_context.random.fromTo(4, 300) };
-        const sf::FloatRect betweenRect{ sf::IntRect({ horizPos, 0 }, { betweenDistance, 1024 }) };
-        util::drawRectangleShape(t_offscreenTexture, betweenRect, true, m_pillarColor);
-        horizPos += betweenDistance;
+        if (remainingSpaceLeft < 704)
+        {
+            t_horizPos -= remainingSpaceLeft;
+            return false;
+        }
+
+        sf::Sprite transferSprite(m_caveBgTexture);
+        if (not t_didPrevEndInPillar)
+        {
+            const sf::IntRect leftRect{ getRandomPillarRectLeft(t_context) };
+            transferSprite.setPosition({ static_cast<float>(t_horizPos), 0.0f });
+            transferSprite.setTextureRect(leftRect);
+            t_offscreenTexture.draw(transferSprite);
+            t_horizPos += leftRect.size.x;
+
+            const int remainingSpaceWidth{ static_cast<int>(t_offscreenTexture.getSize().x) -
+                                           t_horizPos };
+
+            if (remainingSpaceWidth < 512)
+            {
+                const sf::FloatRect rect{ sf::IntRect(
+                    { t_horizPos, 0 }, { remainingSpaceWidth, 1024 }) };
+
+                util::drawRectangleShape(t_offscreenTexture, rect, true, m_pillarColor);
+                return true;
+            }
+
+            const int pillarWidthMax{ std::min(100, (remainingSpaceWidth - 512)) };
+            const int pillarWidth{ t_context.random.fromTo(1, pillarWidthMax) };
+            const sf::FloatRect widthRect{ sf::IntRect({ t_horizPos, 0 }, { pillarWidth, 1024 }) };
+            util::drawRectangleShape(t_offscreenTexture, widthRect, true, m_pillarColor);
+            t_horizPos += pillarWidth;
+        }
 
         const sf::IntRect rightRect{ getRandomPillarRectRight(t_context) };
         transferSprite.setTextureRect(rightRect);
-        transferSprite.setPosition({ static_cast<float>(horizPos), 0.0f });
+        transferSprite.setPosition({ static_cast<float>(t_horizPos), 0.0f });
         t_offscreenTexture.draw(transferSprite);
-        horizPos += rightRect.size.x;
+        t_horizPos += rightRect.size.x;
 
-        // const int afterDistance{ t_context.random.fromTo(4, 512) };
+        t_horizPos += t_context.random.fromTo(0, 200);
+
+        return composePillars(t_context, t_offscreenTexture, t_horizPos, false);
     }
 
     void CaveBackground::composeStalactites(
