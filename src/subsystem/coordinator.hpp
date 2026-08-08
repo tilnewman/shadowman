@@ -4,6 +4,7 @@
 // coordinator.hpp
 //
 #include "avatar/avatar.hpp"
+#include "map/indirect-level.hpp"
 #include "shadowman/settings.hpp"
 #include "state/state-manager.hpp"
 #include "subsystem/context.hpp"
@@ -51,6 +52,7 @@ namespace shadowman
         std::unique_ptr<FontManager> m_fontManagerUPtr;
         std::unique_ptr<FramerateDisplay> m_framerateDisplayUPtr;
         std::unique_ptr<StateManager> m_stateManagerUPtr;
+        std::unique_ptr<IndirectLevel> m_levelUPtr;
 
         std::unique_ptr<Context> m_contextUPtr;
     };

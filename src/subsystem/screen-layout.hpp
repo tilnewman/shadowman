@@ -28,14 +28,16 @@ namespace shadowman
         void setup(const sf::Vector2u & t_windowSize);
 
         [[nodiscard]] inline const sf::FloatRect wholeRect() const noexcept { return m_wholeRect; }
+        [[nodiscard]] inline const sf::FloatRect mapRect() const noexcept { return m_mapRect; }
 
-        [[nodiscard]] float calScaleBasedOnResolution(
+        [[nodiscard]] float scaleBasedOnResolution(
             const Context & t_context,
             const float t_originalScale,
             const CalcOrder t_order = CalcOrder::Normal) const;
 
       private:
         sf::FloatRect m_wholeRect;
+        sf::FloatRect m_mapRect;
     };
 
 } // namespace shadowman

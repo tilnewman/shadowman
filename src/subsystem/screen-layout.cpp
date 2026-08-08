@@ -5,6 +5,7 @@
 
 #include "shadowman/settings.hpp"
 #include "subsystem/context.hpp"
+#include "util/sfml-util.hpp"
 
 namespace shadowman
 {
@@ -18,9 +19,11 @@ namespace shadowman
         m_wholeRect = { { 0.0f, 0.0f },
                         { static_cast<float>(t_windowSize.x),
                           static_cast<float>(t_windowSize.y) } };
+
+        m_mapRect = util::scaleRectInPlaceCopy(m_wholeRect, 0.75f);
     }
 
-    float ScreenLayout::calScaleBasedOnResolution(
+    float ScreenLayout::scaleBasedOnResolution(
         const Context & t_context, const float t_scale, const CalcOrder t_order) const
     {
         // This is the resolution on my macbook originally used when starting the game.

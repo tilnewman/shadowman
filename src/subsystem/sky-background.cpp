@@ -40,6 +40,7 @@ namespace shadowman
         const sf::Color botColor(136, 136, 136);
         const sf::Color topColor(254, 204, 0);
 
+        // TODO use mapRect
         util::appendTriangleVerts(t_context.layout.wholeRect(), m_skyVerts, botColor);
 
         m_skyVerts.at(0).color = topColor;
@@ -87,7 +88,7 @@ namespace shadowman
                 anim.sprite.setTexture(m_cloud3Texture, true);
             }
 
-            const float scale{ t_context.random.fromTo(0.5f, 1.0f) };
+            const float scale{ t_context.random.fromTo(0.5f, 1.0f) }; // TODO account for resolution
             anim.sprite.scale({ scale, scale });
 
             util::setOriginToCenter(anim.sprite);
@@ -111,7 +112,7 @@ namespace shadowman
         {
             m_moonSprite.setTexture(m_moonTexture, true);
             util::setOriginToCenter(m_moonSprite);
-            m_moonSprite.scale({ 0.5f, 0.5f });
+            m_moonSprite.scale({ 0.5f, 0.5f }); // TODO account for resolution
 
             if (t_context.random.boolean())
             {

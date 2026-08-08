@@ -85,7 +85,11 @@ namespace shadowman
         void setup(const Context & t_context);
         void teardown() { m_animTextures.clear(); }
         void update(const Context & t_context, const float t_elapsedSec);
-        void draw(sf::RenderTarget & t_target, sf::RenderStates t_states) const;
+
+        void draw(
+            const sf::Vector2f & t_mapToOffscreenOffset,
+            sf::RenderTarget & t_target,
+            sf::RenderStates t_states) const;
 
       private:
         AvatarAnim m_anim;

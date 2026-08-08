@@ -3,6 +3,7 @@
 //
 #include "subsystem/coordinator.hpp"
 
+#include "map/textures.hpp"
 #include "util/sfml-defaults.hpp"
 #include "util/sfml-util.hpp"
 
@@ -25,6 +26,7 @@ namespace shadowman
         , m_fontManagerUPtr{}
         , m_framerateDisplayUPtr{}
         , m_stateManagerUPtr{}
+        , m_levelUPtr{}
         , m_contextUPtr{}
     {}
 
@@ -46,6 +48,7 @@ namespace shadowman
         m_fontManagerUPtr      = std::make_unique<FontManager>();
         m_framerateDisplayUPtr = std::make_unique<FramerateDisplay>();
         m_stateManagerUPtr     = std::make_unique<StateManager>();
+        m_levelUPtr            = std::make_unique<IndirectLevel>();
 
         m_contextUPtr = std::make_unique<Context>(
             m_setting,
@@ -54,7 +57,8 @@ namespace shadowman
             *m_screenLayoutUPtr,
             *m_fontManagerUPtr,
             *m_stateManagerUPtr,
-            *m_avatarUPtr);
+            *m_avatarUPtr,
+            *m_levelUPtr);
 
         m_soundPlayerUPtr->mediaPath(m_setting.media_path / "sound");
         m_soundPlayerUPtr->loadAll();
@@ -63,6 +67,7 @@ namespace shadowman
         m_screenLayoutUPtr->setup(m_windowUPtr->getSize());
         m_fontManagerUPtr->setup(m_setting);
         m_avatarUPtr->setup(*m_contextUPtr);
+        MapTextureManager::instance().setup();
 
         m_stateManagerUPtr->setChangePending(State::Play);
     }
@@ -74,6 +79,9 @@ namespace shadowman
 
         m_avatarUPtr->teardown();
 
+        m_levelUPtr.reset();
+        MapTextureManager::instance().teardown();
+
         m_stateManagerUPtr.reset();
         m_framerateDisplayUPtr.reset();
         m_fontManagerUPtr.reset();
@@ -81,6 +89,7 @@ namespace shadowman
         m_soundPlayerUPtr.reset();
         m_randomUPtr.reset();
         m_avatarUPtr.reset();
+        
 
         util::SfmlDefaults::instance().teardown();
 

@@ -85,8 +85,13 @@ namespace shadowman
         }
     }
 
-    void Avatar::draw(sf::RenderTarget & t_target, sf::RenderStates t_states) const
+    void Avatar::draw(
+        const sf::Vector2f & t_mapToOffscreenOffset,
+        sf::RenderTarget & t_target,
+        sf::RenderStates t_states) const
     {
+        sf::Sprite tempAvatarSprite{ m_sprite };
+        tempAvatarSprite.move(t_mapToOffscreenOffset);
         t_target.draw(m_sprite, t_states);
     }
 

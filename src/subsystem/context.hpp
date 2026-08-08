@@ -19,6 +19,7 @@ namespace shadowman
     class FontManager;
     class StateManager;
     class Avatar;
+    class IndirectLevel;
 
     struct Context
     {
@@ -29,7 +30,8 @@ namespace shadowman
             const ScreenLayout & t_screenLayout,
             const FontManager & t_fontManager,
             StateManager & t_stateManager,
-            Avatar & t_avatar)
+            Avatar & t_avatar,
+            IndirectLevel & t_indirectLevel)
             : setting{ t_settings }
             , random{ t_random }
             , audio{ t_soundPlayer }
@@ -37,6 +39,7 @@ namespace shadowman
             , font{ t_fontManager }
             , state{ t_stateManager }
             , avatar{ t_avatar }
+            , level{ t_indirectLevel }
         {}
 
         const Settings & setting;
@@ -46,6 +49,7 @@ namespace shadowman
         const FontManager & font;
         StateManager & state;
         Avatar & avatar;
+        IndirectLevel & level;
     };
 
 } // namespace shadowman

@@ -4,6 +4,7 @@
 #include "state-play.hpp"
 
 #include "avatar/avatar.hpp"
+#include "map/indirect-level.hpp"
 #include "shadowman/settings.hpp"
 #include "subsystem/context.hpp"
 
@@ -17,7 +18,11 @@ namespace shadowman
         : m_skyBackground{}
     {}
 
-    void StatePlay::onEnter(const Context & t_context) { m_skyBackground.setup(t_context); }
+    void StatePlay::onEnter(const Context & t_context) 
+    { 
+        m_skyBackground.setup(t_context);
+        t_context.level.load(t_context, "", "level-1.json");
+    }
 
     void StatePlay::onExit(const Context &) {}
 
@@ -27,13 +32,16 @@ namespace shadowman
         m_skyBackground.update(t_context, t_elapsedSec);
     }
 
-    void StatePlay::handleEvent(const Context &, const sf::Event &) {}
+    void StatePlay::handleEvent(const Context & t_context, const sf::Event & t_event) 
+    {
+        t_context.level.handleEvent(t_context, t_event);
+    }
 
     void StatePlay::draw(
         const Context & t_context, sf::RenderTarget & t_target, sf::RenderStates t_states) const
     {
         m_skyBackground.draw(t_target, t_states);
-        t_context.avatar.draw(t_target, t_states);
+        t_context.level.draw(t_context, t_target, t_states);
     }
 
 } // namespace shadowman

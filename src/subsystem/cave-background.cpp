@@ -139,9 +139,7 @@ namespace shadowman
         return composePillars(t_context, t_offscreenTexture, t_horizPos, false);
     }
 
-    void CaveBackground::composeStalactites(
-        const Context & t_context, sf::RenderTexture & t_offscreenTexture)
-    {}
+    void CaveBackground::composeStalactites(const Context &, sf::RenderTexture &) {}
 
     const sf::IntRect CaveBackground::getRandomPillarRectLeft(const Context & t_context) const
     {
