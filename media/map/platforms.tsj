@@ -1,0 +1,14 @@
+{ "columns":64,
+ "image":"..\/image\/map\/platforms.png",
+ "imageheight":2048,
+ "imagewidth":2048,
+ "margin":0,
+ "name":"platforms",
+ "spacing":0,
+ "tilecount":4096,
+ "tiledversion":"1.11.2",
+ "tileheight":32,
+ "tilewidth":32,
+ "type":"tileset",
+ "version":"1.10"
+}
