@@ -10,6 +10,7 @@
 #include "util/filesystem-util.hpp"
 #include "util/sfml-defaults.hpp"
 #include "util/sfml-util.hpp"
+#include "util/sound-player.hpp"
 #include "util/texture-loader.hpp"
 
 #include <filesystem>
@@ -59,8 +60,6 @@ namespace shadowman
 
         const float scale{ t_context.setting.avatar_scale };
         m_sprite.scale({ scale, scale });
-
-        util::centerInside(m_sprite, t_context.layout.wholeRect());
     }
 
     void Avatar::update(const Context & t_context, const float t_elapsedSec)
@@ -108,14 +107,11 @@ namespace shadowman
         m_anim           = t_anim;
         m_animElapsedSec = 0.0f;
         m_frameIndex     = 0;
-        m_velocity       = { 0.0f, 0.0f };
-        m_isLanded       = false;
 
         m_sprite.setTexture(
             m_animTextures.at(static_cast<std::size_t>(m_anim)).at(m_frameIndex), true);
 
         util::setOriginToCenter(m_sprite);
-
     }
 
     void Avatar::draw(
@@ -135,6 +131,8 @@ namespace shadowman
 
     void Avatar::setPositionOnNewLevel(const sf::Vector2f & t_position)
     {
+        m_velocity = { 0.0f, 0.0f };
+        m_isLanded = false;
         resetAnimation(AvatarAnim::Idle);
         m_sprite.setPosition(t_position);
     }
@@ -144,7 +142,7 @@ namespace shadowman
         const sf::FloatRect avatarRect{ collisionRect() };
         const sf::Vector2f avatarCenter{ util::center(avatarRect) };
 
-        bool detectLanding{ false };
+        bool detectLanding{ m_isLanded };
 
         for (const sf::FloatRect & collRect : t_context.level.collisions())
         {
@@ -155,7 +153,7 @@ namespace shadowman
             }
         }
 
-        if (!detectLanding)
+        if (not detectLanding)
         {
             m_isLanded = false;
         }
@@ -170,7 +168,7 @@ namespace shadowman
         const float tolerance{ 25.0f }; // this magic number brought to you by zTn 2021-8-2
         const sf::Vector2f intersectCenter{ util::center(t_intersectionRect) };
 
-        if ((m_velocity.y < 0.0f) && (t_intersectionRect.size.y < tolerance) &&
+        if ((m_velocity.y < 0.0f) and (t_intersectionRect.size.y < tolerance) and
             (intersectCenter.y < t_avatarCenter.y))
         {
             // rising and hit something abov
@@ -178,14 +176,14 @@ namespace shadowman
             m_sprite.move({ 0.0f, t_intersectionRect.size.y });
         }
         else if (
-            (m_velocity.y > 0.0f) && (t_intersectionRect.size.y < tolerance) &&
+            (m_velocity.y > 0.0f) and (t_intersectionRect.size.y < tolerance) and
             (intersectCenter.y > t_avatarCenter.y))
         {
             // falling and hit something below
 
-            if (!m_isLanded)
+            if (not m_isLanded)
             {
-                // TODO t_context.audio.play("land");
+                t_context.audio.play("land");
                 // m_action = Action::Idle;
                 resetAnimation(AvatarAnim::Idle);
             }
