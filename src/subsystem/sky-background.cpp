@@ -48,16 +48,24 @@ namespace shadowman
 
         // load textures
         util::TextureLoader::load(
-            m_cloud1Texture, (t_context.setting.media_path / "image" / "cloud-1.png"), true);
+            m_cloud1Texture,
+            (t_context.setting.media_path / "image" / "background" / "cloud-1.png"),
+            true);
 
         util::TextureLoader::load(
-            m_cloud2Texture, (t_context.setting.media_path / "image" / "cloud-2.png"), true);
+            m_cloud2Texture,
+            (t_context.setting.media_path / "image" / "background" / "cloud-2.png"),
+            true);
 
         util::TextureLoader::load(
-            m_cloud3Texture, (t_context.setting.media_path / "image" / "cloud-3.png"), true);
+            m_cloud3Texture,
+            (t_context.setting.media_path / "image" / "background" / "cloud-3.png"),
+            true);
 
         util::TextureLoader::load(
-            m_moonTexture, (t_context.setting.media_path / "image" / "moon.png"), true);
+            m_moonTexture,
+            (t_context.setting.media_path / "image" / "background" / "moon.png"),
+            true);
 
         // cloud animations
         const sf::FloatRect wholeRect{ t_context.layout.wholeRect() };
