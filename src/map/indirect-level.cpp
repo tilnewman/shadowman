@@ -49,7 +49,7 @@ namespace shadowman
         m_collisions.reserve(512);
     }
 
-    void IndirectLevel::setup(const Context & t_context) {}
+    void IndirectLevel::setup(const Context &) {}
 
     void IndirectLevel::reset(const Context & t_context)
     {

@@ -45,15 +45,6 @@ namespace shadowman
             TileImage & t_tileImageOutParam,
             std::string & t_transparentColorStrOutParam);
 
-        /*
-        void parseTilesetAsSeparateFile(
-            const Context & t_context,
-            const int t_gid,
-            const std::string & t_path,
-            TileImage & t_tileImageOutParam,
-            std::string & t_transparentColorStrOutParam);
-        */
-
         void parseLayers(const Context & t_context, const nlohmann::json & t_json);
         void parseTransitionsLayer(const Context & t_context, const nlohmann::json & t_json);
         void parseSpawnLayer(const Context & t_context, const nlohmann::json & t_json);
