@@ -91,6 +91,14 @@ namespace shadowman
         {
             scale *= 1.28f;
         }
+        else if (AvatarAnim::Slash == m_anim)
+        {
+            scale *= 1.1f;
+        }
+        else if (AvatarAnim::Slash2 == m_anim)
+        {
+            scale *= 1.3f;
+        }
 
         m_sprite.setScale({ ((m_sprite.getScale().x < 0.0f) ? -scale : scale), scale });
     }
@@ -98,11 +106,14 @@ namespace shadowman
     void Avatar::update(const Context & t_context, const float t_elapsedSec)
     {
         const sf::Vector2f beforePos{ m_sprite.getPosition() };
+
         updateJumping(t_context, t_elapsedSec);
-        sideToSideMotion(t_context, t_elapsedSec);
+        updateAttacking(t_context);
+        updateHorizMotion(t_context, t_elapsedSec);
         updateAnimation(t_context, t_elapsedSec);
         updatePosition(t_context, t_elapsedSec);
         processCollisions(t_context);
+
         const sf::Vector2f afterPos{ m_sprite.getPosition() };
         t_context.level.playerMove(t_context, collisionRect(), (afterPos - beforePos));
     }
@@ -118,6 +129,20 @@ namespace shadowman
             resetAnimation(t_context, AvatarAction::Jump, AvatarAnim::Jump);
             t_context.audio.stop("walk");
             t_context.audio.play("jump");
+        }
+    }
+
+    void Avatar::updateAttacking(const Context & t_context)
+    {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::F) and
+            (AvatarAction::Attack != m_action) and (AvatarAction::Death != m_action) and
+            (AvatarAction::Hurt != m_action))
+        {
+            const AvatarAnim randomAnim{ t_context.random.from(
+                { AvatarAnim::Stab, AvatarAnim::Stab2, AvatarAnim::Slash, AvatarAnim::Slash2 }) };
+
+            resetAnimation(t_context, AvatarAction::Attack, randomAnim);
+            t_context.audio.play("swipe");
         }
     }
 
@@ -325,10 +350,9 @@ namespace shadowman
         }
     }
 
-    void Avatar::sideToSideMotion(const Context & t_context, const float t_frameTimeSec)
+    void Avatar::updateHorizMotion(const Context & t_context, const float t_frameTimeSec)
     {
-        if ((AvatarAction::Hurt == m_action) || (AvatarAction::Attack == m_action) ||
-            (AvatarAction::AttackExtra == m_action) ||
+        if ((AvatarAction::Hurt == m_action) or (AvatarAction::Attack == m_action) or
             sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A))
         {
             return;
@@ -455,19 +479,19 @@ namespace shadowman
 
         m_movement.walk_acc =
             t_context.layout.scaleBasedOnResolution(t_context, t_context.setting.avatar_walk_acc);
-        
+
         m_movement.walk_speed_limit = t_context.layout.scaleBasedOnResolution(
             t_context, t_context.setting.avatar_walk_speed_limit);
-        
+
         m_movement.run_acc =
             t_context.layout.scaleBasedOnResolution(t_context, t_context.setting.avatar_run_acc);
-        
+
         m_movement.run_speed_limit = t_context.layout.scaleBasedOnResolution(
             t_context, t_context.setting.avatar_run_speed_limit);
-        
+
         m_movement.jump_speed =
             t_context.layout.scaleBasedOnResolution(t_context, t_context.setting.avatar_jump_speed);
-        
+
         m_movement.jump_horiz_move_divisor = t_context.layout.scaleBasedOnResolution(
             t_context, t_context.setting.avatar_jump_horiz_move_divisor);
     }

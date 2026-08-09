@@ -47,25 +47,25 @@ namespace shadowman
         // clang-format off
         switch(t_anim)
         {
-            case AvatarAnim::Die:           { return "die";           }
-            case AvatarAnim::Idle:          { return "idle";          }
-            case AvatarAnim::IdleLook:      { return "idle-look";     }
-            case AvatarAnim::Jump:          { return "jump";          }
-            case AvatarAnim::Kick:          { return "kick";          }
-            case AvatarAnim::Pull:          { return "pull";          }
-            case AvatarAnim::Push:          { return "push";          }
-            case AvatarAnim::Run:           { return "run";           }
-            case AvatarAnim::Slash:         { return "slash";         }
-            case AvatarAnim::Slash2:        { return "slash2";        }
-            case AvatarAnim::Stab:          { return "stab";          }
-            case AvatarAnim::Stab2:         { return "stab2";         }
-            case AvatarAnim::Walk:          { return "walk";          }
-            case AvatarAnim::WalkSlash:     { return "walk-slash";    }
-            case AvatarAnim::WalkSneek:     { return "walk-sneek";    }
-            case AvatarAnim::WalkStab:      { return "walk-stab";     }
-            case AvatarAnim::WalkStab2:     { return "walk-stab2";    }
+            case AvatarAnim::Die:       { return "die";        }
+            case AvatarAnim::Idle:      { return "idle";       }
+            case AvatarAnim::IdleLook:  { return "idle-look";  }
+            case AvatarAnim::Jump:      { return "jump";       }
+            case AvatarAnim::Kick:      { return "kick";       }
+            case AvatarAnim::Pull:      { return "pull";       }
+            case AvatarAnim::Push:      { return "push";       }
+            case AvatarAnim::Run:       { return "run";        }
+            case AvatarAnim::Slash:     { return "slash";      }
+            case AvatarAnim::Slash2:    { return "slash2";     }
+            case AvatarAnim::Stab:      { return "stab";       }
+            case AvatarAnim::Stab2:     { return "stab2";      }
+            case AvatarAnim::Walk:      { return "walk";       }
+            case AvatarAnim::WalkSlash: { return "walk-slash"; }
+            case AvatarAnim::WalkSneek: { return "walk-sneek"; }
+            case AvatarAnim::WalkStab:  { return "walk-stab";  }
+            case AvatarAnim::WalkStab2: { return "walk-stab2"; }
             case AvatarAnim::Count:
-            default:             { return "error_unkonwn_avataranim"; }
+            default:      { return "error_unkonwn_avataranim"; }
         }
         // clang-format on
     }
@@ -87,6 +87,12 @@ namespace shadowman
         {
             return 0.03f;
         }
+        else if (
+            (AvatarAnim::Slash == t_anim) or (AvatarAnim::Slash2 == t_anim) or
+            (AvatarAnim::Stab == t_anim) or (AvatarAnim::Stab2 == t_anim))
+        {
+            return 0.025f;
+        }
         else
         {
             return 0.08f;
@@ -100,8 +106,8 @@ namespace shadowman
         Walk,
         Run,
         Attack,
-        AttackExtra,
-        Hurt
+        Hurt,
+        Death
     };
 
     [[nodiscard]] constexpr std::string_view toString(const AvatarAction t_action) noexcept
@@ -109,14 +115,14 @@ namespace shadowman
         // clang-format off
         switch(t_action)
         {
-            case AvatarAction::Idle:        { return "idle"; }
-            case AvatarAction::Jump:        { return "jump"; }
-            case AvatarAction::Walk:        { return "walk"; }
-            case AvatarAction::Run:         { return "run"; }
-            case AvatarAction::Attack:      { return "attack"; }
-            case AvatarAction::AttackExtra: { return "attackextra"; }
-            case AvatarAction::Hurt:        
-            default:                        { return "hurt"; }
+            case AvatarAction::Idle:   { return "idle";   }
+            case AvatarAction::Jump:   { return "jump";   }
+            case AvatarAction::Walk:   { return "walk";   }
+            case AvatarAction::Run:    { return "run";    }
+            case AvatarAction::Attack: { return "attack"; }
+            case AvatarAction::Death:  { return "death"; }
+            case AvatarAction::Hurt:   
+            default:                   { return "hurt";   }
         }
         // clang-format on
     }
@@ -158,7 +164,8 @@ namespace shadowman
         void afterAnimationCompletes(const Context & t_context);
         void updatePosition(const Context & t_context, const float t_elapsedSec);
         void updateJumping(const Context & t_context, const float t_elapsedSec);
-        void sideToSideMotion(const Context & t_context, const float t_frameTimeSec);
+        void updateAttacking(const Context & t_context);
+        void updateHorizMotion(const Context & t_context, const float t_frameTimeSec);
         void scaleSprite(const Context & t_context);
         void clacMovementDetails(const Context & t_context);
         void turn();
