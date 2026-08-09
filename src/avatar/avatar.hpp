@@ -35,7 +35,7 @@ namespace shadowman
         Stab2,
         Walk,
         WalkSlash,
-        WalkSneek,
+        WalkSneak,
         WalkStab,
         WalkStab2,
         Count
@@ -60,7 +60,7 @@ namespace shadowman
             case AvatarAnim::Stab2:     { return "stab2";      }
             case AvatarAnim::Walk:      { return "walk";       }
             case AvatarAnim::WalkSlash: { return "walk-slash"; }
-            case AvatarAnim::WalkSneek: { return "walk-sneek"; }
+            case AvatarAnim::WalkSneak: { return "walk-sneak"; }
             case AvatarAnim::WalkStab:  { return "walk-stab";  }
             case AvatarAnim::WalkStab2: { return "walk-stab2"; }
             case AvatarAnim::Count:
@@ -75,13 +75,13 @@ namespace shadowman
             (AvatarAnim::Idle == t_anim) or (AvatarAnim::IdleLook == t_anim) or
             (AvatarAnim::Pull == t_anim) or (AvatarAnim::Push == t_anim) or
             (AvatarAnim::Run == t_anim) or (AvatarAnim::Walk == t_anim) or
-            (AvatarAnim::WalkSneek == t_anim));
+            (AvatarAnim::WalkSneak == t_anim));
     }
 
     [[nodiscard]] constexpr float timePerFrameSec(const AvatarAnim t_anim) noexcept
     {
         if ((AvatarAnim::Walk == t_anim) or (AvatarAnim::Run == t_anim) or
-            (AvatarAnim::WalkSlash == t_anim) or (AvatarAnim::WalkSneek == t_anim) or
+            (AvatarAnim::WalkSlash == t_anim) or (AvatarAnim::WalkSneak == t_anim) or
             (AvatarAnim::WalkStab == t_anim) or (AvatarAnim::WalkStab2 == t_anim))
         {
             return 0.03f;

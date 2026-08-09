@@ -434,8 +434,8 @@ namespace shadowman
 
                 if (AvatarAction::Run != m_action)
                 {
-                    resetAnimation(t_context, AvatarAction::Run, AvatarAnim::Run);
                     t_context.audio.play("walk");
+                    resetAnimation(t_context, AvatarAction::Run, AvatarAnim::Run);
                 }
             }
             else
@@ -445,8 +445,16 @@ namespace shadowman
 
                 if (AvatarAction::Walk != m_action)
                 {
-                    resetAnimation(t_context, AvatarAction::Walk, AvatarAnim::Walk);
                     t_context.audio.play("walk");
+
+                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+                    {
+                        resetAnimation(t_context, AvatarAction::Walk, AvatarAnim::WalkSneak);
+                    }
+                    else
+                    {
+                        resetAnimation(t_context, AvatarAction::Walk, AvatarAnim::Walk);
+                    }
                 }
             }
 
@@ -464,8 +472,8 @@ namespace shadowman
 
                 if (AvatarAction::Run != m_action)
                 {
-                    resetAnimation(t_context, AvatarAction::Run, AvatarAnim::Run);
                     t_context.audio.play("walk");
+                    resetAnimation(t_context, AvatarAction::Run, AvatarAnim::Run);
                 }
             }
             else
@@ -475,8 +483,16 @@ namespace shadowman
 
                 if (AvatarAction::Walk != m_action)
                 {
-                    resetAnimation(t_context, AvatarAction::Walk, AvatarAnim::Walk);
                     t_context.audio.play("walk");
+                    
+                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+                    {
+                        resetAnimation(t_context, AvatarAction::Walk, AvatarAnim::WalkSneak);
+                    }
+                    else
+                    {
+                        resetAnimation(t_context, AvatarAction::Walk, AvatarAnim::Walk);
+                    }
                 }
             }
 
@@ -490,8 +506,8 @@ namespace shadowman
             if (AvatarAction::Idle != m_action)
             {
                 m_velocity.x = 0.0f;
-                resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::Idle);
                 t_context.audio.stop("walk");
+                resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::Idle);
             }
         }
     }
