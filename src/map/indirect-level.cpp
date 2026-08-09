@@ -270,6 +270,7 @@ namespace shadowman
     void IndirectLevel::moveAll(const Context &, const sf::Vector2f & t_move)
     {
         moveAllLayers(t_move);
+        m_skyBackground.move(t_move);
     }
 
     void IndirectLevel::draw(
@@ -358,27 +359,16 @@ namespace shadowman
         }
     }
 
-    bool IndirectLevel::playerMove(
+    void IndirectLevel::playerMove(
         const Context & t_context,
         const sf::FloatRect & t_playerMapRect,
         const sf::Vector2f & t_move)
     {
-        // start in map coordinates, see below for conversion to screen coordinates
+        // change to screen coordinates
         sf::FloatRect playerRect{ t_playerMapRect };
-        playerRect.position += t_move;
-
-        if (doesIntersetWithCollision(playerRect))
-        {
-            return false;
-        }
-
-        // allow the player to interact with animation layers (pickups, etc...)
-        // interactWithAll(t_context, playerRect);
-
-        // change to screen coordinates for everything else
         playerRect.position += mapToScreenOffset();
 
-        if ((t_move.x < 0.0f) && !m_isMapRectBigEnoughHoriz) // moving left
+        if ((t_move.x < 0.0f) && !m_isMapRectBigEnoughHoriz)
         {
             if (playerRect.findIntersection(m_moveScreenRectLeft).has_value())
             {
@@ -395,7 +385,7 @@ namespace shadowman
                 }
             }
         }
-        else if ((t_move.x > 0.0f) && !m_isMapRectBigEnoughHoriz) // moving right
+        else if ((t_move.x > 0.0f) && !m_isMapRectBigEnoughHoriz)
         {
             if (playerRect.findIntersection(m_moveScreenRectRight).has_value())
             {
@@ -413,7 +403,8 @@ namespace shadowman
                 }
             }
         }
-        else if ((t_move.y < 0.0f) && !m_isMapRectBigEnoughVert) // moving up
+
+        if ((t_move.y < 0.0f) && !m_isMapRectBigEnoughVert)
         {
             if (playerRect.findIntersection(m_moveScreenRectUp).has_value())
             {
@@ -430,7 +421,7 @@ namespace shadowman
                 }
             }
         }
-        else if ((t_move.y > 0.0f) && !m_isMapRectBigEnoughVert) // moving down
+        else if ((t_move.y > 0.0f) && !m_isMapRectBigEnoughVert)
         {
             if (playerRect.findIntersection(m_moveScreenRectDown).has_value())
             {
@@ -448,22 +439,6 @@ namespace shadowman
                 }
             }
         }
-
-        return true;
-    }
-
-    bool IndirectLevel::doesIntersetWithCollision(const sf::FloatRect & t_rect) const
-    {
-        // linear search for now since there will likely never be more than 500
-        for (const sf::FloatRect & collisionRect : m_collisions)
-        {
-            if (collisionRect.findIntersection(t_rect).has_value())
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     void IndirectLevel::performPostLoadSetupOnAll(const Context & t_context)

@@ -32,7 +32,7 @@ namespace shadowman
         IndirectLevel();
 
         void setup(const Context & t_context);
-        
+
         void load(
             const Context & t_context,
             const std::string & t_filenameFrom,
@@ -108,7 +108,7 @@ namespace shadowman
             const sf::Vector2i & t_textureTileSize);
 
         // returns true if the avatar will move by t_move amount
-        [[nodiscard]] bool playerMove(
+        void playerMove(
             const Context & t_context,
             const sf::FloatRect & t_playerMapRect,
             const sf::Vector2f & t_move);
@@ -123,8 +123,6 @@ namespace shadowman
         void drawToOffscreenTexture(const Context & t_context);
         void drawToOnscreenTexture(sf::RenderTarget & t_target, sf::RenderStates t_states) const;
 
-        [[nodiscard]] bool doesIntersetWithCollision(const sf::FloatRect & t_rect) const;
-
         [[nodiscard]] const sf::Vector2f
             findEntryTransitionPositionFrom(const std::string & t_fromFilename) const;
 
@@ -132,7 +130,7 @@ namespace shadowman
         void moveAllLayers(const sf::Vector2f & t_move);
         void moveAll(const Context & t_context, const sf::Vector2f & t_move);
 
-        [[nodiscard]] inline const sf::Vector2f offscreenTextureSize() const 
+        [[nodiscard]] inline const sf::Vector2f offscreenTextureSize() const
         {
             return (m_screenTileSize * sf::Vector2f{ m_offscreenTileRange.size });
         }

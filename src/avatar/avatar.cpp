@@ -97,11 +97,14 @@ namespace shadowman
 
     void Avatar::update(const Context & t_context, const float t_elapsedSec)
     {
+        const sf::Vector2f beforePos{ m_sprite.getPosition() };
         updateJumping(t_context, t_elapsedSec);
         sideToSideMotion(t_context, t_elapsedSec);
         updateAnimation(t_context, t_elapsedSec);
         updatePosition(t_context, t_elapsedSec);
         processCollisions(t_context);
+        const sf::Vector2f afterPos{ m_sprite.getPosition() };
+        t_context.level.playerMove(t_context, collisionRect(), (afterPos - beforePos));
     }
 
     void Avatar::updateJumping(const Context & t_context, const float t_elapsedSec)

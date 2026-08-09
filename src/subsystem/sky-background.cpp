@@ -220,15 +220,26 @@ namespace shadowman
         {
             t_target.draw(m_moonSprite, t_states);
         }
-
+        
         if (m_willShowSun)
         {
             t_target.draw(m_sunSprite, t_states);
         }
-
+        
         for (const CloudAnim & anim : m_cloudAnims)
         {
             t_target.draw(anim.sprite, t_states);
+        }
+    }
+
+    void SkyBackground::move(const sf::Vector2f & t_move)
+    {
+        m_sunSprite.move(t_move);
+        m_moonSprite.move(t_move);
+        
+        for (CloudAnim & anim : m_cloudAnims)
+        {
+            anim.sprite.move(t_move);
         }
     }
 
