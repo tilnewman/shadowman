@@ -22,6 +22,7 @@ namespace shadowman
 
     Avatar::Avatar()
         : m_anim{ AvatarAnim::Jump }
+        , m_action{ AvatarAction::Idle }
         , m_sprite{ util::SfmlDefaults::instance().texture() }
         , m_animElapsedSec{ 0.0f }
         , m_frameIndex{ 0 }
@@ -32,7 +33,7 @@ namespace shadowman
 
     void Avatar::setup(const Context & t_context)
     {
-        // load all textures
+        // load anim textures
         const std::size_t animCount{ static_cast<std::size_t>(AvatarAnim::Count) };
         m_animTextures.reserve(animCount);
 
@@ -54,6 +55,12 @@ namespace shadowman
             }
         }
 
+        //
+        util::TextureLoader::load(
+            m_jumpTexture,
+            (t_context.setting.media_path / "image" / "avatar" / "jump" / "jump-10.png"),
+            true);
+
         // setup sprite
         m_sprite.setTexture(m_animTextures.at(static_cast<std::size_t>(m_anim)).at(0), true);
         util::setOriginToCenter(m_sprite);
@@ -64,7 +71,32 @@ namespace shadowman
 
     void Avatar::update(const Context & t_context, const float t_elapsedSec)
     {
-        // update animation
+        updateJumping(t_context, t_elapsedSec);
+        updateAnimation(t_context, t_elapsedSec);
+        updatePosition(t_context, t_elapsedSec);
+        processCollisions(t_context);
+    }
+
+    void Avatar::updateJumping(const Context & t_context, const float t_elapsedSec)
+    {
+        if (m_isLanded and sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Up) and
+            ((AvatarAction::Idle == m_action) or (AvatarAction::Walk == m_action) or
+             (AvatarAction::Run == m_action)))
+        {
+            m_action   = AvatarAction::Jump;
+            m_isLanded = false;
+            m_velocity.y -= (t_context.setting.avatar_jump_speed * t_elapsedSec);
+            resetAnimation(AvatarAnim::Jump);
+        }
+    }
+
+    void Avatar::updateAnimation(const Context & t_context, const float t_elapsedSec)
+    {
+        if (AvatarAction::Jump == m_action)
+        {
+            return;
+        }
+
         m_animElapsedSec += t_elapsedSec;
         const float timePerFrameSec{ 0.08f };
         if (m_animElapsedSec > timePerFrameSec)
@@ -73,15 +105,26 @@ namespace shadowman
 
             if (++m_frameIndex >= m_animTextures.at(static_cast<std::size_t>(m_anim)).size())
             {
-                m_frameIndex = 0;
-
-                std::size_t animIndex{ static_cast<std::size_t>(m_anim) };
-                if (++animIndex >= static_cast<std::size_t>(AvatarAnim::Count))
+                if (willLoop(m_anim))
                 {
-                    animIndex = 0;
-                }
+                    m_frameIndex = 0;
 
-                m_anim = static_cast<AvatarAnim>(animIndex);
+                    if (AvatarAction::Idle == m_action)
+                    {
+                        if ((AvatarAnim::Idle == m_anim) and (t_context.random.fromTo(1, 100) < 25))
+                        {
+                            resetAnimation(AvatarAnim::IdleLook);
+                        }
+                    }
+                    else
+                    {
+                        resetAnimation(AvatarAnim::Idle);
+                    }
+                }
+                else
+                {
+                    resetAnimation(AvatarAnim::Idle);
+                }
             }
 
             m_sprite.setTexture(
@@ -89,17 +132,16 @@ namespace shadowman
 
             util::setOriginToCenter(m_sprite);
         }
+    }
 
-        // update position
+    void Avatar::updatePosition(const Context & t_context, const float t_elapsedSec)
+    {
         if (not m_isLanded)
         {
             m_velocity.y += (t_context.setting.avatar_gravity * t_elapsedSec);
         }
 
-        // const sf::Vector2f posBefore{ m_sprite.getPosition() };
         m_sprite.move(m_velocity);
-        processCollisions(t_context);
-        // const sf::Vector2f posAfter{ m_sprite.getPosition() };
     }
 
     void Avatar::resetAnimation(const AvatarAnim t_anim)
@@ -108,8 +150,15 @@ namespace shadowman
         m_animElapsedSec = 0.0f;
         m_frameIndex     = 0;
 
-        m_sprite.setTexture(
-            m_animTextures.at(static_cast<std::size_t>(m_anim)).at(m_frameIndex), true);
+        if (AvatarAnim::Jump == m_anim)
+        {
+            m_sprite.setTexture(m_jumpTexture, true);
+        }
+        else
+        {
+            m_sprite.setTexture(
+                m_animTextures.at(static_cast<std::size_t>(m_anim)).at(m_frameIndex), true);
+        }
 
         util::setOriginToCenter(m_sprite);
     }
@@ -133,6 +182,7 @@ namespace shadowman
     {
         m_velocity = { 0.0f, 0.0f };
         m_isLanded = false;
+        m_action   = AvatarAction::Idle;
         resetAnimation(AvatarAnim::Idle);
         m_sprite.setPosition(t_position);
     }
@@ -184,7 +234,7 @@ namespace shadowman
             if (not m_isLanded)
             {
                 t_context.audio.play("land");
-                // m_action = Action::Idle;
+                m_action = AvatarAction::Idle;
                 resetAnimation(AvatarAnim::Idle);
             }
 

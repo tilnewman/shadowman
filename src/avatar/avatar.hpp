@@ -77,6 +77,24 @@ namespace shadowman
         // clang-format on
     }
 
+    [[nodiscard]] constexpr bool willLoop(const AvatarAnim t_anim) noexcept
+    {
+        return (
+            (AvatarAnim::Idle == t_anim) or (AvatarAnim::IdleLook == t_anim) or
+            (AvatarAnim::Pull == t_anim) or (AvatarAnim::Push == t_anim) or
+            (AvatarAnim::Run == t_anim) or (AvatarAnim::Slide == t_anim) or
+            (AvatarAnim::Walk == t_anim) or (AvatarAnim::WalkSneek == t_anim));
+    }
+
+    enum class AvatarAction : unsigned char
+    {
+        Idle,
+        Jump,
+        Walk,
+        Run,
+        Attack
+    };
+
     class Avatar
     {
       public:
@@ -97,6 +115,9 @@ namespace shadowman
       private:
         void resetAnimation(const AvatarAnim t_anim);
         void processCollisions(const Context & t_context);
+        void updateAnimation(const Context & t_context, const float t_elapsedSec);
+        void updatePosition(const Context & t_context, const float t_elapsedSec);
+        void updateJumping(const Context & t_context, const float t_elapsedSec);
 
         void collide(
             const Context & t_context,
@@ -106,11 +127,13 @@ namespace shadowman
 
       private:
         AvatarAnim m_anim;
+        AvatarAction m_action;
         sf::Sprite m_sprite;
         float m_animElapsedSec;
         std::size_t m_frameIndex;
         sf::Vector2f m_velocity;
         bool m_isLanded;
+        sf::Texture m_jumpTexture;
         std::vector<std::vector<sf::Texture>> m_animTextures;
     };
 } // namespace shadowman
