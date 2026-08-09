@@ -33,12 +33,10 @@ namespace shadowman
         , m_isFacingRight{ true }
         , m_jumpTexture{}
         , m_animTextures{}
-        , m_debugText{ util::SfmlDefaults::instance().font() }
     {}
 
     void Avatar::setup(const Context & t_context)
     {
-        // load anim textures
         const std::size_t animCount{ static_cast<std::size_t>(AvatarAnim::Count) };
         m_animTextures.reserve(animCount);
 
@@ -60,22 +58,13 @@ namespace shadowman
             }
         }
 
-        //
         util::TextureLoader::load(
             m_jumpTexture,
             (t_context.setting.media_path / "image" / "avatar" / "jump" / "jump-10.png"),
             true);
 
-        //
-        m_sprite.setTexture(m_animTextures.at(static_cast<std::size_t>(m_anim)).at(0), true);
-        util::setOriginToCenter(m_sprite);
-        scaleSprite(t_context);
-
-        //
+        resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::Idle);
         clacMovementDetails(t_context);
-
-        //
-        m_debugText = t_context.font.makeText(Font::General, FontSize::Small, "", sf::Color::Black);
     }
 
     void Avatar::turn()
@@ -232,18 +221,7 @@ namespace shadowman
 
         sf::FloatRect collRect{ collisionRect() };
         collRect.position += t_mapToOffscreenOffset;
-        util::drawRectangleShape(t_target, collRect, false, sf::Color::Red);
-
-        std::string str{ toString(m_action) };
-        str += ", ";
-        str += toString(m_anim);
-        str += ", ";
-        str += ((m_isFacingRight) ? "right" : "left");
-        m_debugText.setString(str);
-        util::setOriginToPosition(m_debugText);
-        m_debugText.setPosition(
-            { util::right(tempAvatarSprite.getGlobalBounds()), tempAvatarSprite.getPosition().y });
-        t_target.draw(m_debugText, t_states);
+        //util::drawRectangleShape(t_target, collRect, false, sf::Color::Red);
     }
 
     const sf::FloatRect Avatar::collisionRect() const

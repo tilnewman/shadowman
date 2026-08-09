@@ -8,7 +8,6 @@
 
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/Texture.hpp>
 
 namespace sf
@@ -188,8 +187,6 @@ namespace shadowman
         bool m_isFacingRight;
         sf::Texture m_jumpTexture;
         std::vector<std::vector<sf::Texture>> m_animTextures;
-
-        mutable sf::Text m_debugText;
     };
 } // namespace shadowman
 
