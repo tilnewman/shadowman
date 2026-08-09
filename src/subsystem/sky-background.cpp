@@ -37,10 +37,10 @@ namespace shadowman
         , m_willShowMoon{ false }
         , m_willShowSun{ false }
         , m_skyColors{
-            { .top = sf::Color(254, 204, 0), .bot = sf::Color(136, 136, 136) },
-            { .top = sf::Color(254, 254, 204), .bot = sf::Color(56, 106, 106) },
-            { .top = sf::Color(151, 183, 5), .bot = sf::Color(56, 106, 106) },
-            { .top = sf::Color(255, 203, 253), .bot = sf::Color(205, 105, 6) },
+            { .top = sf::Color(254, 204, 0), .bottom = sf::Color(136, 136, 136) },
+            { .top = sf::Color(254, 254, 204), .bottom = sf::Color(56, 106, 106) },
+            { .top = sf::Color(151, 183, 5), .bottom = sf::Color(56, 106, 106) },
+            { .top = sf::Color(255, 203, 253), .bottom = sf::Color(205, 105, 6) },
         }
     {}
 
@@ -52,7 +52,7 @@ namespace shadowman
         const SkyColorSet colors{ t_context.random.from(m_skyColors) };
 
         m_skyVerts.clear();
-        util::appendTriangleVerts(m_offscreenRect, m_skyVerts, colors.bot);
+        util::appendTriangleVerts(m_offscreenRect, m_skyVerts, colors.bottom);
         m_skyVerts.at(0).color = colors.top;
         m_skyVerts.at(1).color = colors.top;
         m_skyVerts.at(4).color = colors.top;
@@ -181,7 +181,7 @@ namespace shadowman
         {
             if (t_context.random.boolean())
             {
-                m_willShowSun = true;
+                m_willShowSun  = true;
                 m_willShowMoon = false;
             }
             else

@@ -31,7 +31,7 @@ namespace shadowman
     struct SkyColorSet
     {
         sf::Color top{};
-        sf::Color bot{};
+        sf::Color bottom{};
     };
 
     class SkyBackground
