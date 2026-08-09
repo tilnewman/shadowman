@@ -21,13 +21,16 @@ namespace shadowman
 {
 
     Avatar::Avatar()
-        : m_anim{ AvatarAnim::Jump }
+        : m_anim{ AvatarAnim::Idle }
         , m_action{ AvatarAction::Idle }
         , m_sprite{ util::SfmlDefaults::instance().texture() }
         , m_animElapsedSec{ 0.0f }
         , m_frameIndex{ 0 }
         , m_velocity{}
         , m_isLanded{ false }
+        , m_movement{}
+        , m_isFacingRight{ true }
+        , m_jumpTexture{}
         , m_animTextures{}
     {}
 
@@ -61,19 +64,27 @@ namespace shadowman
             (t_context.setting.media_path / "image" / "avatar" / "jump" / "jump-10.png"),
             true);
 
-        // setup sprite
+        //
         m_sprite.setTexture(m_animTextures.at(static_cast<std::size_t>(m_anim)).at(0), true);
         util::setOriginToCenter(m_sprite);
-
         scaleSprite(t_context);
+
+        //
+        clacMovementDetails(t_context);
+    }
+
+    void Avatar::turn()
+    {
+        m_isFacingRight = not m_isFacingRight;
+        m_sprite.scale({ -1.0f, 1.0f });
     }
 
     void Avatar::scaleSprite(const Context & t_context)
     {
-        float scale { t_context.setting.avatar_scale };
+        float scale{ t_context.setting.avatar_scale };
         if (AvatarAnim::Jump == m_anim)
         {
-            scale *= 1.25f;
+            scale *= 1.28f;
         }
 
         m_sprite.setScale({ scale, scale });
@@ -82,6 +93,7 @@ namespace shadowman
     void Avatar::update(const Context & t_context, const float t_elapsedSec)
     {
         updateJumping(t_context, t_elapsedSec);
+        sideToSideMotion(t_context, t_elapsedSec);
         updateAnimation(t_context, t_elapsedSec);
         updatePosition(t_context, t_elapsedSec);
         processCollisions(t_context);
@@ -93,10 +105,10 @@ namespace shadowman
             ((AvatarAction::Idle == m_action) or (AvatarAction::Walk == m_action) or
              (AvatarAction::Run == m_action)))
         {
-            m_action   = AvatarAction::Jump;
             m_isLanded = false;
-            m_velocity.y -= (t_context.setting.avatar_jump_speed * t_elapsedSec);
-            resetAnimation(t_context, AvatarAnim::Jump);
+            m_velocity.y -= (m_movement.jump_speed * t_elapsedSec);
+            resetAnimation(t_context, AvatarAction::Jump, AvatarAnim::Jump);
+            t_context.audio.stop("walk");
         }
     }
 
@@ -115,26 +127,7 @@ namespace shadowman
 
             if (++m_frameIndex >= m_animTextures.at(static_cast<std::size_t>(m_anim)).size())
             {
-                if (willLoop(m_anim))
-                {
-                    m_frameIndex = 0;
-
-                    if (AvatarAction::Idle == m_action)
-                    {
-                        if ((AvatarAnim::Idle == m_anim) and (t_context.random.fromTo(1, 100) < 25))
-                        {
-                            resetAnimation(t_context, AvatarAnim::IdleLook);
-                        }
-                    }
-                    else
-                    {
-                        resetAnimation(t_context, AvatarAnim::Idle);
-                    }
-                }
-                else
-                {
-                    resetAnimation(t_context, AvatarAnim::Idle);
-                }
+                afterAnimationCompletes(t_context);
             }
 
             m_sprite.setTexture(
@@ -144,18 +137,40 @@ namespace shadowman
         }
     }
 
-    void Avatar::updatePosition(const Context & t_context, const float t_elapsedSec)
+    void Avatar::afterAnimationCompletes(const Context & t_context)
     {
-        if (not m_isLanded)
+        if (willLoop(m_anim))
         {
-            m_velocity.y += (t_context.setting.avatar_gravity * t_elapsedSec);
-        }
+            m_frameIndex = 0;
 
+            if (AvatarAction::Idle == m_action)
+            {
+                if ((AvatarAnim::Idle == m_anim) and (t_context.random.fromTo(1, 100) < 25))
+                {
+                    resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::IdleLook);
+                }
+            }
+            else
+            {
+                resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::Idle);
+            }
+        }
+        else
+        {
+            resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::Idle);
+        }
+    }
+
+    void Avatar::updatePosition(const Context &, const float t_elapsedSec)
+    {
+        m_velocity.y += (m_movement.gravity * t_elapsedSec);
         m_sprite.move(m_velocity);
     }
 
-    void Avatar::resetAnimation(const Context & t_context, const AvatarAnim t_anim)
+    void Avatar::resetAnimation(
+        const Context & t_context, const AvatarAction t_action, const AvatarAnim t_anim)
     {
+        m_action         = t_action;
         m_anim           = t_anim;
         m_animElapsedSec = 0.0f;
         m_frameIndex     = 0;
@@ -182,20 +197,36 @@ namespace shadowman
         sf::Sprite tempAvatarSprite{ m_sprite };
         tempAvatarSprite.move(t_mapToOffscreenOffset);
         t_target.draw(tempAvatarSprite, t_states);
+
+        sf::FloatRect collRect{ collisionRect() };
+        collRect.position += t_mapToOffscreenOffset;
+        util::drawRectangleShape(t_target, collRect, false, sf::Color::Red);
     }
 
     const sf::FloatRect Avatar::collisionRect() const
     {
-        return util::scaleRectInPlaceCopy(m_sprite.getGlobalBounds(), 0.8f);
+        sf::FloatRect rect{ util::scaleRectInPlaceCopy(m_sprite.getGlobalBounds(), { 0.35f, 0.8f }) };
+        rect.position.y *= 1.005f;
+
+        if (AvatarAction::Jump == m_action)
+        {
+            rect.size.y *= 0.75f;
+        }
+
+        return rect;
     }
 
     void Avatar::setPositionOnNewLevel(const Context & t_context, const sf::Vector2f & t_position)
     {
         m_velocity = { 0.0f, 0.0f };
         m_isLanded = false;
-        m_action   = AvatarAction::Idle;
-        resetAnimation(t_context, AvatarAnim::Idle);
+        resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::Idle);
         m_sprite.setPosition(t_position);
+
+        if (not m_isFacingRight)
+        {
+            turn();
+        }
     }
 
     void Avatar::processCollisions(const Context & t_context)
@@ -245,14 +276,19 @@ namespace shadowman
             if (not m_isLanded)
             {
                 t_context.audio.play("land");
-                m_action = AvatarAction::Idle;
-                resetAnimation(t_context, AvatarAnim::Idle);
+                resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::Idle);
             }
 
             m_isLanded      = true;
             t_detectLanding = true;
             m_velocity.y    = 0.0f;
             m_sprite.move({ 0.0f, -t_intersectionRect.size.y });
+
+            if (not sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) and
+                not sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
+            {
+                m_velocity.x = 0.0f;
+            }
         }
         else if (t_intersectionRect.size.x < tolerance)
         {
@@ -268,6 +304,144 @@ namespace shadowman
                 m_sprite.move({ -t_intersectionRect.size.x, 0.0f });
             }
         }
+    }
+
+    void Avatar::sideToSideMotion(const Context & t_context, const float t_frameTimeSec)
+    {
+        if ((AvatarAction::Hurt == m_action) || (AvatarAction::Attack == m_action) ||
+            (AvatarAction::AttackExtra == m_action) ||
+            sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A))
+        {
+            return;
+        }
+
+        const auto enforceSpeedLimitWalk = [&]() {
+            if (m_velocity.x > m_movement.walk_speed_limit)
+            {
+                m_velocity.x = m_movement.walk_speed_limit;
+            }
+            else if (m_velocity.x < -m_movement.walk_speed_limit)
+            {
+                m_velocity.x = -m_movement.walk_speed_limit;
+            }
+        };
+
+        const auto enforceSpeedLimitRun = [&]() {
+            if (m_velocity.x > m_movement.run_speed_limit)
+            {
+                m_velocity.x = m_movement.run_speed_limit;
+            }
+            else if (m_velocity.x < -m_movement.run_speed_limit)
+            {
+                m_velocity.x = -m_movement.run_speed_limit;
+            }
+        };
+
+        if (AvatarAction::Jump == m_action)
+        {
+            // Allow moving side-to-side at a reduced rate while in the air.
+            // It sounds wrong but feels so right. What the hell, mario did it.
+            const float jumpMoveDivisor{ m_movement.jump_horiz_move_divisor };
+
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Right))
+            {
+                m_velocity.x += ((m_movement.walk_acc / jumpMoveDivisor) * t_frameTimeSec);
+                enforceSpeedLimitWalk();
+            }
+
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Left))
+            {
+                m_velocity.x -= ((m_movement.walk_acc / jumpMoveDivisor) * t_frameTimeSec);
+                enforceSpeedLimitWalk();
+            }
+
+            return;
+        }
+
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Right))
+        {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::LShift))
+            {
+                m_velocity.x += (m_movement.run_acc * t_frameTimeSec);
+                enforceSpeedLimitRun();
+
+                if (AvatarAction::Run != m_action)
+                {
+                    t_context.audio.play("walk");
+                }
+
+                resetAnimation(t_context, AvatarAction::Run, AvatarAnim::Run);
+            }
+            else
+            {
+                m_velocity.x += (m_movement.walk_acc * t_frameTimeSec);
+                enforceSpeedLimitWalk();
+
+                if (AvatarAction::Walk != m_action)
+                {
+                    t_context.audio.play("walk");
+                }
+
+                resetAnimation(t_context, AvatarAction::Walk, AvatarAnim::Walk);
+            }
+
+            if (!m_isFacingRight)
+            {
+                turn();
+            }
+        }
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::Left))
+        {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::LShift))
+            {
+                m_velocity.x -= (m_movement.run_acc * t_frameTimeSec);
+                enforceSpeedLimitRun();
+
+                if (AvatarAction::Run != m_action)
+                {
+                    t_context.audio.play("walk");
+                }
+
+                resetAnimation(t_context, AvatarAction::Run, AvatarAnim::Run);
+            }
+            else
+            {
+                m_velocity.x -= (m_movement.walk_acc * t_frameTimeSec);
+                enforceSpeedLimitWalk();
+
+                if (AvatarAction::Walk != m_action)
+                {
+                    t_context.audio.play("walk");
+                }
+
+                resetAnimation(t_context, AvatarAction::Walk, AvatarAnim::Walk);
+            }
+
+            if (m_isFacingRight)
+            {
+                turn();
+            }
+        }
+        else
+        {
+            if (AvatarAction::Idle != m_action)
+            {
+                m_velocity.x = 0.0f;
+                resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::Walk);
+                t_context.audio.stop("walk");
+            }
+        }
+    }
+
+    void Avatar::clacMovementDetails(const Context & t_context)
+    {
+        m_movement.gravity                 = t_context.setting.avatar_gravity;
+        m_movement.walk_acc                = t_context.setting.avatar_walk_acc;
+        m_movement.walk_speed_limit        = t_context.setting.avatar_walk_speed_limit;
+        m_movement.run_acc                 = t_context.setting.avatar_run_acc;
+        m_movement.run_speed_limit         = t_context.setting.avatar_run_speed_limit;
+        m_movement.jump_speed              = t_context.setting.avatar_jump_speed;
+        m_movement.jump_horiz_move_divisor = t_context.setting.avatar_jump_horiz_move_divisor;
     }
 
 } // namespace shadowman

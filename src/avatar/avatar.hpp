@@ -33,7 +33,7 @@ namespace shadowman
         SlashEffect,
         Slash2,
         Slash2Effect,
-        Slide,
+        // Slide,
         Stab,
         Stab2,
         Stab2Effect,
@@ -62,7 +62,7 @@ namespace shadowman
             case AvatarAnim::SlashEffect:   { return "slash-effect";  }
             case AvatarAnim::Slash2:        { return "slash2";        }
             case AvatarAnim::Slash2Effect:  { return "slash2-effect"; }
-            case AvatarAnim::Slide:         { return "slide";         }
+            //case AvatarAnim::Slide:         { return "slide";         }
             case AvatarAnim::Stab:          { return "stab";          }
             case AvatarAnim::Stab2:         { return "stab2";         }
             case AvatarAnim::Stab2Effect:   { return "stab2-effect";  }
@@ -82,8 +82,8 @@ namespace shadowman
         return (
             (AvatarAnim::Idle == t_anim) or (AvatarAnim::IdleLook == t_anim) or
             (AvatarAnim::Pull == t_anim) or (AvatarAnim::Push == t_anim) or
-            (AvatarAnim::Run == t_anim) or (AvatarAnim::Slide == t_anim) or
-            (AvatarAnim::Walk == t_anim) or (AvatarAnim::WalkSneek == t_anim));
+            (AvatarAnim::Run == t_anim) or (AvatarAnim::Walk == t_anim) or
+            (AvatarAnim::WalkSneek == t_anim));
     }
 
     enum class AvatarAction : unsigned char
@@ -92,7 +92,20 @@ namespace shadowman
         Jump,
         Walk,
         Run,
-        Attack
+        Attack,
+        AttackExtra,
+        Hurt
+    };
+
+    struct MovementDetails
+    {
+        float gravity{ 0.0f };
+        float walk_acc{ 0.0f };
+        float walk_speed_limit{ 0.0f };
+        float run_acc{ 0.0f };
+        float run_speed_limit{ 0.0f };
+        float jump_speed{ 0.0f };
+        float jump_horiz_move_divisor{ 0.0f };
     };
 
     class Avatar
@@ -113,13 +126,18 @@ namespace shadowman
         void setPositionOnNewLevel(const Context & t_context, const sf::Vector2f & t_position);
 
       private:
-        void resetAnimation(const Context & t_context, const AvatarAnim t_anim);
+        void resetAnimation(
+            const Context & t_context, const AvatarAction t_action, const AvatarAnim t_anim);
+        
         void processCollisions(const Context & t_context);
         void updateAnimation(const Context & t_context, const float t_elapsedSec);
+        void afterAnimationCompletes(const Context & t_context);
         void updatePosition(const Context & t_context, const float t_elapsedSec);
         void updateJumping(const Context & t_context, const float t_elapsedSec);
-
+        void sideToSideMotion(const Context & t_context, const float t_frameTimeSec);
         void scaleSprite(const Context & t_context);
+        void clacMovementDetails(const Context & t_context);
+        void turn();
 
         void collide(
             const Context & t_context,
@@ -135,6 +153,8 @@ namespace shadowman
         std::size_t m_frameIndex;
         sf::Vector2f m_velocity;
         bool m_isLanded;
+        MovementDetails m_movement;
+        bool m_isFacingRight;
         sf::Texture m_jumpTexture;
         std::vector<std::vector<sf::Texture>> m_animTextures;
     };
