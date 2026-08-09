@@ -103,7 +103,9 @@ namespace shadowman
                 anim.sprite.setTexture(m_cloud3Texture, true);
             }
 
-            const float scale{ t_context.random.fromTo(0.5f, 1.0f) }; // TODO account for resolution
+            const float scale{ t_context.layout.scaleBasedOnResolution(
+                t_context, t_context.random.fromTo(0.5f, 1.0f)) };
+
             anim.sprite.scale({ scale, scale });
 
             util::setOriginToCenter(anim.sprite);
@@ -125,7 +127,8 @@ namespace shadowman
         // moon
         m_moonSprite.setTexture(m_moonTexture, true);
         util::setOriginToCenter(m_moonSprite);
-        m_moonSprite.scale({ 0.5f, 0.5f }); // TODO account for resolution
+        const float moonScale{ t_context.layout.scaleBasedOnResolution(t_context, 0.5f) };
+        m_moonSprite.scale({ moonScale, moonScale });
 
         if (t_context.random.boolean())
         {
@@ -145,7 +148,8 @@ namespace shadowman
         // sun
         m_sunSprite.setTexture(m_sunTexture, true);
         util::setOriginToCenter(m_sunSprite);
-        m_sunSprite.scale({ 0.75f, 0.75f }); // TODO account for resolution
+        const float sunScale{ t_context.layout.scaleBasedOnResolution(t_context, 0.75f) };
+        m_sunSprite.scale({ sunScale, sunScale });
 
         if (t_context.random.boolean())
         {
