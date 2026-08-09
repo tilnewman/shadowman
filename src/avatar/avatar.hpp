@@ -110,14 +110,16 @@ namespace shadowman
             sf::RenderStates t_states) const;
 
         [[nodiscard]] const sf::FloatRect collisionRect() const;
-        void setPositionOnNewLevel(const sf::Vector2f & t_position);
+        void setPositionOnNewLevel(const Context & t_context, const sf::Vector2f & t_position);
 
       private:
-        void resetAnimation(const AvatarAnim t_anim);
+        void resetAnimation(const Context & t_context, const AvatarAnim t_anim);
         void processCollisions(const Context & t_context);
         void updateAnimation(const Context & t_context, const float t_elapsedSec);
         void updatePosition(const Context & t_context, const float t_elapsedSec);
         void updateJumping(const Context & t_context, const float t_elapsedSec);
+
+        void scaleSprite(const Context & t_context);
 
         void collide(
             const Context & t_context,

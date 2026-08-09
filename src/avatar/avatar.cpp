@@ -65,8 +65,18 @@ namespace shadowman
         m_sprite.setTexture(m_animTextures.at(static_cast<std::size_t>(m_anim)).at(0), true);
         util::setOriginToCenter(m_sprite);
 
-        const float scale{ t_context.setting.avatar_scale };
-        m_sprite.scale({ scale, scale });
+        scaleSprite(t_context);
+    }
+
+    void Avatar::scaleSprite(const Context & t_context)
+    {
+        float scale { t_context.setting.avatar_scale };
+        if (AvatarAnim::Jump == m_anim)
+        {
+            scale *= 1.25f;
+        }
+
+        m_sprite.setScale({ scale, scale });
     }
 
     void Avatar::update(const Context & t_context, const float t_elapsedSec)
@@ -86,7 +96,7 @@ namespace shadowman
             m_action   = AvatarAction::Jump;
             m_isLanded = false;
             m_velocity.y -= (t_context.setting.avatar_jump_speed * t_elapsedSec);
-            resetAnimation(AvatarAnim::Jump);
+            resetAnimation(t_context, AvatarAnim::Jump);
         }
     }
 
@@ -113,17 +123,17 @@ namespace shadowman
                     {
                         if ((AvatarAnim::Idle == m_anim) and (t_context.random.fromTo(1, 100) < 25))
                         {
-                            resetAnimation(AvatarAnim::IdleLook);
+                            resetAnimation(t_context, AvatarAnim::IdleLook);
                         }
                     }
                     else
                     {
-                        resetAnimation(AvatarAnim::Idle);
+                        resetAnimation(t_context, AvatarAnim::Idle);
                     }
                 }
                 else
                 {
-                    resetAnimation(AvatarAnim::Idle);
+                    resetAnimation(t_context, AvatarAnim::Idle);
                 }
             }
 
@@ -144,7 +154,7 @@ namespace shadowman
         m_sprite.move(m_velocity);
     }
 
-    void Avatar::resetAnimation(const AvatarAnim t_anim)
+    void Avatar::resetAnimation(const Context & t_context, const AvatarAnim t_anim)
     {
         m_anim           = t_anim;
         m_animElapsedSec = 0.0f;
@@ -161,6 +171,7 @@ namespace shadowman
         }
 
         util::setOriginToCenter(m_sprite);
+        scaleSprite(t_context);
     }
 
     void Avatar::draw(
@@ -178,12 +189,12 @@ namespace shadowman
         return util::scaleRectInPlaceCopy(m_sprite.getGlobalBounds(), 0.8f);
     }
 
-    void Avatar::setPositionOnNewLevel(const sf::Vector2f & t_position)
+    void Avatar::setPositionOnNewLevel(const Context & t_context, const sf::Vector2f & t_position)
     {
         m_velocity = { 0.0f, 0.0f };
         m_isLanded = false;
         m_action   = AvatarAction::Idle;
-        resetAnimation(AvatarAnim::Idle);
+        resetAnimation(t_context, AvatarAnim::Idle);
         m_sprite.setPosition(t_position);
     }
 
@@ -235,7 +246,7 @@ namespace shadowman
             {
                 t_context.audio.play("land");
                 m_action = AvatarAction::Idle;
-                resetAnimation(AvatarAnim::Idle);
+                resetAnimation(t_context, AvatarAnim::Idle);
             }
 
             m_isLanded      = true;

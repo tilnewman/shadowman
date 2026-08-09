@@ -117,7 +117,7 @@ namespace shadowman
 
         const sf::Vector2f entryPos{ util::center(m_enterRect) };
         setupOffscreenTileRange(t_context, entryPos);
-        t_context.avatar.setPositionOnNewLevel(entryPos);
+        t_context.avatar.setPositionOnNewLevel(t_context, entryPos);
 
         m_skyBackground.setup(t_context, offscreenTextureSize());
 
