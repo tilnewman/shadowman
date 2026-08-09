@@ -26,6 +26,7 @@ namespace shadowman
         Idle,
         IdleLook,
         Jump,
+        Hurt,
         Pull,
         Push,
         Run,
@@ -50,6 +51,7 @@ namespace shadowman
             case AvatarAnim::Idle:      { return "idle";       }
             case AvatarAnim::IdleLook:  { return "idle-look";  }
             case AvatarAnim::Jump:      { return "jump";       }
+            case AvatarAnim::Hurt:      { return "hurt";       }
             case AvatarAnim::Pull:      { return "pull";       }
             case AvatarAnim::Push:      { return "push";       }
             case AvatarAnim::Run:       { return "run";        }
@@ -90,6 +92,10 @@ namespace shadowman
             (AvatarAnim::Stab == t_anim) or (AvatarAnim::Stab2 == t_anim))
         {
             return 0.025f;
+        }
+        else if (AvatarAnim::Hurt == t_anim)
+        {
+            return 0.11f;
         }
         else
         {
