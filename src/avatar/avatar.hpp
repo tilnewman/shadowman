@@ -8,8 +8,8 @@
 
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Text.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
 namespace sf
 {
@@ -31,13 +31,9 @@ namespace shadowman
         Push,
         Run,
         Slash,
-        SlashEffect,
         Slash2,
-        Slash2Effect,
-        // Slide,
         Stab,
         Stab2,
-        Stab2Effect,
         Walk,
         WalkSlash,
         WalkSneek,
@@ -60,13 +56,9 @@ namespace shadowman
             case AvatarAnim::Push:          { return "push";          }
             case AvatarAnim::Run:           { return "run";           }
             case AvatarAnim::Slash:         { return "slash";         }
-            case AvatarAnim::SlashEffect:   { return "slash-effect";  }
             case AvatarAnim::Slash2:        { return "slash2";        }
-            case AvatarAnim::Slash2Effect:  { return "slash2-effect"; }
-            //case AvatarAnim::Slide:         { return "slide";         }
             case AvatarAnim::Stab:          { return "stab";          }
             case AvatarAnim::Stab2:         { return "stab2";         }
-            case AvatarAnim::Stab2Effect:   { return "stab2-effect";  }
             case AvatarAnim::Walk:          { return "walk";          }
             case AvatarAnim::WalkSlash:     { return "walk-slash";    }
             case AvatarAnim::WalkSneek:     { return "walk-sneek";    }
@@ -89,7 +81,9 @@ namespace shadowman
 
     [[nodiscard]] constexpr float timePerFrameSec(const AvatarAnim t_anim) noexcept
     {
-        if ((AvatarAnim::Walk == t_anim) or (AvatarAnim::Run == t_anim))
+        if ((AvatarAnim::Walk == t_anim) or (AvatarAnim::Run == t_anim) or
+            (AvatarAnim::WalkSlash == t_anim) or (AvatarAnim::WalkSneek == t_anim) or
+            (AvatarAnim::WalkStab == t_anim) or (AvatarAnim::WalkStab2 == t_anim))
         {
             return 0.03f;
         }
