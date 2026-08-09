@@ -103,10 +103,20 @@ namespace shadowman
                 anim.sprite.setTexture(m_cloud3Texture, true);
             }
 
-            const float scale{ t_context.layout.scaleBasedOnResolution(
-                t_context, t_context.random.fromTo(0.5f, 1.0f)) };
+            if (1 == imageSelectNumber)
+            {
+                const float scale{ t_context.layout.scaleBasedOnResolution(
+                    t_context, t_context.random.fromTo(0.5f, 1.0f)) };
 
-            anim.sprite.scale({ scale, scale });
+                anim.sprite.scale({ scale, scale });
+            }
+            else
+            {
+                const float scale{ t_context.layout.scaleBasedOnResolution(
+                    t_context, t_context.random.fromTo(0.4f, 2.0f)) };
+
+                anim.sprite.scale({ scale, scale });
+            }
 
             util::setOriginToCenter(anim.sprite);
             if (t_context.random.boolean())
