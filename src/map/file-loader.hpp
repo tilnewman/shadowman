@@ -46,7 +46,6 @@ namespace shadowman
             std::string & t_transparentColorStrOutParam);
 
         void parseLayers(const Context & t_context, const nlohmann::json & t_json);
-        void parseTransitionsLayer(const Context & t_context, const nlohmann::json & t_json);
         void parseSpawnLayer(const Context & t_context, const nlohmann::json & t_json);
 
         void parseTileLayer(

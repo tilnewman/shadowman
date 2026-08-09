@@ -150,6 +150,13 @@ namespace shadowman
                 parseRectLayer(t_context, layerJson, rects);
                 t_context.level.collisions(rects);
             }
+            else if (layerName == "kill")
+            {
+                std::vector<sf::FloatRect> rects;
+                rects.reserve(100);
+                parseRectLayer(t_context, layerJson, rects);
+                t_context.level.killCollisions(rects);
+            }
             else if (layerName == "spawn")
             {
                 parseSpawnLayer(t_context, layerJson);

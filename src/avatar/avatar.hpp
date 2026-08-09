@@ -8,8 +8,8 @@
 
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Text.hpp>
+#include <SFML/Graphics/Texture.hpp>
 
 namespace sf
 {
@@ -97,6 +97,10 @@ namespace shadowman
         {
             return 0.11f;
         }
+        else if (AvatarAnim::Die == t_anim)
+        {
+            return 0.1f;
+        }
         else
         {
             return 0.08f;
@@ -164,6 +168,7 @@ namespace shadowman
             const Context & t_context, const AvatarAction t_action, const AvatarAnim t_anim);
 
         void processCollisions(const Context & t_context);
+        void processKillCollisions(const Context & t_context);
         void updateAnimation(const Context & t_context, const float t_elapsedSec);
         void afterAnimationCompletes(const Context & t_context);
         void updatePosition(const Context & t_context, const float t_elapsedSec);
@@ -190,9 +195,10 @@ namespace shadowman
         bool m_isLanded;
         MovementDetails m_movement;
         bool m_isFacingRight;
+        bool m_isDeathAnimComplete;
         sf::Texture m_jumpTexture;
         std::vector<std::vector<sf::Texture>> m_animTextures;
-        
+
         mutable sf::Text m_debugText;
     };
 } // namespace shadowman

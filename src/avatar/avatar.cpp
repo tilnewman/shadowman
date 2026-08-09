@@ -31,6 +31,7 @@ namespace shadowman
         , m_isLanded{ false }
         , m_movement{}
         , m_isFacingRight{ true }
+        , m_isDeathAnimComplete{ false }
         , m_jumpTexture{}
         , m_animTextures{}
         , m_debugText{ util::SfmlDefaults::instance().font() }
@@ -91,12 +92,21 @@ namespace shadowman
         {
             scale *= 1.2f;
         }
+        else if (AvatarAnim::Die == m_anim)
+        {
+            scale *= 1.3f;
+        }
 
         m_sprite.setScale({ ((m_sprite.getScale().x < 0.0f) ? -scale : scale), scale });
     }
 
     void Avatar::update(const Context & t_context, const float t_elapsedSec)
     {
+        if (m_isDeathAnimComplete)
+        {
+            return;
+        }
+
         const sf::Vector2f beforePos{ m_sprite.getPosition() };
 
         updateJumping(t_context, t_elapsedSec);
@@ -105,6 +115,7 @@ namespace shadowman
         updateAnimation(t_context, t_elapsedSec);
         updatePosition(t_context, t_elapsedSec);
         processCollisions(t_context);
+        processKillCollisions(t_context);
 
         const sf::Vector2f afterPos{ m_sprite.getPosition() };
         t_context.level.playerMove(t_context, collisionRect(), (afterPos - beforePos));
@@ -140,7 +151,7 @@ namespace shadowman
 
     void Avatar::updateAnimation(const Context & t_context, const float t_elapsedSec)
     {
-        if (AvatarAction::Jump == m_action)
+        if ((AvatarAction::Jump == m_action) or m_isDeathAnimComplete)
         {
             return;
         }
@@ -178,6 +189,12 @@ namespace shadowman
             {
                 resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::Idle);
             }
+        }
+        else if (AvatarAction::Death == m_action)
+        {
+            m_isDeathAnimComplete = true;
+            m_frameIndex          = 0;
+            setPositionOnNewLevel(t_context, util::center(t_context.level.enterRect()));
         }
         else
         {
@@ -218,9 +235,9 @@ namespace shadowman
         sf::RenderTarget & t_target,
         sf::RenderStates t_states) const
     {
-        sf::Sprite tempAvatarSprite{ m_sprite };
-        tempAvatarSprite.move(t_mapToOffscreenOffset);
-        t_target.draw(tempAvatarSprite, t_states);
+        sf::Sprite tempSprite{ m_sprite };
+        tempSprite.move(t_mapToOffscreenOffset);
+        t_target.draw(tempSprite, t_states);
 
         // sf::FloatRect collRect{ collisionRect() };
         // collRect.position += t_mapToOffscreenOffset;
@@ -230,11 +247,10 @@ namespace shadowman
         // str += ", ";
         // str += toString(m_anim);
         // str += ", ";
-        // str += ((m_isLanded) ? "landed" : "falling");
+        // str += ((m_isDeathAnimComplete) ? "true" : "false");
         // m_debugText.setString(str);
         // util::setOriginToPosition(m_debugText);
-        // m_debugText.setPosition(
-        //     { util::right(tempAvatarSprite), tempAvatarSprite.getPosition().y });
+        // m_debugText.setPosition({ util::right(tempSprite), tempSprite.getPosition().y });
         // t_target.draw(m_debugText, t_states);
     }
 
@@ -300,10 +316,12 @@ namespace shadowman
 
     void Avatar::setPositionOnNewLevel(const Context & t_context, const sf::Vector2f & t_position)
     {
-        m_velocity = { 0.0f, 0.0f };
-        m_isLanded = false;
+        m_velocity            = { 0.0f, 0.0f };
+        m_isLanded            = false;
+        m_isDeathAnimComplete = false;
         resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::Idle);
         m_sprite.setPosition(t_position);
+        m_sprite.setColor(sf::Color::White);
 
         if (not m_isFacingRight)
         {
@@ -311,8 +329,34 @@ namespace shadowman
         }
     }
 
+    void Avatar::processKillCollisions(const Context & t_context)
+    {
+        if (AvatarAction::Death == m_action)
+        {
+            return;
+        }
+
+        const sf::FloatRect avatarRect{ collisionRect() };
+        for (const sf::FloatRect & killRect : t_context.level.killCollisions())
+        {
+            if (avatarRect.findIntersection(killRect))
+            {
+                m_velocity = { 0.0f, 0.0f };
+                resetAnimation(t_context, AvatarAction::Death, AvatarAnim::Die);
+                m_sprite.setColor(sf::Color::Red);
+                turn();
+                return;
+            }
+        }
+    }
+
     void Avatar::processCollisions(const Context & t_context)
     {
+        if (AvatarAction::Death == m_action)
+        {
+            return;
+        }
+
         const sf::FloatRect avatarRect{ collisionRect() };
         const sf::Vector2f avatarCenter{ util::center(avatarRect) };
 
@@ -391,7 +435,8 @@ namespace shadowman
 
     void Avatar::updateHorizMotion(const Context & t_context, const float t_frameTimeSec)
     {
-        if ((AvatarAction::Hurt == m_action) or (AvatarAction::Attack == m_action) or
+        if ((AvatarAction::Death == m_action) or (AvatarAction::Hurt == m_action) or
+            (AvatarAction::Attack == m_action) or
             sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A))
         {
             return;

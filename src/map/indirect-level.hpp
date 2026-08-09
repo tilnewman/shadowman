@@ -74,6 +74,16 @@ namespace shadowman
             m_collisions = t_rects;
         }
 
+        [[nodiscard]] inline const std::vector<sf::FloatRect> & killCollisions() const
+        {
+            return m_killCollisions;
+        }
+
+        inline void killCollisions(const std::vector<sf::FloatRect> & t_rects)
+        {
+            m_killCollisions = t_rects;
+        }
+
         inline void appendToLowerTileLayers(std::unique_ptr<ITileLayer> t_uptr)
         {
             m_lowerTileLayers.emplace_back(std::move(t_uptr));
@@ -143,7 +153,9 @@ namespace shadowman
         sf::Vector2f m_screenTileSize;     // onscreen tile size
         sf::Vector2f m_mapScreenPosOffset; // map to onscreen position offset
 
-        std::vector<sf::FloatRect> m_collisions; // in map coordinates
+        // all of these are in map coordinates
+        std::vector<sf::FloatRect> m_collisions; 
+        std::vector<sf::FloatRect> m_killCollisions;
 
         // lower layers draw first, then pre anims, then player/nps, then upper layers, post anims
         std::vector<std::unique_ptr<ITileLayer>> m_lowerTileLayers;
