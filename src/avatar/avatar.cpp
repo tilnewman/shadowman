@@ -33,6 +33,7 @@ namespace shadowman
         , m_isFacingRight{ true }
         , m_jumpTexture{}
         , m_animTextures{}
+        , m_debugText{ util::SfmlDefaults::instance().font() }
     {}
 
     void Avatar::setup(const Context & t_context)
@@ -65,6 +66,8 @@ namespace shadowman
 
         resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::Idle);
         clacMovementDetails(t_context);
+
+        m_debugText = t_context.font.makeText(Font::General, FontSize::Small, "", sf::Color::Black);
     }
 
     void Avatar::turn()
@@ -219,9 +222,20 @@ namespace shadowman
         tempAvatarSprite.move(t_mapToOffscreenOffset);
         t_target.draw(tempAvatarSprite, t_states);
 
-        sf::FloatRect collRect{ collisionRect() };
-        collRect.position += t_mapToOffscreenOffset;
-        util::drawRectangleShape(t_target, collRect, false, sf::Color::Red);
+        // sf::FloatRect collRect{ collisionRect() };
+        // collRect.position += t_mapToOffscreenOffset;
+        // util::drawRectangleShape(t_target, collRect, false, sf::Color::Red);
+
+        // std::string str{ toString(m_action) };
+        // str += ", ";
+        // str += toString(m_anim);
+        // str += ", ";
+        // str += ((m_isLanded) ? "landed" : "falling");
+        // m_debugText.setString(str);
+        // util::setOriginToPosition(m_debugText);
+        // m_debugText.setPosition(
+        //     { util::right(tempAvatarSprite), tempAvatarSprite.getPosition().y });
+        // t_target.draw(m_debugText, t_states);
     }
 
     const sf::FloatRect Avatar::collisionRect() const
@@ -302,7 +316,7 @@ namespace shadowman
         const sf::FloatRect avatarRect{ collisionRect() };
         const sf::Vector2f avatarCenter{ util::center(avatarRect) };
 
-        bool detectLanding{ m_isLanded };
+        bool detectLanding{ false };
 
         for (const sf::FloatRect & collRect : t_context.level.collisions())
         {
@@ -316,6 +330,7 @@ namespace shadowman
         if (not detectLanding)
         {
             m_isLanded = false;
+            t_context.audio.stop("walk");
         }
     }
 
@@ -484,7 +499,7 @@ namespace shadowman
                 if (AvatarAction::Walk != m_action)
                 {
                     t_context.audio.play("walk");
-                    
+
                     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
                     {
                         resetAnimation(t_context, AvatarAction::Walk, AvatarAnim::WalkSneak);
