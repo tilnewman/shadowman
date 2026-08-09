@@ -28,10 +28,10 @@ namespace shadowman
         float avatar_gravity{ 10.0f };
         float avatar_jump_speed{ 500.0f };
         float avatar_walk_acc{ 10.0f };
-        float avatar_walk_speed_limit{ 10.0f };
+        float avatar_walk_speed_limit{ 2.0f };
         float avatar_run_acc{ 20.0f };
-        float avatar_run_speed_limit{ 20.0f };
-        float avatar_jump_horiz_move_divisor{ 10.0f };
+        float avatar_run_speed_limit{ 4.0f };
+        float avatar_jump_horiz_move_divisor{ 6.0f };
 
         sf::Color map_outline_color{ 127, 127, 127 };
     };

@@ -221,7 +221,7 @@ namespace shadowman
         }
 
         // if the left shift is held down then the arrow keys move which tiles are drawn
-        if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::LShift))
+        if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::LControl))
         {
             return;
         }

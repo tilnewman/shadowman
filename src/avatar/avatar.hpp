@@ -9,6 +9,7 @@
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Text.hpp>
 
 namespace sf
 {
@@ -86,6 +87,18 @@ namespace shadowman
             (AvatarAnim::WalkSneek == t_anim));
     }
 
+    [[nodiscard]] constexpr float timePerFrameSec(const AvatarAnim t_anim) noexcept
+    {
+        if ((AvatarAnim::Walk == t_anim) or (AvatarAnim::Run == t_anim))
+        {
+            return 0.03f;
+        }
+        else
+        {
+            return 0.08f;
+        }
+    }
+
     enum class AvatarAction : unsigned char
     {
         Idle,
@@ -96,6 +109,23 @@ namespace shadowman
         AttackExtra,
         Hurt
     };
+
+    [[nodiscard]] constexpr std::string_view toString(const AvatarAction t_action) noexcept
+    {
+        // clang-format off
+        switch(t_action)
+        {
+            case AvatarAction::Idle:        { return "idle"; }
+            case AvatarAction::Jump:        { return "jump"; }
+            case AvatarAction::Walk:        { return "walk"; }
+            case AvatarAction::Run:         { return "run"; }
+            case AvatarAction::Attack:      { return "attack"; }
+            case AvatarAction::AttackExtra: { return "attackextra"; }
+            case AvatarAction::Hurt:        
+            default:                        { return "hurt"; }
+        }
+        // clang-format on
+    }
 
     struct MovementDetails
     {
@@ -128,7 +158,7 @@ namespace shadowman
       private:
         void resetAnimation(
             const Context & t_context, const AvatarAction t_action, const AvatarAnim t_anim);
-        
+
         void processCollisions(const Context & t_context);
         void updateAnimation(const Context & t_context, const float t_elapsedSec);
         void afterAnimationCompletes(const Context & t_context);
@@ -157,6 +187,8 @@ namespace shadowman
         bool m_isFacingRight;
         sf::Texture m_jumpTexture;
         std::vector<std::vector<sf::Texture>> m_animTextures;
+
+        mutable sf::Text m_debugText;
     };
 } // namespace shadowman
 

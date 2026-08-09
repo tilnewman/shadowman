@@ -6,6 +6,7 @@
 #include "map/indirect-level.hpp"
 #include "shadowman/settings.hpp"
 #include "subsystem/context.hpp"
+#include "subsystem/font.hpp"
 #include "subsystem/screen-layout.hpp"
 #include "util/filesystem-util.hpp"
 #include "util/sfml-defaults.hpp"
@@ -32,6 +33,7 @@ namespace shadowman
         , m_isFacingRight{ true }
         , m_jumpTexture{}
         , m_animTextures{}
+        , m_debugText{ util::SfmlDefaults::instance().font() }
     {}
 
     void Avatar::setup(const Context & t_context)
@@ -71,6 +73,9 @@ namespace shadowman
 
         //
         clacMovementDetails(t_context);
+
+        //
+        m_debugText = t_context.font.makeText(Font::General, FontSize::Small, "", sf::Color::Black);
     }
 
     void Avatar::turn()
@@ -87,7 +92,7 @@ namespace shadowman
             scale *= 1.28f;
         }
 
-        m_sprite.setScale({ scale, scale });
+        m_sprite.setScale({ ((m_sprite.getScale().x < 0.0f) ? -scale : scale), scale });
     }
 
     void Avatar::update(const Context & t_context, const float t_elapsedSec)
@@ -120,10 +125,10 @@ namespace shadowman
         }
 
         m_animElapsedSec += t_elapsedSec;
-        const float timePerFrameSec{ 0.08f };
-        if (m_animElapsedSec > timePerFrameSec)
+        const float frameTimeSec{ timePerFrameSec(m_anim) };
+        if (m_animElapsedSec > frameTimeSec)
         {
-            m_animElapsedSec -= timePerFrameSec;
+            m_animElapsedSec -= frameTimeSec;
 
             if (++m_frameIndex >= m_animTextures.at(static_cast<std::size_t>(m_anim)).size())
             {
@@ -147,11 +152,16 @@ namespace shadowman
                 (t_context.random.fromTo(1, 100) < 25))
             {
                 resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::IdleLook);
-                return;
+            }
+            else if ((AvatarAction::Idle == m_action) and (AvatarAnim::IdleLook == m_anim))
+            {
+                resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::Idle);
             }
         }
-
-        resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::Idle);
+        else
+        {
+            resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::Idle);
+        }
     }
 
     void Avatar::updatePosition(const Context &, const float t_elapsedSec)
@@ -194,6 +204,17 @@ namespace shadowman
         sf::FloatRect collRect{ collisionRect() };
         collRect.position += t_mapToOffscreenOffset;
         util::drawRectangleShape(t_target, collRect, false, sf::Color::Red);
+
+        std::string str{ toString(m_action) };
+        str += ", ";
+        str += toString(m_anim);
+        str += ", ";
+        str += ((m_isFacingRight) ? "right" : "left");
+        m_debugText.setString(str);
+        util::setOriginToPosition(m_debugText);
+        m_debugText.setPosition(
+            { util::right(tempAvatarSprite.getGlobalBounds()), tempAvatarSprite.getPosition().y });
+        t_target.draw(m_debugText, t_states);
     }
 
     const sf::FloatRect Avatar::collisionRect() const
@@ -361,10 +382,9 @@ namespace shadowman
 
                 if (AvatarAction::Run != m_action)
                 {
+                    resetAnimation(t_context, AvatarAction::Run, AvatarAnim::Run);
                     t_context.audio.play("walk");
                 }
-
-                resetAnimation(t_context, AvatarAction::Run, AvatarAnim::Run);
             }
             else
             {
@@ -373,10 +393,9 @@ namespace shadowman
 
                 if (AvatarAction::Walk != m_action)
                 {
+                    resetAnimation(t_context, AvatarAction::Walk, AvatarAnim::Walk);
                     t_context.audio.play("walk");
                 }
-
-                resetAnimation(t_context, AvatarAction::Walk, AvatarAnim::Walk);
             }
 
             if (!m_isFacingRight)
@@ -393,10 +412,9 @@ namespace shadowman
 
                 if (AvatarAction::Run != m_action)
                 {
+                    resetAnimation(t_context, AvatarAction::Run, AvatarAnim::Run);
                     t_context.audio.play("walk");
                 }
-
-                resetAnimation(t_context, AvatarAction::Run, AvatarAnim::Run);
             }
             else
             {
@@ -405,10 +423,9 @@ namespace shadowman
 
                 if (AvatarAction::Walk != m_action)
                 {
+                    resetAnimation(t_context, AvatarAction::Walk, AvatarAnim::Walk);
                     t_context.audio.play("walk");
                 }
-
-                resetAnimation(t_context, AvatarAction::Walk, AvatarAnim::Walk);
             }
 
             if (m_isFacingRight)
@@ -421,7 +438,7 @@ namespace shadowman
             if (AvatarAction::Idle != m_action)
             {
                 m_velocity.x = 0.0f;
-                resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::Walk);
+                resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::Idle);
                 t_context.audio.stop("walk");
             }
         }
