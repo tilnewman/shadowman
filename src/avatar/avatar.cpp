@@ -117,6 +117,7 @@ namespace shadowman
             m_velocity.y -= (m_movement.jump_speed * t_elapsedSec);
             resetAnimation(t_context, AvatarAction::Jump, AvatarAnim::Jump);
             t_context.audio.stop("walk");
+            t_context.audio.play("jump");
         }
     }
 
