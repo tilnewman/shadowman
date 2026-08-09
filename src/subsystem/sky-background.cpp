@@ -35,7 +35,7 @@ namespace shadowman
         , m_sunSprite{ m_sunTexture }
         , m_cloudAnims{}
         , m_willShowMoon{ false }
-        , m_willShowSun{ true }
+        , m_willShowSun{ false }
         , m_skyColors{
             { .top = sf::Color(254, 204, 0), .bot = sf::Color(136, 136, 136) },
             { .top = sf::Color(254, 254, 204), .bot = sf::Color(56, 106, 106) },
@@ -175,6 +175,21 @@ namespace shadowman
         m_sunSprite.setPosition(
             { t_context.random.fromTo(sunRect.position.x, util::right(sunRect)),
               t_context.random.fromTo(sunRect.position.y, util::bottom(sunRect)) });
+
+        // will display sun or moon?
+        if (t_context.random.boolean())
+        {
+            if (t_context.random.boolean())
+            {
+                m_willShowSun = true;
+                m_willShowMoon = false;
+            }
+            else
+            {
+                m_willShowSun  = false;
+                m_willShowMoon = true;
+            }
+        }
     }
 
     void SkyBackground::update(const Context & t_context, const float t_elapsedSec)
