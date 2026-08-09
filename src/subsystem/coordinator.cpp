@@ -115,9 +115,29 @@ namespace shadowman
         while (m_windowUPtr->isOpen() and
                (m_stateManagerUPtr->current().which() != State::Shutdown))
         {
+            frameClock.restart();
+
             handleEvents();
-            update(frameClock.restart().asSeconds());
+            update(1.0f / m_setting.framerate);
             draw();
+
+            handleEndOfFrameTasks(frameClock.getElapsedTime().asSeconds());
+        }
+    }
+
+    void Coordinator::handleEndOfFrameTasks(const float t_elapsedSec)
+    {
+        m_framerateDisplayUPtr->update(*m_contextUPtr, t_elapsedSec);
+
+        // sleep until end of frame occurs
+        float timeRemainingSec{ (1.0f / m_setting.framerate) - t_elapsedSec };
+
+        sf::Clock delayClock;
+        while (timeRemainingSec > 0.0f)
+        {
+            delayClock.restart();
+            sf::sleep(sf::microseconds(100));
+            timeRemainingSec -= delayClock.getElapsedTime().asSeconds();
         }
     }
 
@@ -159,7 +179,6 @@ namespace shadowman
     void Coordinator::update(const float t_elapsedSec)
     {
         m_stateManagerUPtr->current().update(*m_contextUPtr, t_elapsedSec);
-        m_framerateDisplayUPtr->update(*m_contextUPtr, t_elapsedSec);
         m_stateManagerUPtr->changeIfPending(*m_contextUPtr);
     }
 

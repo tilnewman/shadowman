@@ -40,6 +40,7 @@ namespace shadowman
         void update(const float t_frameTimeSec);
         void draw();
         void setupRenderWindow(sf::VideoMode & t_videoMode);
+        void handleEndOfFrameTasks(const float t_elapsedTimeSec);
 
       private:
         Settings m_setting;

@@ -5,6 +5,8 @@
 //
 #include "subsystem/font.hpp"
 
+#include <vector>
+
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/Text.hpp>
 
@@ -27,8 +29,8 @@ namespace shadowman
 
       private:
         sf::Text m_text;
-        std::size_t m_frameCount;
         float m_elapsedSec;
+        std::vector<std::size_t> m_fpsValues;
     };
 
 } // namespace shadowman

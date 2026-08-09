@@ -16,6 +16,9 @@ namespace shadowman
         // see main.cpp for where this is really set
         std::filesystem::path media_path{ "./media" };
 
+        // don't change, the game will display the actual raw framerate to track performance
+        float framerate{ 60.0f };
+
         sf::VideoMode video_mode{ { 2056u, 1329u }, 32u };
 
         float avatar_scale{ 0.5f };
