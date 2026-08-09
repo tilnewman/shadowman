@@ -250,11 +250,57 @@ namespace shadowman
     {
         sf::FloatRect rect{ util::scaleRectInPlaceCopy(
             m_sprite.getGlobalBounds(), { 0.35f, 0.8f }) };
-        rect.position.y *= 1.005f;
 
-        if (AvatarAction::Jump == m_action)
+        rect.size.y *= 1.125f;
+
+        if (AvatarAnim::Jump == m_anim)
         {
             rect.size.y *= 0.75f;
+        }
+        else if ((AvatarAnim::Stab == m_anim) or (AvatarAnim::Stab2 == m_anim))
+        {
+            if (m_isFacingRight)
+            {
+                rect.size.x *= 0.5f;
+            }
+            else
+            {
+                rect.position.x += (rect.size.x * 0.35f);
+                rect.size.x *= 0.8f;
+            }
+        }
+        else if (AvatarAnim::IdleLook == m_anim)
+        {
+            rect.size.x *= 0.8f;
+
+            if (not m_isFacingRight)
+            {
+                rect.position.x += (rect.size.x * 0.25f);
+            }
+        }
+        else if (AvatarAnim::Slash == m_anim)
+        {
+            const float horizOffset{ rect.size.x * 0.25f };
+            rect.position.x += horizOffset;
+            rect.size.x -= horizOffset;
+
+            if (not m_isFacingRight)
+            {
+                rect.size.x *= 0.75f;
+            }
+        }
+        else if (AvatarAnim::Slash2 == m_anim)
+        {
+            rect.size.x *= 0.75f;
+
+            if (not m_isFacingRight)
+            {
+                const float vertOffset{ rect.size.y * 0.25f };
+                rect.position.y += vertOffset;
+                rect.size.y -= vertOffset;
+
+                rect.position.x += (rect.size.x * 0.3f);
+            }
         }
 
         return rect;
