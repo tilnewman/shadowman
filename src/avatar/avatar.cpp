@@ -86,7 +86,7 @@ namespace shadowman
         }
         else if (AvatarAnim::Slash2 == m_anim)
         {
-            scale *= 1.3f;
+            scale *= 1.2f;
         }
 
         m_sprite.setScale({ ((m_sprite.getScale().x < 0.0f) ? -scale : scale), scale });
@@ -221,7 +221,7 @@ namespace shadowman
 
         sf::FloatRect collRect{ collisionRect() };
         collRect.position += t_mapToOffscreenOffset;
-        //util::drawRectangleShape(t_target, collRect, false, sf::Color::Red);
+        util::drawRectangleShape(t_target, collRect, false, sf::Color::Red);
     }
 
     const sf::FloatRect Avatar::collisionRect() const
@@ -271,12 +271,12 @@ namespace shadowman
         {
             rect.size.x *= 0.75f;
 
+            const float vertOffset{ rect.size.y * 0.25f };
+            rect.position.y += vertOffset;
+            rect.size.y -= vertOffset;
+
             if (not m_isFacingRight)
             {
-                const float vertOffset{ rect.size.y * 0.25f };
-                rect.position.y += vertOffset;
-                rect.size.y -= vertOffset;
-
                 rect.position.x += (rect.size.x * 0.3f);
             }
         }
