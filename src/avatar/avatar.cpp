@@ -450,13 +450,26 @@ namespace shadowman
 
     void Avatar::clacMovementDetails(const Context & t_context)
     {
-        m_movement.gravity                 = t_context.setting.avatar_gravity;
-        m_movement.walk_acc                = t_context.setting.avatar_walk_acc;
-        m_movement.walk_speed_limit        = t_context.setting.avatar_walk_speed_limit;
-        m_movement.run_acc                 = t_context.setting.avatar_run_acc;
-        m_movement.run_speed_limit         = t_context.setting.avatar_run_speed_limit;
-        m_movement.jump_speed              = t_context.setting.avatar_jump_speed;
-        m_movement.jump_horiz_move_divisor = t_context.setting.avatar_jump_horiz_move_divisor;
+        m_movement.gravity =
+            t_context.layout.scaleBasedOnResolution(t_context, t_context.setting.avatar_gravity);
+
+        m_movement.walk_acc =
+            t_context.layout.scaleBasedOnResolution(t_context, t_context.setting.avatar_walk_acc);
+        
+        m_movement.walk_speed_limit = t_context.layout.scaleBasedOnResolution(
+            t_context, t_context.setting.avatar_walk_speed_limit);
+        
+        m_movement.run_acc =
+            t_context.layout.scaleBasedOnResolution(t_context, t_context.setting.avatar_run_acc);
+        
+        m_movement.run_speed_limit = t_context.layout.scaleBasedOnResolution(
+            t_context, t_context.setting.avatar_run_speed_limit);
+        
+        m_movement.jump_speed =
+            t_context.layout.scaleBasedOnResolution(t_context, t_context.setting.avatar_jump_speed);
+        
+        m_movement.jump_horiz_move_divisor = t_context.layout.scaleBasedOnResolution(
+            t_context, t_context.setting.avatar_jump_horiz_move_divisor);
     }
 
 } // namespace shadowman
