@@ -31,8 +31,17 @@ namespace shadowman
         , m_cloud3Texture{}
         , m_moonTexture{}
         , m_moonSprite{ m_moonTexture }
+        , m_sunTexture{}
+        , m_sunSprite{ m_sunTexture }
         , m_cloudAnims{}
         , m_willShowMoon{ false }
+        , m_willShowSun{ true }
+        , m_skyColors{
+            { .top = sf::Color(254, 204, 0), .bot = sf::Color(136, 136, 136) },
+            { .top = sf::Color(254, 254, 204), .bot = sf::Color(56, 106, 106) },
+            { .top = sf::Color(151, 183, 5), .bot = sf::Color(56, 106, 106) },
+            { .top = sf::Color(255, 203, 253), .bot = sf::Color(205, 105, 6) },
+        }
     {}
 
     void SkyBackground::setup(const Context & t_context, const sf::Vector2f & t_size)
@@ -40,16 +49,13 @@ namespace shadowman
         m_offscreenRect.position = { 0.0f, 0.0f };
         m_offscreenRect.size     = t_size;
 
-        // sky color verts
-        const sf::Color botColor(136, 136, 136);
-        const sf::Color topColor(254, 204, 0);
+        const SkyColorSet colors{ t_context.random.from(m_skyColors) };
 
         m_skyVerts.clear();
-        util::appendTriangleVerts(m_offscreenRect, m_skyVerts, botColor);
-
-        m_skyVerts.at(0).color = topColor;
-        m_skyVerts.at(1).color = topColor;
-        m_skyVerts.at(4).color = topColor;
+        util::appendTriangleVerts(m_offscreenRect, m_skyVerts, colors.bot);
+        m_skyVerts.at(0).color = colors.top;
+        m_skyVerts.at(1).color = colors.top;
+        m_skyVerts.at(4).color = colors.top;
 
         // load textures
         util::TextureLoader::load(
@@ -70,6 +76,11 @@ namespace shadowman
         util::TextureLoader::load(
             m_moonTexture,
             (t_context.setting.media_path / "image" / "background" / "moon.png"),
+            true);
+
+        util::TextureLoader::load(
+            m_sunTexture,
+            (t_context.setting.media_path / "image" / "background" / "sun.png"),
             true);
 
         // cloud animations
@@ -112,28 +123,44 @@ namespace shadowman
         }
 
         // moon
-        m_willShowMoon = true; // t_context.random.boolean();
-        if (m_willShowMoon)
+        m_moonSprite.setTexture(m_moonTexture, true);
+        util::setOriginToCenter(m_moonSprite);
+        m_moonSprite.scale({ 0.5f, 0.5f }); // TODO account for resolution
+
+        if (t_context.random.boolean())
         {
-            m_moonSprite.setTexture(m_moonTexture, true);
-            util::setOriginToCenter(m_moonSprite);
-            m_moonSprite.scale({ 0.5f, 0.5f }); // TODO account for resolution
-
-            if (t_context.random.boolean())
-            {
-                m_moonSprite.scale({ -1.0f, 1.0f });
-            }
-
-            const sf::FloatRect moonBounds{ m_moonSprite.getGlobalBounds() };
-            sf::FloatRect rect;
-            rect.position = moonBounds.size;
-            rect.size     = (m_offscreenRect.size - (moonBounds.size * 2.0f));
-            rect.size.y -= moonBounds.size.y;
-
-            m_moonSprite.setPosition(
-                { t_context.random.fromTo(rect.position.x, util::right(rect)),
-                  t_context.random.fromTo(rect.position.y, util::bottom(rect)) });
+            m_moonSprite.scale({ -1.0f, 1.0f });
         }
+
+        const sf::FloatRect moonBounds{ m_moonSprite.getGlobalBounds() };
+        sf::FloatRect moonRect;
+        moonRect.position = moonBounds.size;
+        moonRect.size     = (m_offscreenRect.size - (moonBounds.size * 2.0f));
+        moonRect.size.y -= moonBounds.size.y;
+
+        m_moonSprite.setPosition(
+            { t_context.random.fromTo(moonRect.position.x, util::right(moonRect)),
+              t_context.random.fromTo(moonRect.position.y, util::bottom(moonRect)) });
+
+        // sun
+        m_sunSprite.setTexture(m_sunTexture, true);
+        util::setOriginToCenter(m_sunSprite);
+        m_sunSprite.scale({ 0.75f, 0.75f }); // TODO account for resolution
+
+        if (t_context.random.boolean())
+        {
+            m_sunSprite.scale({ -1.0f, 1.0f });
+        }
+
+        const sf::FloatRect sunBounds{ m_sunSprite.getGlobalBounds() };
+        sf::FloatRect sunRect;
+        sunRect.position = sunBounds.size;
+        sunRect.size     = (m_offscreenRect.size - (sunBounds.size * 2.0f));
+        sunRect.size.y -= sunBounds.size.y;
+
+        m_sunSprite.setPosition(
+            { t_context.random.fromTo(sunRect.position.x, util::right(sunRect)),
+              t_context.random.fromTo(sunRect.position.y, util::bottom(sunRect)) });
     }
 
     void SkyBackground::update(const Context & t_context, const float t_elapsedSec)
@@ -163,6 +190,11 @@ namespace shadowman
         if (m_willShowMoon)
         {
             t_target.draw(m_moonSprite, t_states);
+        }
+
+        if (m_willShowSun)
+        {
+            t_target.draw(m_sunSprite, t_states);
         }
 
         for (const CloudAnim & anim : m_cloudAnims)

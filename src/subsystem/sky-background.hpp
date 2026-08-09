@@ -28,6 +28,12 @@ namespace shadowman
         float speed;
     };
 
+    struct SkyColorSet
+    {
+        sf::Color top{};
+        sf::Color bot{};
+    };
+
     class SkyBackground
     {
       public:
@@ -45,8 +51,12 @@ namespace shadowman
         sf::Texture m_cloud3Texture;
         sf::Texture m_moonTexture;
         sf::Sprite m_moonSprite;
+        sf::Texture m_sunTexture;
+        sf::Sprite m_sunSprite;
         std::vector<CloudAnim> m_cloudAnims;
         bool m_willShowMoon;
+        bool m_willShowSun;
+        std::vector<SkyColorSet> m_skyColors;
     };
 
 } // namespace shadowman
