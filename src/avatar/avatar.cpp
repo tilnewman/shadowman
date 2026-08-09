@@ -143,22 +143,15 @@ namespace shadowman
         {
             m_frameIndex = 0;
 
-            if (AvatarAction::Idle == m_action)
+            if ((AvatarAction::Idle == m_action) and (AvatarAnim::Idle == m_anim) and
+                (t_context.random.fromTo(1, 100) < 25))
             {
-                if ((AvatarAnim::Idle == m_anim) and (t_context.random.fromTo(1, 100) < 25))
-                {
-                    resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::IdleLook);
-                }
-            }
-            else
-            {
-                resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::Idle);
+                resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::IdleLook);
+                return;
             }
         }
-        else
-        {
-            resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::Idle);
-        }
+
+        resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::Idle);
     }
 
     void Avatar::updatePosition(const Context &, const float t_elapsedSec)
@@ -205,7 +198,8 @@ namespace shadowman
 
     const sf::FloatRect Avatar::collisionRect() const
     {
-        sf::FloatRect rect{ util::scaleRectInPlaceCopy(m_sprite.getGlobalBounds(), { 0.35f, 0.8f }) };
+        sf::FloatRect rect{ util::scaleRectInPlaceCopy(
+            m_sprite.getGlobalBounds(), { 0.35f, 0.8f }) };
         rect.position.y *= 1.005f;
 
         if (AvatarAction::Jump == m_action)
