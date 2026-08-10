@@ -344,7 +344,8 @@ namespace shadowman
                 m_velocity = { 0.0f, 0.0f };
                 resetAnimation(t_context, AvatarAction::Death, AvatarAnim::Die);
                 m_sprite.setColor(sf::Color::Red);
-                turn();
+                t_context.audio.stop("walk");
+                t_context.audio.play("death-player");
                 return;
             }
         }
