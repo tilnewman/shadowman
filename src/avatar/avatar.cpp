@@ -578,13 +578,13 @@ namespace shadowman
                 {
                     t_context.audio.play("walk");
 
-                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+                    if (t_context.random.boolean())
                     {
-                        resetAnimation(t_context, AvatarAction::Walk, AvatarAnim::WalkSneak);
+                        resetAnimation(t_context, AvatarAction::Walk, AvatarAnim::Walk);
                     }
                     else
                     {
-                        resetAnimation(t_context, AvatarAction::Walk, AvatarAnim::Walk);
+                        resetAnimation(t_context, AvatarAction::Walk, AvatarAnim::WalkSneak);
                     }
                 }
             }
