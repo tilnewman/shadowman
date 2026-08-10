@@ -261,8 +261,12 @@ namespace shadowman
         t_target.draw(tempSprite, t_states);
 
         // sf::FloatRect collRect{ collisionRect() };
-        // collRect.position += t_mapToOffscreenOffset;
+        // collRect.position += t_context.level.mapToOffscreenOffset();
         // util::drawRectangleShape(t_target, collRect, false, sf::Color::Red);
+        //
+        // sf::FloatRect rect{ attackRect() };
+        // rect.position += t_context.level.mapToOffscreenOffset();
+        // util::drawRectangleShape(t_target, rect, false, sf::Color::Yellow);
 
         // std::string str{ toString(m_action) };
         // str += ", ";
@@ -329,6 +333,51 @@ namespace shadowman
             if (not m_isFacingRight)
             {
                 rect.position.x += (rect.size.x * 0.3f);
+            }
+        }
+
+        return rect;
+    }
+
+    const sf::FloatRect Avatar::attackRect() const
+    {
+        sf::FloatRect rect{ collisionRect() };
+
+        const float vertOffset{ rect.size.y * 0.25f };
+        rect.position.y += vertOffset;
+        rect.size.y -= (vertOffset * 2.0f);
+
+        rect.size.x *= 1.5f;
+
+        if (m_isFacingRight)
+        {
+            rect.position.x += rect.size.x;
+
+            if (AvatarAnim::Stab == m_anim)
+            {
+                rect.position.x += (rect.size.x * 0.5f);
+                rect.position.y += (rect.size.y * 0.3f);
+            }
+            else if (AvatarAnim::Stab2 == m_anim)
+            {
+                rect.position.x += (rect.size.x * 0.3f);
+            }
+            else if (AvatarAnim::Slash == m_anim)
+            {
+                rect.size.x *= 0.5f;
+            }
+            else if (AvatarAnim::Slash2 == m_anim)
+            {
+                rect.size.x *= 0.75f;
+            }
+        }
+        else
+        {
+            rect.position.x -= rect.size.x;
+
+            if (AvatarAnim::Stab == m_anim)
+            {
+                rect.position.y += (rect.size.y * 0.3f);
             }
         }
 

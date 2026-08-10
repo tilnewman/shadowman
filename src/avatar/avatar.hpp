@@ -159,6 +159,7 @@ namespace shadowman
             const;
 
         [[nodiscard]] const sf::FloatRect collisionRect() const;
+        [[nodiscard]] const sf::FloatRect attackRect() const;
         void setPositionOnNewLevel(const Context & t_context, const sf::Vector2f & t_position);
 
       private:
