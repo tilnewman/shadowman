@@ -27,6 +27,7 @@ namespace shadowman
         , m_framerateDisplayUPtr{}
         , m_stateManagerUPtr{}
         , m_levelUPtr{}
+        , m_levelFileManagerUPtr{}
         , m_contextUPtr{}
     {}
 
@@ -49,6 +50,7 @@ namespace shadowman
         m_framerateDisplayUPtr = std::make_unique<FramerateDisplay>();
         m_stateManagerUPtr     = std::make_unique<StateManager>();
         m_levelUPtr            = std::make_unique<IndirectLevel>();
+        m_levelFileManagerUPtr = std::make_unique<LevelFileManager>();
 
         m_contextUPtr = std::make_unique<Context>(
             m_setting,
@@ -58,7 +60,8 @@ namespace shadowman
             *m_fontManagerUPtr,
             *m_stateManagerUPtr,
             *m_avatarUPtr,
-            *m_levelUPtr);
+            *m_levelUPtr,
+            *m_levelFileManagerUPtr);
 
         m_soundPlayerUPtr->mediaPath(m_setting.media_path / "sound");
         m_soundPlayerUPtr->loadAll();
@@ -89,7 +92,7 @@ namespace shadowman
         m_soundPlayerUPtr.reset();
         m_randomUPtr.reset();
         m_avatarUPtr.reset();
-        
+        m_levelFileManagerUPtr.reset();
 
         util::SfmlDefaults::instance().teardown();
 

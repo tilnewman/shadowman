@@ -5,6 +5,7 @@
 //
 #include "avatar/avatar.hpp"
 #include "map/indirect-level.hpp"
+#include "map/level-files.hpp"
 #include "shadowman/settings.hpp"
 #include "state/state-manager.hpp"
 #include "subsystem/context.hpp"
@@ -54,6 +55,7 @@ namespace shadowman
         std::unique_ptr<FramerateDisplay> m_framerateDisplayUPtr;
         std::unique_ptr<StateManager> m_stateManagerUPtr;
         std::unique_ptr<IndirectLevel> m_levelUPtr;
+        std::unique_ptr<LevelFileManager> m_levelFileManagerUPtr;
 
         std::unique_ptr<Context> m_contextUPtr;
     };

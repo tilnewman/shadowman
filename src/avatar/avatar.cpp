@@ -4,7 +4,9 @@
 #include "avatar.hpp"
 
 #include "map/indirect-level.hpp"
+#include "map/level-files.hpp"
 #include "shadowman/settings.hpp"
+#include "state/state-manager.hpp"
 #include "subsystem/context.hpp"
 #include "subsystem/font.hpp"
 #include "subsystem/screen-layout.hpp"
@@ -108,7 +110,7 @@ namespace shadowman
             m_deathDelaySec += t_elapsedSec;
             if (m_deathDelaySec > 4.0f)
             {
-                t_context.level.load(t_context, t_context.level.name());
+                t_context.level.load(t_context, t_context.level_file.current());
                 m_deathDelaySec = 0.0f;
             }
 
@@ -136,7 +138,16 @@ namespace shadowman
     {
         if (t_context.level.exitRect().findIntersection(collisionRect()))
         {
-            t_context.level.load(t_context, t_context.level.name());
+            t_context.level_file.increment();
+            const std::string nextLevelFilename{ t_context.level_file.current() };
+            if (nextLevelFilename.empty())
+            {
+                t_context.state.setChangePending(State::Shutdown);
+            }
+            else
+            {
+                t_context.level.load(t_context, nextLevelFilename);
+            }
         }
     }
 
