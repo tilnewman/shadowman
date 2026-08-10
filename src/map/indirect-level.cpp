@@ -108,8 +108,7 @@ namespace shadowman
         m_screenTileSize = (sf::Vector2f{ m_textureTileSize } * scale);
     }
 
-    void IndirectLevel::load(
-        const Context & t_context, const std::string &, const std::string & t_filenameToLoad)
+    void IndirectLevel::load(const Context & t_context, const std::string & t_filenameToLoad)
     {
         reset(t_context);
         m_fileLoader.load(t_context, t_filenameToLoad);

@@ -196,6 +196,7 @@ namespace shadowman
         MovementDetails m_movement;
         bool m_isFacingRight;
         bool m_isDeathAnimComplete;
+        float m_deathDelaySec;
         sf::Texture m_jumpTexture;
         std::vector<std::vector<sf::Texture>> m_animTextures;
 

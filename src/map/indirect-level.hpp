@@ -31,11 +31,7 @@ namespace shadowman
       public:
         IndirectLevel();
 
-        void load(
-            const Context & t_context,
-            const std::string & t_filenameFrom,
-            const std::string & t_filenameToLoad);
-
+        void load(const Context & t_context, const std::string & t_filenameToLoad);
         void update(const Context & t_context, const float t_frameTimeSec);
         void handleEvent(const Context & t_context, const sf::Event & t_event);
 
@@ -157,7 +153,7 @@ namespace shadowman
         sf::Vector2f m_mapScreenPosOffset; // map to onscreen position offset
 
         // all of these are in map coordinates
-        std::vector<sf::FloatRect> m_collisions; 
+        std::vector<sf::FloatRect> m_collisions;
         std::vector<sf::FloatRect> m_killCollisions;
 
         // lower layers draw first, then pre anims, then player/nps, then upper layers, post anims

@@ -32,6 +32,7 @@ namespace shadowman
         , m_movement{}
         , m_isFacingRight{ true }
         , m_isDeathAnimComplete{ false }
+        , m_deathDelaySec{ 0.0f }
         , m_jumpTexture{}
         , m_animTextures{}
         , m_debugText{ util::SfmlDefaults::instance().font() }
@@ -96,7 +97,7 @@ namespace shadowman
         {
             scale *= 1.3f;
         }
-        
+
         m_sprite.setScale({ ((m_sprite.getScale().x < 0.0f) ? -scale : scale), scale });
     }
 
@@ -104,6 +105,13 @@ namespace shadowman
     {
         if (m_isDeathAnimComplete)
         {
+            m_deathDelaySec += t_elapsedSec;
+            if (m_deathDelaySec > 4.0f)
+            {
+                t_context.level.load(t_context, t_context.level.name());
+                m_deathDelaySec = 0.0f;
+            }
+
             return;
         }
 
@@ -193,8 +201,8 @@ namespace shadowman
         else if (AvatarAction::Death == m_action)
         {
             m_isDeathAnimComplete = true;
-            m_frameIndex          = 0;
-            setPositionOnNewLevel(t_context, util::center(t_context.level.enterRect()));
+            m_frameIndex    = (m_animTextures.at(static_cast<std::size_t>(m_anim)).size() - 1);
+            m_deathDelaySec = 0.0f;
         }
         else
         {

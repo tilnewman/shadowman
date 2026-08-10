@@ -18,7 +18,7 @@ namespace shadowman
 
     void StatePlay::onEnter(const Context & t_context)
     {
-        t_context.level.load(t_context, "", "level-1.json");
+        t_context.level.load(t_context, "level-1.json");
     }
 
     void StatePlay::onExit(const Context &) {}
