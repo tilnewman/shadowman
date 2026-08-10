@@ -41,10 +41,10 @@ namespace shadowman
         void update(const Context & t_context, const float t_frameTimeSec);
         void handleEvent(const Context & t_context, const sf::Event & t_event);
 
-        bool moveMapUp(const Context & t_context);
-        bool moveMapDown(const Context & t_context);
-        bool moveMapLeft(const Context & t_context);
-        bool moveMapRight(const Context & t_context);
+        void moveMapUp(const Context & t_context);
+        void moveMapDown(const Context & t_context);
+        void moveMapLeft(const Context & t_context);
+        void moveMapRight(const Context & t_context);
 
         void
             draw(const Context & t_context, sf::RenderTarget & t_target, sf::RenderStates t_states);

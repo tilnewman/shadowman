@@ -230,81 +230,61 @@ namespace shadowman
         {
             if (keyPtr->scancode == sf::Keyboard::Scancode::Up)
             {
-                moveMapUp(t_context);
+                if (m_offscreenTileRange.position.y > 0)
+                {
+                    moveMapUp(t_context);
+                }
             }
             else if (keyPtr->scancode == sf::Keyboard::Scancode::Down)
             {
-                moveMapDown(t_context);
+                if (util::bottom(m_offscreenTileRange) < m_mapTileCount.y)
+                {
+                    moveMapDown(t_context);
+                }
             }
             else if (keyPtr->scancode == sf::Keyboard::Scancode::Left)
             {
-                moveMapLeft(t_context);
+                if (m_offscreenTileRange.position.x > 0)
+                {
+                    moveMapLeft(t_context);
+                }
             }
             else if (keyPtr->scancode == sf::Keyboard::Scancode::Right)
             {
-                moveMapRight(t_context);
+                if (util::right(m_offscreenTileRange) < m_mapTileCount.x)
+                {
+                    moveMapRight(t_context);
+                }
             }
         }
     }
 
-    bool IndirectLevel::moveMapUp(const Context & t_context)
+    void IndirectLevel::moveMapUp(const Context & t_context)
     {
-        if (m_offscreenTileRange.position.y > 0)
-        {
-            m_didOffscreenVertsChange = true;
-            --m_offscreenTileRange.position.y;
-            moveAll(t_context, { 0.0f, m_screenTileSize.y });
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        m_didOffscreenVertsChange = true;
+        --m_offscreenTileRange.position.y;
+        moveAll(t_context, { 0.0f, m_screenTileSize.y });
     }
 
-    bool IndirectLevel::moveMapDown(const Context & t_context)
+    void IndirectLevel::moveMapDown(const Context & t_context)
     {
-        if (util::bottom(m_offscreenTileRange) < m_mapTileCount.y)
-        {
-            m_didOffscreenVertsChange = true;
-            ++m_offscreenTileRange.position.y;
-            moveAll(t_context, { 0.0f, -m_screenTileSize.y });
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        m_didOffscreenVertsChange = true;
+        ++m_offscreenTileRange.position.y;
+        moveAll(t_context, { 0.0f, -m_screenTileSize.y });
     }
 
-    bool IndirectLevel::moveMapLeft(const Context & t_context)
+    void IndirectLevel::moveMapLeft(const Context & t_context)
     {
-        if (m_offscreenTileRange.position.x > 0)
-        {
-            m_didOffscreenVertsChange = true;
-            --m_offscreenTileRange.position.x;
-            moveAll(t_context, { m_screenTileSize.x, 0.0f });
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        m_didOffscreenVertsChange = true;
+        --m_offscreenTileRange.position.x;
+        moveAll(t_context, { m_screenTileSize.x, 0.0f });
     }
 
-    bool IndirectLevel::moveMapRight(const Context & t_context)
+    void IndirectLevel::moveMapRight(const Context & t_context)
     {
-        if (util::right(m_offscreenTileRange) < m_mapTileCount.x)
-        {
-            m_didOffscreenVertsChange = true;
-            ++m_offscreenTileRange.position.x;
-            moveAll(t_context, { -m_screenTileSize.x, 0.0f });
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        m_didOffscreenVertsChange = true;
+        ++m_offscreenTileRange.position.x;
+        moveAll(t_context, { -m_screenTileSize.x, 0.0f });
     }
 
     void IndirectLevel::moveAll(const Context &, const sf::Vector2f & t_move)
@@ -416,10 +396,8 @@ namespace shadowman
 
                 if (m_offscreenDrawRect.position.x < std::abs(t_move.x))
                 {
-                    --m_offscreenTileRange.position.x;
-                    m_didOffscreenVertsChange = true;
+                    moveMapLeft(t_context);
                     m_offscreenDrawRect.position.x += m_screenTileSize.x;
-                    moveAll(t_context, { m_screenTileSize.x, 0.0f });
                 }
             }
         }
@@ -432,10 +410,8 @@ namespace shadowman
                 if (util::right(m_offscreenDrawRect) >
                     static_cast<float>(m_renderTexture.getSize().x))
                 {
-                    ++m_offscreenTileRange.position.x;
-                    m_didOffscreenVertsChange = true;
+                    moveMapRight(t_context);
                     m_offscreenDrawRect.position.x -= m_screenTileSize.x;
-                    moveAll(t_context, { -m_screenTileSize.x, 0.0f });
                 }
             }
         }
@@ -448,10 +424,8 @@ namespace shadowman
 
                 if (m_offscreenDrawRect.position.y < std::abs(t_move.y))
                 {
-                    --m_offscreenTileRange.position.y;
-                    m_didOffscreenVertsChange = true;
+                    moveMapUp(t_context);
                     m_offscreenDrawRect.position.y += m_screenTileSize.y;
-                    moveAll(t_context, { 0.0f, m_screenTileSize.y });
                 }
             }
         }
@@ -464,10 +438,8 @@ namespace shadowman
                 if (util::bottom(m_offscreenDrawRect) >
                     static_cast<float>(m_renderTexture.getSize().y))
                 {
-                    ++m_offscreenTileRange.position.y;
-                    m_didOffscreenVertsChange = true;
+                    moveMapDown(t_context);
                     m_offscreenDrawRect.position.y -= m_screenTileSize.y;
-                    moveAll(t_context, { 0.0f, -m_screenTileSize.y });
                 }
             }
         }
