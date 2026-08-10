@@ -195,6 +195,8 @@ namespace shadowman
 
         FileLoader m_fileLoader;
         SkyBackground m_skyBackground;
+
+        bool m_willPreventMovingLeft;
     };
 
 } // namespace shadowman

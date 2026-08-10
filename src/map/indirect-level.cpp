@@ -42,6 +42,7 @@ namespace shadowman
         , m_moveScreenRectDown{}
         , m_fileLoader{}
         , m_skyBackground{}
+        , m_willPreventMovingLeft{ true } // this is a right moving side-scroller after all
     {
         // harmless guesses based on what I know is in typical map files
         m_lowerTileLayers.reserve(16);
@@ -394,7 +395,7 @@ namespace shadowman
         sf::FloatRect playerRect{ t_playerMapRect };
         playerRect.position += mapToScreenOffset();
 
-        if ((t_move.x < 0.0f) && !m_isMapRectBigEnoughHoriz)
+        if ((t_move.x < 0.0f) and not m_isMapRectBigEnoughHoriz and not m_willPreventMovingLeft)
         {
             if (playerRect.findIntersection(m_moveScreenRectLeft).has_value())
             {
@@ -407,7 +408,7 @@ namespace shadowman
                 }
             }
         }
-        else if ((t_move.x > 0.0f) && !m_isMapRectBigEnoughHoriz)
+        else if ((t_move.x > 0.0f) and not m_isMapRectBigEnoughHoriz)
         {
             if (playerRect.findIntersection(m_moveScreenRectRight).has_value())
             {
@@ -422,7 +423,7 @@ namespace shadowman
             }
         }
 
-        if ((t_move.y < 0.0f) && !m_isMapRectBigEnoughVert)
+        if ((t_move.y < 0.0f) and not m_isMapRectBigEnoughVert)
         {
             if (playerRect.findIntersection(m_moveScreenRectUp).has_value())
             {
@@ -435,7 +436,7 @@ namespace shadowman
                 }
             }
         }
-        else if ((t_move.y > 0.0f) && !m_isMapRectBigEnoughVert)
+        else if ((t_move.y > 0.0f) and not m_isMapRectBigEnoughVert)
         {
             if (playerRect.findIntersection(m_moveScreenRectDown).has_value())
             {
