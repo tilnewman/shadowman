@@ -31,8 +31,6 @@ namespace shadowman
       public:
         IndirectLevel();
 
-        void setup(const Context & t_context);
-
         void load(
             const Context & t_context,
             const std::string & t_filenameFrom,

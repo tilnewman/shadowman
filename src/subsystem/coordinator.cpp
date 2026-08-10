@@ -68,7 +68,6 @@ namespace shadowman
         m_fontManagerUPtr->setup(m_setting);
         m_avatarUPtr->setup(*m_contextUPtr);
         MapTextureManager::instance().setup();
-        m_levelUPtr->setup(*m_contextUPtr);
 
         m_stateManagerUPtr->setChangePending(State::Play);
     }
