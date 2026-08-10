@@ -129,6 +129,15 @@ namespace shadowman
         t_context.level.playerMove(t_context, m_sprite.getGlobalBounds(), (afterPos - beforePos));
 
         processKillCollisions(t_context);
+        processExitCollision(t_context);
+    }
+
+    void Avatar::processExitCollision(const Context & t_context)
+    {
+        if (t_context.level.exitRect().findIntersection(collisionRect()))
+        {
+            t_context.level.load(t_context, t_context.level.name());
+        }
     }
 
     void Avatar::preventBacktracking(const Context & t_context)

@@ -166,6 +166,7 @@ namespace shadowman
         void resetAnimation(
             const Context & t_context, const AvatarAction t_action, const AvatarAnim t_anim);
 
+        void processExitCollision(const Context & t_context);
         void preventBacktracking(const Context & t_context);
         void processCollisions(const Context & t_context);
         void processKillCollisions(const Context & t_context);
