@@ -123,10 +123,26 @@ namespace shadowman
         updateAnimation(t_context, t_elapsedSec);
         updatePosition(t_context, t_elapsedSec);
         processCollisions(t_context);
-        processKillCollisions(t_context);
+        preventBacktracking(t_context);
 
         const sf::Vector2f afterPos{ m_sprite.getPosition() };
         t_context.level.playerMove(t_context, m_sprite.getGlobalBounds(), (afterPos - beforePos));
+
+        processKillCollisions(t_context);
+    }
+
+    void Avatar::preventBacktracking(const Context & t_context)
+    {
+        sf::Sprite tempSprite{ m_sprite };
+        tempSprite.move(t_context.level.mapToOffscreenOffset());
+
+        const float posOffset{ tempSprite.getPosition().x -
+                               tempSprite.getGlobalBounds().size.x };
+
+        if (posOffset < 0.0f)
+        {
+            m_sprite.move({ -posOffset, 0.0f });
+        }
     }
 
     void Avatar::updateJumping(const Context & t_context, const float t_elapsedSec)
