@@ -221,7 +221,7 @@ namespace shadowman
         }
 
         // if the left shift is held down then the arrow keys move which tiles are drawn
-        if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::LControl))
+        if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::RShift))
         {
             return;
         }
@@ -230,40 +230,80 @@ namespace shadowman
         {
             if (keyPtr->scancode == sf::Keyboard::Scancode::Up)
             {
-                if (m_offscreenTileRange.position.y > 0)
-                {
-                    --m_offscreenTileRange.position.y;
-                    m_didOffscreenVertsChange = true;
-                    moveAll(t_context, { 0.0f, m_screenTileSize.y });
-                }
+                moveMapUp(t_context);
             }
             else if (keyPtr->scancode == sf::Keyboard::Scancode::Down)
             {
-                if (util::bottom(m_offscreenTileRange) < m_mapTileCount.y)
-                {
-                    ++m_offscreenTileRange.position.y;
-                    m_didOffscreenVertsChange = true;
-                    moveAll(t_context, { 0.0f, -m_screenTileSize.y });
-                }
+                moveMapDown(t_context);
             }
             else if (keyPtr->scancode == sf::Keyboard::Scancode::Left)
             {
-                if (m_offscreenTileRange.position.x > 0)
-                {
-                    --m_offscreenTileRange.position.x;
-                    m_didOffscreenVertsChange = true;
-                    moveAll(t_context, { m_screenTileSize.x, 0.0f });
-                }
+                moveMapLeft(t_context);
             }
             else if (keyPtr->scancode == sf::Keyboard::Scancode::Right)
             {
-                if (util::right(m_offscreenTileRange) < m_mapTileCount.x)
-                {
-                    ++m_offscreenTileRange.position.x;
-                    m_didOffscreenVertsChange = true;
-                    moveAll(t_context, { -m_screenTileSize.x, 0.0f });
-                }
+                moveMapRight(t_context);
             }
+        }
+    }
+
+    bool IndirectLevel::moveMapUp(const Context & t_context)
+    {
+        if (m_offscreenTileRange.position.y > 0)
+        {
+            m_didOffscreenVertsChange = true;
+            --m_offscreenTileRange.position.y;
+            moveAll(t_context, { 0.0f, m_screenTileSize.y });
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    bool IndirectLevel::moveMapDown(const Context & t_context)
+    {
+        if (util::bottom(m_offscreenTileRange) < m_mapTileCount.y)
+        {
+            m_didOffscreenVertsChange = true;
+            ++m_offscreenTileRange.position.y;
+            moveAll(t_context, { 0.0f, -m_screenTileSize.y });
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    bool IndirectLevel::moveMapLeft(const Context & t_context)
+    {
+        if (m_offscreenTileRange.position.x > 0)
+        {
+            m_didOffscreenVertsChange = true;
+            --m_offscreenTileRange.position.x;
+            moveAll(t_context, { m_screenTileSize.x, 0.0f });
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    bool IndirectLevel::moveMapRight(const Context & t_context)
+    {
+        if (util::right(m_offscreenTileRange) < m_mapTileCount.x)
+        {
+            m_didOffscreenVertsChange = true;
+            ++m_offscreenTileRange.position.x;
+            moveAll(t_context, { -m_screenTileSize.x, 0.0f });
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
