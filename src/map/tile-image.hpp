@@ -13,6 +13,8 @@ namespace shadowman
     {
         Platform = 0,
         Platform2,
+        Platform3,
+        Structure,
         Rock,
         Misc,
         Count
@@ -25,6 +27,8 @@ namespace shadowman
         {
             case TileImage::Platform:  { return "platform";  }
             case TileImage::Platform2: { return "platform2"; }
+            case TileImage::Platform3: { return "platform3"; }
+            case TileImage::Structure: { return "structure"; }
             case TileImage::Rock:      { return "rock";      }
             case TileImage::Misc:      { return "misc";      }
             case TileImage::Count:
@@ -38,6 +42,8 @@ namespace shadowman
         // clang-format off
         if      (t_filename == "platform")  { return TileImage::Platform;  }
         else if (t_filename == "platform2") { return TileImage::Platform2; }
+        else if (t_filename == "platform3") { return TileImage::Platform3; }
+        else if (t_filename == "structure") { return TileImage::Structure; }
         else if (t_filename == "rock")      { return TileImage::Rock;      }
         else if (t_filename == "misc")      { return TileImage::Misc;      }
         else                                { return TileImage::Count;     }

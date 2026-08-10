@@ -87,9 +87,12 @@ namespace shadowman
                                  { (screenRect.size.x - innerScreenRect.size.x) * 0.5f,
                                    screenRect.size.y } };
 
-        m_moveScreenRectRight = { { util::right(innerScreenRect), screenRect.position.y },
-                                  { (screenRect.size.x - innerScreenRect.size.x) * 0.5f,
-                                    screenRect.size.y } };
+        // m_moveScreenRectRight = { { util::right(innerScreenRect), screenRect.position.y },
+        //                           { (screenRect.size.x - innerScreenRect.size.x) * 0.5f,
+        //                             screenRect.size.y } };
+
+        m_moveScreenRectRight = { { util::center(innerScreenRect).x, screenRect.position.y },
+                                  { innerScreenRect.size.x, screenRect.size.y } };
     }
 
     void IndirectLevel::setLevelDetails(
