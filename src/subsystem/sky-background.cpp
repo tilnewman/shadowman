@@ -126,7 +126,8 @@ namespace shadowman
 
             const sf::Vector2f position{
                 t_context.random.fromTo(0.0f, util::right(m_offscreenRect)),
-                t_context.random.fromTo(0.0f, (m_offscreenRect.size.y * 0.75f))
+                t_context.random.fromTo(
+                    (anim.sprite.getGlobalBounds().size.y * 0.5f), (m_offscreenRect.size.y * 0.75f))
             };
 
             anim.sprite.setPosition(position);
@@ -220,12 +221,12 @@ namespace shadowman
         {
             t_target.draw(m_moonSprite, t_states);
         }
-        
+
         if (m_willShowSun)
         {
             t_target.draw(m_sunSprite, t_states);
         }
-        
+
         for (const CloudAnim & anim : m_cloudAnims)
         {
             t_target.draw(anim.sprite, t_states);
@@ -236,7 +237,7 @@ namespace shadowman
     {
         m_sunSprite.move(t_move);
         m_moonSprite.move(t_move);
-        
+
         for (CloudAnim & anim : m_cloudAnims)
         {
             anim.sprite.move(t_move);
