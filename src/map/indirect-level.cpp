@@ -374,7 +374,7 @@ namespace shadowman
             {
                 if (m_offscreenDrawRect.position.x > std::abs(t_move.x))
                 {
-                    m_offscreenDrawRect.position += t_move;
+                    m_offscreenDrawRect.position.x += t_move.x;
                 }
                 else
                 {
@@ -392,7 +392,7 @@ namespace shadowman
                 if (util::right(m_offscreenDrawRect) <
                     static_cast<float>(m_renderTexture.getSize().x))
                 {
-                    m_offscreenDrawRect.position += t_move;
+                    m_offscreenDrawRect.position.x += t_move.x;
                 }
                 else
                 {
@@ -410,7 +410,7 @@ namespace shadowman
             {
                 if (m_offscreenDrawRect.position.y > std::abs(t_move.y))
                 {
-                    m_offscreenDrawRect.position += t_move;
+                    m_offscreenDrawRect.position.y += t_move.y;
                 }
                 else
                 {
@@ -428,7 +428,7 @@ namespace shadowman
                 if (util::bottom(m_offscreenDrawRect) <
                     static_cast<float>(m_renderTexture.getSize().y))
                 {
-                    m_offscreenDrawRect.position += t_move;
+                    m_offscreenDrawRect.position.y += t_move.y;
                 }
                 else
                 {
