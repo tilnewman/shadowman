@@ -372,11 +372,9 @@ namespace shadowman
         {
             if (playerRect.findIntersection(m_moveScreenRectLeft).has_value())
             {
-                if (m_offscreenDrawRect.position.x > std::abs(t_move.x))
-                {
-                    m_offscreenDrawRect.position.x += t_move.x;
-                }
-                else
+                m_offscreenDrawRect.position.x += t_move.x;
+
+                if (m_offscreenDrawRect.position.x < std::abs(t_move.x))
                 {
                     --m_offscreenTileRange.position.x;
                     m_didOffscreenVertsChange = true;
@@ -389,12 +387,10 @@ namespace shadowman
         {
             if (playerRect.findIntersection(m_moveScreenRectRight).has_value())
             {
-                if (util::right(m_offscreenDrawRect) <
+                m_offscreenDrawRect.position.x += t_move.x;
+
+                if (util::right(m_offscreenDrawRect) >
                     static_cast<float>(m_renderTexture.getSize().x))
-                {
-                    m_offscreenDrawRect.position.x += t_move.x;
-                }
-                else
                 {
                     ++m_offscreenTileRange.position.x;
                     m_didOffscreenVertsChange = true;
@@ -408,11 +404,9 @@ namespace shadowman
         {
             if (playerRect.findIntersection(m_moveScreenRectUp).has_value())
             {
-                if (m_offscreenDrawRect.position.y > std::abs(t_move.y))
-                {
-                    m_offscreenDrawRect.position.y += t_move.y;
-                }
-                else
+                m_offscreenDrawRect.position.y += t_move.y;
+
+                if (m_offscreenDrawRect.position.y < std::abs(t_move.y))
                 {
                     --m_offscreenTileRange.position.y;
                     m_didOffscreenVertsChange = true;
@@ -425,12 +419,10 @@ namespace shadowman
         {
             if (playerRect.findIntersection(m_moveScreenRectDown).has_value())
             {
-                if (util::bottom(m_offscreenDrawRect) <
+                m_offscreenDrawRect.position.y += t_move.y;
+
+                if (util::bottom(m_offscreenDrawRect) >
                     static_cast<float>(m_renderTexture.getSize().y))
-                {
-                    m_offscreenDrawRect.position.y += t_move.y;
-                }
-                else
                 {
                     ++m_offscreenTileRange.position.y;
                     m_didOffscreenVertsChange = true;

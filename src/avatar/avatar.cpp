@@ -96,7 +96,7 @@ namespace shadowman
         {
             scale *= 1.3f;
         }
-
+        
         m_sprite.setScale({ ((m_sprite.getScale().x < 0.0f) ? -scale : scale), scale });
     }
 
@@ -118,7 +118,7 @@ namespace shadowman
         processKillCollisions(t_context);
 
         const sf::Vector2f afterPos{ m_sprite.getPosition() };
-        t_context.level.playerMove(t_context, collisionRect(), (afterPos - beforePos));
+        t_context.level.playerMove(t_context, m_sprite.getGlobalBounds(), (afterPos - beforePos));
     }
 
     void Avatar::updateJumping(const Context & t_context, const float t_elapsedSec)
