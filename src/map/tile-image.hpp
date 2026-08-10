@@ -11,7 +11,8 @@ namespace shadowman
 
     enum class TileImage : unsigned char
     {
-        Platform,
+        Platform = 0,
+        Platform2,
         Rock,
         Misc,
         Count
@@ -22,11 +23,12 @@ namespace shadowman
         // clang-format off
         switch (t_image)
         {
-            case TileImage::Platform: { return "platform"; }
-            case TileImage::Rock:     { return "rock";     }
-            case TileImage::Misc:     { return "misc";     }
+            case TileImage::Platform:  { return "platform";  }
+            case TileImage::Platform2: { return "platform2"; }
+            case TileImage::Rock:      { return "rock";      }
+            case TileImage::Misc:      { return "misc";      }
             case TileImage::Count:
-            default:    { return "Error_TileImage_Unknown"; }
+            default:     { return "Error_TileImage_Unknown"; }
         }
         // clang-format on
     }
@@ -34,10 +36,11 @@ namespace shadowman
     inline TileImage tileImageFromString(const std::string & t_filename) noexcept
     {
         // clang-format off
-        if      (t_filename == "platform") { return TileImage::Platform; }
-        else if (t_filename == "rock")     { return TileImage::Rock;     }
-        else if (t_filename == "misc")     { return TileImage::Misc;     }
-        else                               { return TileImage::Count;    }
+        if      (t_filename == "platform")  { return TileImage::Platform;  }
+        else if (t_filename == "platform2") { return TileImage::Platform2; }
+        else if (t_filename == "rock")      { return TileImage::Rock;      }
+        else if (t_filename == "misc")      { return TileImage::Misc;      }
+        else                                { return TileImage::Count;     }
         // clang-format on
     }
 
