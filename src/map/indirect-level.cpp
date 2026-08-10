@@ -221,7 +221,7 @@ namespace shadowman
         {
             if (keyPtr->scancode == sf::Keyboard::Scancode::D)
             {
-                dumpInfo("test");
+                dumpInfo(name());
             }
         }
 
