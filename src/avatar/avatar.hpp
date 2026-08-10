@@ -155,10 +155,8 @@ namespace shadowman
         void teardown() { m_animTextures.clear(); }
         void update(const Context & t_context, const float t_elapsedSec);
 
-        void draw(
-            const sf::Vector2f & t_mapToOffscreenOffset,
-            sf::RenderTarget & t_target,
-            sf::RenderStates t_states) const;
+        void draw(const Context & t_context, sf::RenderTarget & t_target, sf::RenderStates t_states)
+            const;
 
         [[nodiscard]] const sf::FloatRect collisionRect() const;
         void setPositionOnNewLevel(const Context & t_context, const sf::Vector2f & t_position);

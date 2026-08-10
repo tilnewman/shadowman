@@ -208,7 +208,7 @@ namespace shadowman
         m_renderTexture.clear(sf::Color::Black);
         m_skyBackground.draw(m_renderTexture, m_renderStates);
         drawLowerLayers(m_renderTexture, m_renderStates);
-        t_context.avatar.draw(mapToOffscreenOffset(), m_renderTexture, m_renderStates);
+        t_context.avatar.draw(t_context, m_renderTexture, m_renderStates);
         drawUpperLayers(m_renderTexture, m_renderStates);
         m_renderTexture.display();
     }

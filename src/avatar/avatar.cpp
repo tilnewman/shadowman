@@ -136,8 +136,7 @@ namespace shadowman
         sf::Sprite tempSprite{ m_sprite };
         tempSprite.move(t_context.level.mapToOffscreenOffset());
 
-        const float posOffset{ tempSprite.getPosition().x -
-                               tempSprite.getGlobalBounds().size.x };
+        const float posOffset{ tempSprite.getPosition().x - tempSprite.getGlobalBounds().size.x };
 
         if (posOffset < 0.0f)
         {
@@ -255,12 +254,10 @@ namespace shadowman
     }
 
     void Avatar::draw(
-        const sf::Vector2f & t_mapToOffscreenOffset,
-        sf::RenderTarget & t_target,
-        sf::RenderStates t_states) const
+        const Context & t_context, sf::RenderTarget & t_target, sf::RenderStates t_states) const
     {
         sf::Sprite tempSprite{ m_sprite };
-        tempSprite.move(t_mapToOffscreenOffset);
+        tempSprite.move(t_context.level.mapToOffscreenOffset());
         t_target.draw(tempSprite, t_states);
 
         // sf::FloatRect collRect{ collisionRect() };
