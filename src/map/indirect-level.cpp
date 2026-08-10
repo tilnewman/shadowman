@@ -132,6 +132,12 @@ namespace shadowman
 
         performPostLoadSetupOnAll(t_context);
         // dumpInfo(t_filenameToLoad);
+
+        // move map to the right because these maps all start left and move right
+        while (m_offscreenTileRange.position.x < 0)
+        {
+            moveMapRight(t_context);
+        }
     }
 
     void IndirectLevel::setupOffscreenTileRange(
