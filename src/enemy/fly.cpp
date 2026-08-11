@@ -3,12 +3,14 @@
 //
 #include "fly.hpp"
 
+#include "avatar/avatar.hpp"
 #include "map/indirect-level.hpp"
 #include "shadowman/settings.hpp"
 #include "subsystem/context.hpp"
 #include "subsystem/screen-layout.hpp"
 #include "util/random.hpp"
 #include "util/sfml-util.hpp"
+#include "util/sound-player.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
@@ -76,6 +78,14 @@ namespace shadowman
     {
         updateAnimation(t_elapsedSec);
 
+        if ((FlyTask::Idle == m_task) or (FlyTask::Wander == m_task))
+        {
+            if (t_context.avatar.collisionRect().findIntersection(m_rect))
+            {
+                startChasing(t_context);
+            }
+        }
+
         if (FlyTask::Idle == m_task)
         {
             m_idleElapsedSec += t_elapsedSec;
@@ -111,11 +121,31 @@ namespace shadowman
                 }
             }
         }
+        else if (FlyTask::Chase == m_task)
+        {
+            turnToward(util::center(t_context.avatar.collisionRect()).x);
+
+            const float chaseSpeed{ 70.0f * ((m_isFacingRight) ? 1.0f : -1.0f) };
+            m_sprite.move({ (chaseSpeed * t_elapsedSec), 0.0f });
+
+            const sf::FloatRect playerRect{ t_context.avatar.collisionRect() };
+            if (not playerRect.findIntersection(m_rect))
+            {
+                startIdling(t_context);
+            }
+        }
     }
 
-    void Fly::startIdling(const Context& t_context)
+    void Fly::startChasing(const Context & t_context)
     {
-        m_task = FlyTask::Idle;
+        m_task = FlyTask::Chase;
+        t_context.audio.play("fly-notice");
+        turnToward(util::center(t_context.avatar.collisionRect()).x);
+    }
+
+    void Fly::startIdling(const Context & t_context)
+    {
+        m_task            = FlyTask::Idle;
         m_idleElapsedSec  = 0.0f;
         m_idleDurationSec = t_context.random.fromTo(1.5f, 4.0f);
     }
@@ -129,7 +159,12 @@ namespace shadowman
         m_wanderTarget = t_context.random.fromTo(
             (m_rect.position.x + halfWidth), (util::right(m_rect) - halfWidth));
 
-        const bool isTargetRight{ util::center(m_sprite).x < m_wanderTarget };
+        turnToward(m_wanderTarget);
+    }
+
+    void Fly::turnToward(const float t_posHoriz)
+    {
+        const bool isTargetRight{ util::center(m_sprite).x < t_posHoriz };
         if (isTargetRight != m_isFacingRight)
         {
             turn();

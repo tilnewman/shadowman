@@ -91,6 +91,8 @@ namespace shadowman
         void updateAnimation(const float t_elapsedSec);
         void startWandering(const Context & t_context);
         void startIdling(const Context & t_context);
+        void startChasing(const Context & t_context);
+        void turnToward(const float t_posHoriz);
 
       private:
         FlyType m_type;
