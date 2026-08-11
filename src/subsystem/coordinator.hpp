@@ -12,6 +12,7 @@
 #include "subsystem/font.hpp"
 #include "subsystem/framerate-display.hpp"
 #include "subsystem/screen-layout.hpp"
+#include "util/music-player.hpp"
 #include "util/sound-player.hpp"
 
 #include <memory>
@@ -49,6 +50,7 @@ namespace shadowman
         std::unique_ptr<sf::RenderWindow> m_windowUPtr;
         std::unique_ptr<util::Random> m_randomUPtr;
         std::unique_ptr<util::SoundPlayer> m_soundPlayerUPtr;
+        std::unique_ptr<util::MusicPlayer> m_musicPlayerUPtr;
         std::unique_ptr<ScreenLayout> m_screenLayoutUPtr;
         std::unique_ptr<Avatar> m_avatarUPtr;
         std::unique_ptr<FontManager> m_fontManagerUPtr;

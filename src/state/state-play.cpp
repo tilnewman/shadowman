@@ -7,6 +7,7 @@
 #include "map/indirect-level.hpp"
 #include "shadowman/settings.hpp"
 #include "subsystem/context.hpp"
+#include "util/music-player.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Window/Event.hpp>
@@ -19,9 +20,10 @@ namespace shadowman
     void StatePlay::onEnter(const Context & t_context)
     {
         t_context.level.load(t_context, "level-1.json");
+        t_context.music.start("music.ogg");
     }
 
-    void StatePlay::onExit(const Context &) {}
+    void StatePlay::onExit(const Context & t_context) { t_context.music.stop("music.ogg"); }
 
     void StatePlay::update(const Context & t_context, const float t_elapsedSec)
     {

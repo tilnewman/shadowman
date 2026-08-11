@@ -21,6 +21,7 @@ namespace shadowman
         , m_windowUPtr{}
         , m_randomUPtr{}
         , m_soundPlayerUPtr{}
+        , m_musicPlayerUPtr{}
         , m_screenLayoutUPtr{}
         , m_avatarUPtr{}
         , m_fontManagerUPtr{}
@@ -44,6 +45,7 @@ namespace shadowman
 
         m_randomUPtr           = std::make_unique<util::Random>();
         m_soundPlayerUPtr      = std::make_unique<util::SoundPlayer>(*m_randomUPtr);
+        m_musicPlayerUPtr      = std::make_unique<util::MusicPlayer>();
         m_screenLayoutUPtr     = std::make_unique<ScreenLayout>();
         m_avatarUPtr           = std::make_unique<Avatar>();
         m_fontManagerUPtr      = std::make_unique<FontManager>();
@@ -56,6 +58,7 @@ namespace shadowman
             m_setting,
             *m_randomUPtr,
             *m_soundPlayerUPtr,
+            *m_musicPlayerUPtr,
             *m_screenLayoutUPtr,
             *m_fontManagerUPtr,
             *m_stateManagerUPtr,
@@ -67,6 +70,8 @@ namespace shadowman
         m_soundPlayerUPtr->loadAll();
         m_soundPlayerUPtr->willLoop("walk", true);
 
+        m_musicPlayerUPtr->setup(m_setting.media_path / "music");
+
         m_screenLayoutUPtr->setup(m_windowUPtr->getSize());
         m_fontManagerUPtr->setup(m_setting);
         m_avatarUPtr->setup(*m_contextUPtr);
@@ -77,6 +82,7 @@ namespace shadowman
 
     void Coordinator::teardown()
     {
+        m_musicPlayerUPtr->stopAll();
         m_soundPlayerUPtr->stopAll();
         m_soundPlayerUPtr->stopAllLooped();
 
@@ -90,6 +96,7 @@ namespace shadowman
         m_fontManagerUPtr.reset();
         m_screenLayoutUPtr.reset();
         m_soundPlayerUPtr.reset();
+        m_musicPlayerUPtr.reset();
         m_randomUPtr.reset();
         m_avatarUPtr.reset();
         m_levelFileManagerUPtr.reset();

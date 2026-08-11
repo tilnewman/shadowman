@@ -11,6 +11,7 @@
 #include "subsystem/font.hpp"
 #include "subsystem/screen-layout.hpp"
 #include "util/check-macros.hpp"
+#include "util/music-player.hpp"
 #include "util/sfml-defaults.hpp"
 #include "util/sfml-util.hpp"
 #include "util/texture-loader.hpp"
@@ -165,7 +166,8 @@ namespace shadowman
 
         m_credits.emplace_back(
             t_context,
-            (t_context.setting.media_path / "image" / "credit" / "light-adventure-game.png").string(),
+            (t_context.setting.media_path / "image" / "credit" / "light-adventure-game.png")
+                .string(),
             1.25f,
             "Light Adventure Game Tileset",
             "www.graphicriver.net",
@@ -213,7 +215,7 @@ namespace shadowman
 
         m_skyBackground.setup(t_context, t_context.layout.wholeRect().size);
 
-        // t_context.music.start("credits.ogg");
+        t_context.music.start("credits.ogg");
     }
 
     void StateCredits::onExit(const Context &) {}

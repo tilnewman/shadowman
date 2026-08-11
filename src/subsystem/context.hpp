@@ -6,7 +6,7 @@
 namespace util
 {
     class Random;
-    // class MusicPlayer;
+    class MusicPlayer;
     class SoundPlayer;
 } // namespace util
 
@@ -28,6 +28,7 @@ namespace shadowman
             const Settings & t_settings,
             util::Random & t_random,
             util::SoundPlayer & t_soundPlayer,
+            util::MusicPlayer & t_musicPlayer,
             const ScreenLayout & t_screenLayout,
             const FontManager & t_fontManager,
             StateManager & t_stateManager,
@@ -37,6 +38,7 @@ namespace shadowman
             : setting{ t_settings }
             , random{ t_random }
             , audio{ t_soundPlayer }
+            , music{ t_musicPlayer }
             , layout{ t_screenLayout }
             , font{ t_fontManager }
             , state{ t_stateManager }
@@ -48,6 +50,7 @@ namespace shadowman
         const Settings & setting;
         util::Random & random;
         util::SoundPlayer & audio;
+        util::MusicPlayer & music;
         const ScreenLayout & layout;
         const FontManager & font;
         StateManager & state;
