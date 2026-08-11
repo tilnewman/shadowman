@@ -51,7 +51,7 @@ namespace shadowman
         Death
     };
 
-    [[nodiscard]] constexpr float timePerFrameSec(const FlyTask t_task) noexcept 
+    [[nodiscard]] constexpr float timePerFrameSec(const FlyTask t_task) noexcept
     {
         // clang-format off
         switch(t_task)
@@ -80,7 +80,7 @@ namespace shadowman
             const sf::FloatRect & t_rect);
 
         [[nodiscard]] constexpr FlyType which() const noexcept { return m_type; }
-
+        [[nodiscard]] const sf::FloatRect collisionRect() const;
         void update(const Context & t_context, const float t_elapsedSec);
 
         void draw(const Context & t_context, sf::RenderTarget & t_target, sf::RenderStates t_states)

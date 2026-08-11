@@ -48,6 +48,25 @@ namespace shadowman
         m_sprite.setPosition(util::center(m_rect));
     }
 
+    const sf::FloatRect Fly::collisionRect() const
+    {
+        sf::FloatRect rect{ m_sprite.getGlobalBounds() };
+        util::scaleRectInPlace(rect, { 0.35f, 0.65f });
+
+        if (m_isFacingRight)
+        {
+            rect.size.x *= 1.15f;
+        }
+        else
+        {
+            const float horizOffset{ rect.size.x * 0.15f };
+            rect.position.x -= horizOffset;
+            rect.size.x += (horizOffset * 1.4f);
+        }
+
+        return rect;
+    }
+
     void Fly::turn()
     {
         m_isFacingRight = not m_isFacingRight;

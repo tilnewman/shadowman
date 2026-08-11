@@ -3,6 +3,7 @@
 //
 #include "avatar.hpp"
 
+#include "enemy/fly-manager.hpp"
 #include "map/indirect-level.hpp"
 #include "map/level-files.hpp"
 #include "shadowman/settings.hpp"
@@ -456,6 +457,18 @@ namespace shadowman
         bool detectLanding{ false };
 
         for (const sf::FloatRect & collRect : t_context.level.collisions())
+        {
+            const auto intersectionOpt{ avatarRect.findIntersection(collRect) };
+            if (intersectionOpt)
+            {
+                collide(t_context, intersectionOpt.value(), avatarCenter, detectLanding);
+            }
+        }
+
+        static std::vector<sf::FloatRect> flyCollRects;
+        flyCollRects.clear();
+        t_context.fly.appendCollisionRects(flyCollRects);
+        for (const sf::FloatRect & collRect : flyCollRects)
         {
             const auto intersectionOpt{ avatarRect.findIntersection(collRect) };
             if (intersectionOpt)

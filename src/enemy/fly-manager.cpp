@@ -90,4 +90,12 @@ namespace shadowman
         }
     }
 
+    void FlyManager::appendCollisionRects(std::vector<sf::FloatRect> & t_rects) const
+    {
+        for (const Fly & fly : m_flies)
+        {
+            t_rects.push_back(fly.collisionRect());
+        }
+    }
+
 } // namespace shadowman
