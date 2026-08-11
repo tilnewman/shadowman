@@ -138,11 +138,13 @@ namespace shadowman
     {
         if (t_context.level.exitRect().findIntersection(collisionRect()))
         {
+            t_context.audio.stop("walk");
+
             t_context.level_file.increment();
             const std::string nextLevelFilename{ t_context.level_file.current() };
             if (nextLevelFilename.empty())
             {
-                t_context.state.setChangePending(State::Shutdown);
+                t_context.state.setChangePending(State::Credits);
             }
             else
             {

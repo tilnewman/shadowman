@@ -3,6 +3,7 @@
 //
 #include "state-manager.hpp"
 
+#include "state/state-credits.hpp"
 #include "state/state-play.hpp"
 
 #include <stdexcept>
@@ -37,6 +38,7 @@ namespace shadowman
         {
             case State::Startup:  { return std::make_unique<StateStartup>();  }
             case State::Play:     { return std::make_unique<StatePlay>();     }
+            case State::Credits:  { return std::make_unique<StateCredits>();  }
             case State::Shutdown: { return std::make_unique<StateShutdown>(); }
             default:                    
             { 

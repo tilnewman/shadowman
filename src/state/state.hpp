@@ -19,6 +19,7 @@ namespace shadowman
     {
         Startup,
         Play,
+        Credits,
         Shutdown
     };
 
