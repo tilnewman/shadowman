@@ -43,6 +43,28 @@ namespace shadowman
         // clang-format on
     }
 
+    enum class FlyTask : unsigned char
+    {
+        Idle,
+        Wander,
+        Chase,
+        Death
+    };
+
+    [[nodiscard]] constexpr float timePerFrameSec(const FlyTask t_task) noexcept 
+    {
+        // clang-format off
+        switch(t_task)
+        {
+            case FlyTask::Idle:     { return 0.08f; }
+            case FlyTask::Wander:   { return 0.05f;  }
+            case FlyTask::Chase:    { return 0.025f; }
+            case FlyTask::Death:
+            default:                { return 0.125f; }
+        }
+        // clang-format on
+    }
+
     struct FlyTextures
     {
         std::vector<sf::Texture> fly{};
@@ -65,13 +87,23 @@ namespace shadowman
             const;
 
       private:
+        void turn();
+        void updateAnimation(const float t_elapsedSec);
+        void startWandering(const Context & t_context);
+        void startIdling(const Context & t_context);
+
+      private:
         FlyType m_type;
+        FlyTask m_task;
         bool m_isDying;
         sf::FloatRect m_rect;
         sf::Sprite m_sprite;
         bool m_isFacingRight;
         float m_animElapsedSec;
         std::size_t m_frameIndex;
+        float m_idleElapsedSec;
+        float m_idleDurationSec;
+        float m_wanderTarget;
         const FlyTextures & m_textures;
     };
 
