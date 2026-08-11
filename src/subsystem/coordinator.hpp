@@ -4,6 +4,7 @@
 // coordinator.hpp
 //
 #include "avatar/avatar.hpp"
+#include "enemy/fly-manager.hpp"
 #include "map/indirect-level.hpp"
 #include "map/level-files.hpp"
 #include "shadowman/settings.hpp"
@@ -58,6 +59,7 @@ namespace shadowman
         std::unique_ptr<StateManager> m_stateManagerUPtr;
         std::unique_ptr<IndirectLevel> m_levelUPtr;
         std::unique_ptr<LevelFileManager> m_levelFileManagerUPtr;
+        std::unique_ptr<FlyManager> m_flyManagerUPtr;
 
         std::unique_ptr<Context> m_contextUPtr;
     };
