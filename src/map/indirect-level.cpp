@@ -4,6 +4,7 @@
 #include "indirect-level.hpp"
 
 #include "avatar/avatar.hpp"
+#include "enemy/fly-manager.hpp"
 #include "shadowman/settings.hpp"
 #include "subsystem/context.hpp"
 #include "subsystem/screen-layout.hpp"
@@ -52,6 +53,8 @@ namespace shadowman
 
     void IndirectLevel::reset(const Context & t_context)
     {
+        t_context.fly.clear();
+
         m_lowerTileLayers.clear();
         m_upperTileLayers.clear();
         m_didOffscreenVertsChange = true;
@@ -211,6 +214,7 @@ namespace shadowman
         m_renderTexture.clear(sf::Color::Black);
         m_skyBackground.draw(m_renderTexture, m_renderStates);
         drawLowerLayers(m_renderTexture, m_renderStates);
+        t_context.fly.draw(t_context, m_renderTexture, m_renderStates);
         t_context.avatar.draw(t_context, m_renderTexture, m_renderStates);
         drawUpperLayers(m_renderTexture, m_renderStates);
         m_renderTexture.display();

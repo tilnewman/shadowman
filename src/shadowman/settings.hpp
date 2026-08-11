@@ -33,6 +33,8 @@ namespace shadowman
         float avatar_run_speed_limit{ 5.0f };
         float avatar_jump_horiz_move_divisor{ 6.0f };
 
+        float fly_scale{ 0.6f };
+
         sf::Color map_outline_color{ 127, 127, 127 };
     };
 

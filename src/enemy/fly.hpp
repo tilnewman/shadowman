@@ -27,7 +27,7 @@ namespace shadowman
         Count
     };
 
-    [[nodiscard]] constexpr std::string_view toString(const FlyType t_type) noexcept 
+    [[nodiscard]] constexpr std::string_view toString(const FlyType t_type) noexcept
     {
         // clang-format off
         switch(t_type)
@@ -43,17 +43,31 @@ namespace shadowman
         // clang-format on
     }
 
+    struct FlyTextures
+    {
+        std::vector<sf::Texture> fly{};
+        std::vector<sf::Texture> die{};
+    };
+
     class Fly
     {
       public:
-       
+        Fly(const Context & t_context,
+            const FlyType t_type,
+            const FlyTextures & t_textures,
+            const sf::FloatRect & t_rect);
+
         void update(const Context & t_context, const float t_elapsedSec);
-        
+
         void draw(const Context & t_context, sf::RenderTarget & t_target, sf::RenderStates t_states)
             const;
 
-
       private:
+        FlyType m_type;
+        sf::FloatRect m_rect;
+        sf::Sprite m_sprite;
+        bool m_isFacingRight;
+        const FlyTextures & m_textures;
     };
 
 } // namespace shadowman

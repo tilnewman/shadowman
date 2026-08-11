@@ -20,12 +20,6 @@ namespace shadowman
 
     struct Context;
 
-    struct FlyTextures
-    {
-        std::vector<sf::Texture> fly{};
-        std::vector<sf::Texture> die{};
-    };
-
     class FlyManager
     {
       public:
@@ -34,6 +28,7 @@ namespace shadowman
         void setup(const Context & t_context);
         void update(const Context & t_context, const float t_elapsedSec);
         void add(const Context & t_context, const sf::FloatRect & t_rect);
+        constexpr void clear() noexcept { m_flies.clear(); }
 
         void draw(const Context & t_context, sf::RenderTarget & t_target, sf::RenderStates t_states)
             const;

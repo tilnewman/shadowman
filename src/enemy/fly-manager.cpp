@@ -7,6 +7,7 @@
 #include "subsystem/context.hpp"
 #include "util/check-macros.hpp"
 #include "util/filesystem-util.hpp"
+#include "util/random.hpp"
 #include "util/texture-loader.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
@@ -63,7 +64,14 @@ namespace shadowman
         }
     }
 
-    void FlyManager::add(const Context &, const sf::FloatRect &) { m_flies.emplace_back(); }
+    void FlyManager::add(const Context & t_context, const sf::FloatRect & t_rect)
+    {
+        const FlyType type{ t_context.random.from(
+            { FlyType::Beholder, FlyType::Chomp, FlyType::Face, FlyType::Horn, FlyType::Peek }) };
+
+        m_flies.emplace_back(
+            t_context, type, m_textures.at(static_cast<std::size_t>(type)), t_rect);
+    }
 
     void FlyManager::update(const Context & t_context, const float t_elapsedSec)
     {

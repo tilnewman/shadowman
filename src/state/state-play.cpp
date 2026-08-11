@@ -4,6 +4,7 @@
 #include "state-play.hpp"
 
 #include "avatar/avatar.hpp"
+#include "enemy/fly-manager.hpp"
 #include "map/indirect-level.hpp"
 #include "shadowman/settings.hpp"
 #include "subsystem/context.hpp"
@@ -28,6 +29,7 @@ namespace shadowman
     void StatePlay::update(const Context & t_context, const float t_elapsedSec)
     {
         t_context.avatar.update(t_context, t_elapsedSec);
+        t_context.fly.update(t_context, t_elapsedSec);
         t_context.level.update(t_context, t_elapsedSec);
     }
 

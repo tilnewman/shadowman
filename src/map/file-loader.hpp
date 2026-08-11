@@ -47,6 +47,7 @@ namespace shadowman
 
         void parseLayers(const Context & t_context, const nlohmann::json & t_json);
         void parseSpawnLayer(const Context & t_context, const nlohmann::json & t_json);
+        void parseEnemyLayer(const Context & t_context, const nlohmann::json & t_json);
 
         void parseTileLayer(
             const Context & t_context,

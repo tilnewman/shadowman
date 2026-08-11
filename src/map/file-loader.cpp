@@ -3,6 +3,7 @@
 //
 #include "file-loader.hpp"
 
+#include "enemy/fly-manager.hpp"
 #include "map/indirect-level.hpp"
 #include "map/textures.hpp"
 #include "shadowman/settings.hpp"
@@ -92,7 +93,7 @@ namespace shadowman
 
             if (tileImage != TileImage::Count)
             {
-                //std::cout << "tileimage=" << toString(tileImage) << ", gid=" << gid << std::endl;
+                // std::cout << "tileimage=" << toString(tileImage) << ", gid=" << gid << std::endl;
                 MapTextureManager::instance().setGid(tileImage, gid);
             }
         }
@@ -161,10 +162,33 @@ namespace shadowman
             {
                 parseSpawnLayer(t_context, layerJson);
             }
+            else if (layerName == "enemy")
+            {
+                parseEnemyLayer(t_context, layerJson);
+            }
             else
             {
                 std::cout << "FileLoader::parseLayers()  While parsing level file \"" << m_pathStr
                           << "\".  Ignored unknown layer named \"" << layerName << "\".\n";
+            }
+        }
+    }
+
+    void FileLoader::parseEnemyLayer(const Context & t_context, const nlohmann::json & t_json)
+    {
+        for (const nlohmann::json & objJson : t_json["objects"])
+        {
+            const std::string name = objJson["name"];
+            const sf::FloatRect rect{ parseAndScaleRect(t_context, objJson) };
+
+            if ("fly" == name)
+            {
+                t_context.fly.add(t_context, rect);
+            }
+            else
+            {
+                std::cout << "WARNING:  While parsing level file \"" << m_pathStr
+                          << "\".  Ignored unknown enemy rect named \"" << name << "\".\n";
             }
         }
     }
