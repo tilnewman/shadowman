@@ -22,6 +22,7 @@ namespace shadowman
     class IndirectLevel;
     class LevelFileManager;
     class FlyManager;
+    class SmokeManager;
 
     struct Context
     {
@@ -36,7 +37,8 @@ namespace shadowman
             Avatar & t_avatar,
             IndirectLevel & t_indirectLevel,
             LevelFileManager & t_levelFileManager,
-            FlyManager & t_flyManager)
+            FlyManager & t_flyManager,
+            SmokeManager & t_smokeManager)
             : setting{ t_settings }
             , random{ t_random }
             , audio{ t_soundPlayer }
@@ -48,6 +50,7 @@ namespace shadowman
             , level{ t_indirectLevel }
             , level_file{ t_levelFileManager }
             , fly{ t_flyManager }
+            , smoke{ t_smokeManager }
         {}
 
         const Settings & setting;
@@ -61,6 +64,7 @@ namespace shadowman
         IndirectLevel & level;
         LevelFileManager & level_file;
         FlyManager & fly;
+        SmokeManager & smoke;
     };
 
 } // namespace shadowman

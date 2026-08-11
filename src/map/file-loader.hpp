@@ -61,7 +61,9 @@ namespace shadowman
             std::vector<sf::FloatRect> & t_rects);
 
         [[nodiscard]] const sf::FloatRect
-            parseAndScaleRect(const Context & t_context, const nlohmann::json & t_json);
+            parseAndScaleRect(const Context & t_context, const nlohmann::json & t_json) const;
+
+        void parseSmokeLayer(const Context & t_context, const nlohmann::json & t_json) const;
 
       private:
         std::string m_pathStr;

@@ -9,6 +9,7 @@
 #include "shadowman/settings.hpp"
 #include "subsystem/context.hpp"
 #include "subsystem/screen-layout.hpp"
+#include "subsystem/smoke.hpp"
 #include "util/check-macros.hpp"
 #include "util/sfml-util.hpp"
 
@@ -166,11 +167,25 @@ namespace shadowman
             {
                 parseEnemyLayer(t_context, layerJson);
             }
+            else if (layerName == "smoke")
+            {
+                parseSmokeLayer(t_context, layerJson);
+            }
             else
             {
                 std::cout << "FileLoader::parseLayers()  While parsing level file \"" << m_pathStr
                           << "\".  Ignored unknown layer named \"" << layerName << "\".\n";
             }
+        }
+    }
+
+    void FileLoader::parseSmokeLayer(const Context & t_context, const nlohmann::json & t_json) const
+    {
+        for (const nlohmann::json & objJson : t_json["objects"])
+        {
+            const std::string details = objJson["name"];
+            const sf::FloatRect rect{ parseAndScaleRect(t_context, objJson) };
+            t_context.smoke.add(t_context, rect, details);
         }
     }
 
@@ -262,8 +277,8 @@ namespace shadowman
         }
     }
 
-    const sf::FloatRect
-        FileLoader::parseAndScaleRect(const Context & t_context, const nlohmann::json & t_json)
+    const sf::FloatRect FileLoader::parseAndScaleRect(
+        const Context & t_context, const nlohmann::json & t_json) const
     {
         const sf::IntRect rect{ { t_json["x"], t_json["y"] },
                                 { t_json["width"], t_json["height"] } };

@@ -30,6 +30,7 @@ namespace shadowman
         , m_levelUPtr{}
         , m_levelFileManagerUPtr{}
         , m_flyManagerUPtr{}
+        , m_smokeManager{}
         , m_contextUPtr{}
     {}
 
@@ -55,6 +56,7 @@ namespace shadowman
         m_levelUPtr            = std::make_unique<IndirectLevel>();
         m_levelFileManagerUPtr = std::make_unique<LevelFileManager>();
         m_flyManagerUPtr       = std::make_unique<FlyManager>();
+        m_smokeManager         = std::make_unique<SmokeManager>();
 
         m_contextUPtr = std::make_unique<Context>(
             m_setting,
@@ -67,7 +69,8 @@ namespace shadowman
             *m_avatarUPtr,
             *m_levelUPtr,
             *m_levelFileManagerUPtr,
-            *m_flyManagerUPtr);
+            *m_flyManagerUPtr,
+            *m_smokeManager);
 
         m_soundPlayerUPtr->mediaPath(m_setting.media_path / "sound");
         m_soundPlayerUPtr->loadAll();
@@ -79,6 +82,7 @@ namespace shadowman
         m_fontManagerUPtr->setup(m_setting);
         m_avatarUPtr->setup(*m_contextUPtr);
         m_flyManagerUPtr->setup(*m_contextUPtr);
+        m_smokeManager->setup(*m_contextUPtr);
         MapTextureManager::instance().setup();
 
         m_stateManagerUPtr->setChangePending(State::Play);
@@ -95,6 +99,7 @@ namespace shadowman
         m_levelUPtr.reset();
         MapTextureManager::instance().teardown();
 
+        m_smokeManager.reset();
         m_stateManagerUPtr.reset();
         m_framerateDisplayUPtr.reset();
         m_fontManagerUPtr.reset();

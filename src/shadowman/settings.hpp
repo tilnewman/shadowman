@@ -36,6 +36,9 @@ namespace shadowman
         float fly_scale{ 0.6f };
 
         sf::Color map_outline_color{ 127, 127, 127 };
+
+        sf::Color smoke_color{ 0, 0, 0 };
+        float smoke_animation_time_between_frames{ 0.1f };
     };
 
 } // namespace shadowman

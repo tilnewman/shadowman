@@ -13,6 +13,7 @@
 #include "subsystem/font.hpp"
 #include "subsystem/framerate-display.hpp"
 #include "subsystem/screen-layout.hpp"
+#include "subsystem/smoke.hpp"
 #include "util/music-player.hpp"
 #include "util/sound-player.hpp"
 
@@ -60,6 +61,7 @@ namespace shadowman
         std::unique_ptr<IndirectLevel> m_levelUPtr;
         std::unique_ptr<LevelFileManager> m_levelFileManagerUPtr;
         std::unique_ptr<FlyManager> m_flyManagerUPtr;
+        std::unique_ptr<SmokeManager> m_smokeManager;
 
         std::unique_ptr<Context> m_contextUPtr;
     };
