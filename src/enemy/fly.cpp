@@ -95,7 +95,7 @@ namespace shadowman
                 }
             }
 
-            m_sprite.setTexture(textures.at(m_frameIndex));
+            m_sprite.setTexture(textures.at(m_frameIndex), true);
         }
     }
 
