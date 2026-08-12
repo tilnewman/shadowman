@@ -145,7 +145,15 @@ namespace shadowman
             turnToward(util::center(t_context.avatar.collisionRect()).x);
 
             const float chaseSpeed{ 70.0f * ((m_isFacingRight) ? 1.0f : -1.0f) };
-            m_sprite.move({ (chaseSpeed * t_elapsedSec), 0.0f });
+            const sf::Vector2f move{ (chaseSpeed * t_elapsedSec), 0.0f };
+            m_sprite.move(move);
+
+            const sf::FloatRect collRect{ collisionRect() };
+            if ((collRect.position.x < m_rect.position.x) or
+                (util::right(collRect) > util::right(m_rect)))
+            {
+                m_sprite.move(-1.0f * move);
+            }
 
             const sf::FloatRect playerRect{ t_context.avatar.collisionRect() };
             if (not playerRect.findIntersection(m_rect))
