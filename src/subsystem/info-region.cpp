@@ -25,11 +25,13 @@ namespace shadowman
     {
         util::TextureLoader::load(
             m_heartBrightTexture,
-            (t_context.setting.media_path / "image" / "heart-bright.png"),
+            (t_context.setting.media_path / "image" / "heart" / "heart-bright.png"),
             true);
 
         util::TextureLoader::load(
-            m_heartDarkTexture, (t_context.setting.media_path / "image" / "heart-dark.png"), true);
+            m_heartDarkTexture,
+            (t_context.setting.media_path / "image" / "heart" / "heart-dark.png"),
+            true);
     }
 
     void InfoRegion::update(const Context & t_context)
