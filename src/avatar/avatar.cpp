@@ -125,6 +125,7 @@ namespace shadowman
         updateHorizMotion(t_context, t_elapsedSec);
         updateAnimation(t_context, t_elapsedSec);
         updatePosition(t_context, t_elapsedSec);
+        processEnemyCollisions(t_context, t_elapsedSec);
         processCollisions(t_context);
         preventBacktracking(t_context);
 
@@ -135,8 +136,52 @@ namespace shadowman
         processExitCollision(t_context);
     }
 
+    void Avatar::processEnemyCollisions(const Context & t_context, const float t_elapsedSec)
+    {
+        if (AvatarAction::Hurt == m_action)
+        {
+            return;
+        }
+
+        const sf::FloatRect collRect{ collisionRect() };
+
+        static std::vector<sf::FloatRect> enemyCollRects;
+        enemyCollRects.clear();
+        t_context.fly.appendCollisionRects(enemyCollRects);
+        for (const sf::FloatRect & enemyCollRect : enemyCollRects)
+        {
+            if (collRect.findIntersection(enemyCollRect))
+            {
+                t_context.audio.play("player-hurt");
+
+                // turn toward enemy who just attacked the player
+                const bool isEnemyRight{ util::center(enemyCollRect).x > util::center(collRect).x };
+                if (isEnemyRight != m_isFacingRight)
+                {
+                    turn();
+                }
+
+                // TODO move away from attack
+                sf::Vector2f move{ t_context.setting.avatar_hurt_move * t_elapsedSec};
+                if (m_isFacingRight)
+                {
+                    move.x *= 1.0f;
+                }
+                m_velocity += move;
+
+                resetAnimation(t_context, AvatarAction::Hurt, AvatarAnim::Hurt);
+                return; // only one enemy can hurt a player at a time
+            }
+        }
+    }
+
     void Avatar::processExitCollision(const Context & t_context)
     {
+        if (AvatarAction::Hurt == m_action)
+        {
+            return;
+        }
+
         if (t_context.level.exitRect().findIntersection(collisionRect()))
         {
             t_context.audio.stop("walk");
@@ -274,6 +319,15 @@ namespace shadowman
 
         util::setOriginToCenter(m_sprite);
         scaleSprite(t_context);
+
+        if (AvatarAnim::Hurt == m_anim)
+        {
+            m_sprite.setColor(sf::Color(255, 127, 127));
+        }
+        else
+        {
+            m_sprite.setColor(sf::Color::White);
+        }
     }
 
     void Avatar::draw(
@@ -438,7 +492,7 @@ namespace shadowman
                 resetAnimation(t_context, AvatarAction::Death, AvatarAnim::Die);
                 m_sprite.setColor(sf::Color::Red);
                 t_context.audio.stop("walk");
-                t_context.audio.play("death-player");
+                t_context.audio.play("player-death");
                 return;
             }
         }

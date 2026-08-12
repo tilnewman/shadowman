@@ -95,7 +95,7 @@ namespace shadowman
         }
         else if (AvatarAnim::Hurt == t_anim)
         {
-            return 0.11f;
+            return 0.135f;
         }
         else if (AvatarAnim::Die == t_anim)
         {
@@ -166,6 +166,7 @@ namespace shadowman
         void resetAnimation(
             const Context & t_context, const AvatarAction t_action, const AvatarAnim t_anim);
 
+        void processEnemyCollisions(const Context & t_context, const float t_elapsedSec);
         void processExitCollision(const Context & t_context);
         void preventBacktracking(const Context & t_context);
         void processCollisions(const Context & t_context);
