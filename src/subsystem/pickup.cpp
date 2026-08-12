@@ -3,12 +3,14 @@
 //
 #include "pickup.hpp"
 
+#include "avatar/player-info.hpp"
 #include "map/indirect-level.hpp"
 #include "shadowman/settings.hpp"
 #include "subsystem/context.hpp"
 #include "subsystem/screen-layout.hpp"
 #include "util/check-macros.hpp"
 #include "util/sfml-util.hpp"
+#include "util/sound-player.hpp"
 #include "util/texture-loader.hpp"
 
 namespace shadowman
@@ -23,6 +25,7 @@ namespace shadowman
         , m_sprite{ t_texture }
         , m_animElpasedSec{ 0.0f }
         , m_frameIndex{ 0 }
+        , m_isAlive{ true }
     {
         m_sprite.setTextureRect(textureRect());
         const float scale{ t_context.layout.scaleBasedOnResolution(t_context, 2.0f) };
@@ -115,6 +118,25 @@ namespace shadowman
         {
             anim.draw(t_context, t_target, t_states);
         }
+    }
+
+    void PickupManager::playerPickup(const Context & t_context, const sf::FloatRect & t_playerRect)
+    {
+        for (PickupAnim & anim : m_anims)
+        {
+            if (t_playerRect.findIntersection(anim.collisionRect()))
+            {
+                if (Pickup::Heart == anim.type())
+                {
+                    t_context.player_info.healthAdjust(1);
+                }
+
+                anim.kill();
+                t_context.audio.play("pickup");
+            }
+        }
+
+        std::erase_if(m_anims, [](const PickupAnim & anim) { return not anim.isAlive(); });
     }
 
 } // namespace shadowman

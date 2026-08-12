@@ -60,6 +60,14 @@ namespace shadowman
             const sf::Texture & t_texture,
             const sf::Vector2f & t_position);
 
+        [[nodiscard]] inline const sf::FloatRect collisionRect() const
+        {
+            return m_sprite.getGlobalBounds();
+        }
+
+        [[nodiscard]] constexpr Pickup type() const noexcept { return m_type; }
+        [[nodiscard]] constexpr bool isAlive() const noexcept { return m_isAlive; }
+        inline void kill() { m_isAlive = false; }
         void update(const Context & t_context, const float t_elapsedSec);
 
         void draw(const Context & t_context, sf::RenderTarget & t_target, sf::RenderStates t_states)
@@ -74,6 +82,7 @@ namespace shadowman
         sf::Sprite m_sprite;
         float m_animElpasedSec;
         std::size_t m_frameIndex;
+        bool m_isAlive;
     };
 
     class PickupManager
@@ -83,6 +92,7 @@ namespace shadowman
 
         void setup(const Context & t_context);
         void update(const Context & t_context, const float t_elapsedSec);
+        void playerPickup(const Context & t_context, const sf::FloatRect & t_playerRect);
 
         void add(
             const Context & t_context, const std::string & t_name, const sf::FloatRect & t_rect);

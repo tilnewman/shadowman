@@ -11,6 +11,7 @@
 #include "state/state-manager.hpp"
 #include "subsystem/context.hpp"
 #include "subsystem/font.hpp"
+#include "subsystem/pickup.hpp"
 #include "subsystem/screen-layout.hpp"
 #include "util/filesystem-util.hpp"
 #include "util/sfml-defaults.hpp"
@@ -133,8 +134,14 @@ namespace shadowman
         const sf::Vector2f afterPos{ m_sprite.getPosition() };
         t_context.level.playerMove(t_context, m_sprite.getGlobalBounds(), (afterPos - beforePos));
 
+        processPickups(t_context);
         processKillCollisions(t_context);
         processExitCollision(t_context);
+    }
+
+    void Avatar::processPickups(const Context & t_context)
+    {
+        t_context.pickup.playerPickup(t_context, collisionRect());
     }
 
     void Avatar::processEnemyCollisions(const Context & t_context, const float t_elapsedSec)
