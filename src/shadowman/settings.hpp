@@ -32,7 +32,7 @@ namespace shadowman
         float avatar_run_acc{ 20.0f };
         float avatar_run_speed_limit{ 5.0f };
         float avatar_jump_horiz_move_divisor{ 6.0f };
-        sf::Vector2f avatar_hurt_move{ 1000.0f, -100.0f };
+        sf::Vector2f avatar_hurt_move{ 100.0f, -100.0f };
 
         float fly_scale{ 0.6f };
 
