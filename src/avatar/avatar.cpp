@@ -240,6 +240,11 @@ namespace shadowman
             resetAnimation(t_context, AvatarAction::Attack, randomAnim);
             t_context.audio.play("swipe");
         }
+
+        if (AvatarAction::Attack == m_action)
+        {
+            t_context.fly.playerAttack(t_context, attackRect());
+        }
     }
 
     void Avatar::updateAnimation(const Context & t_context, const float t_elapsedSec)

@@ -80,8 +80,10 @@ namespace shadowman
             const sf::FloatRect & t_rect);
 
         [[nodiscard]] constexpr FlyType which() const noexcept { return m_type; }
+        [[nodiscard]] constexpr bool isAlive() const noexcept { return m_isAlive; }
         [[nodiscard]] const sf::FloatRect collisionRect() const;
         void update(const Context & t_context, const float t_elapsedSec);
+        void kill(const Context & t_context);
 
         void draw(const Context & t_context, sf::RenderTarget & t_target, sf::RenderStates t_states)
             const;
@@ -97,7 +99,6 @@ namespace shadowman
       private:
         FlyType m_type;
         FlyTask m_task;
-        bool m_isDying;
         sf::FloatRect m_rect;
         sf::Sprite m_sprite;
         bool m_isFacingRight;
@@ -106,6 +107,7 @@ namespace shadowman
         float m_idleElapsedSec;
         float m_idleDurationSec;
         float m_wanderTarget;
+        bool m_isAlive;
         const FlyTextures & m_textures;
     };
 

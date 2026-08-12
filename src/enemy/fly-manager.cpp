@@ -77,7 +77,10 @@ namespace shadowman
     {
         for (Fly & fly : m_flies)
         {
-            fly.update(t_context, t_elapsedSec);
+            if (fly.isAlive())
+            {
+                fly.update(t_context, t_elapsedSec);
+            }
         }
     }
 
@@ -86,7 +89,10 @@ namespace shadowman
     {
         for (const Fly & fly : m_flies)
         {
-            fly.draw(t_context, t_target, t_states);
+            if (fly.isAlive())
+            {
+                fly.draw(t_context, t_target, t_states);
+            }
         }
     }
 
@@ -94,8 +100,26 @@ namespace shadowman
     {
         for (const Fly & fly : m_flies)
         {
-            t_rects.push_back(fly.collisionRect());
+            if (fly.isAlive())
+            {
+                t_rects.push_back(fly.collisionRect());
+            }
         }
+    }
+
+    bool FlyManager::playerAttack(const Context & t_context, const sf::FloatRect & t_attackRect)
+    {
+        bool didAnyDie{ false };
+        for (Fly & fly : m_flies)
+        {
+            if (fly.isAlive() and fly.collisionRect().findIntersection(t_attackRect))
+            {
+                fly.kill(t_context);
+                didAnyDie = true;
+            }
+        }
+
+        return didAnyDie;
     }
 
 } // namespace shadowman

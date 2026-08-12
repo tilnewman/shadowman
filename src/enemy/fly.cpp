@@ -23,7 +23,6 @@ namespace shadowman
         const sf::FloatRect & t_rect)
         : m_type{ t_type }
         , m_task{ FlyTask::Idle }
-        , m_isDying{ false }
         , m_rect{ t_rect }
         , m_sprite{ t_textures.fly.at(0) }
         , m_isFacingRight{ t_context.random.boolean() }
@@ -31,6 +30,7 @@ namespace shadowman
         , m_idleElapsedSec{ 0.0f }
         , m_idleDurationSec{ 0.0f }
         , m_wanderTarget{ 0.0f }
+        , m_isAlive{ true }
         , m_textures{ t_textures }
     {
         util::setOriginToCenter(m_sprite);
@@ -81,12 +81,18 @@ namespace shadowman
         {
             m_animElapsedSec -= timeBetweenFramees;
 
-            const std::vector<sf::Texture> & textures{ (m_isDying) ? m_textures.die
-                                                                   : m_textures.fly };
+            const std::vector<sf::Texture> & textures{ (FlyTask::Death == m_task)
+                                                           ? m_textures.die
+                                                           : m_textures.fly };
 
             if (++m_frameIndex >= textures.size())
             {
                 m_frameIndex = 0;
+
+                if (FlyTask::Death == m_task)
+                {
+                    m_isAlive = false;
+                }
             }
 
             m_sprite.setTexture(textures.at(m_frameIndex));
@@ -206,6 +212,17 @@ namespace shadowman
         sf::Sprite tempSprite{ m_sprite };
         tempSprite.move(t_context.level.mapToOffscreenOffset());
         t_target.draw(tempSprite, t_states);
+    }
+
+    void Fly::kill(const Context & t_context)
+    {
+        if (isAlive() and (FlyTask::Death != m_task))
+        {
+            m_task           = FlyTask::Death;
+            m_animElapsedSec = 0.0f;
+            m_frameIndex     = 0;
+            t_context.audio.play("fly-death");
+        }
     }
 
 } // namespace shadowman
