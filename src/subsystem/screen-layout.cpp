@@ -20,7 +20,7 @@ namespace shadowman
                         { static_cast<float>(t_windowSize.x),
                           static_cast<float>(t_windowSize.y) } };
 
-        m_mapRect = util::scaleRectInPlaceCopy(m_wholeRect, 0.75f);
+        m_mapRect = m_wholeRect;
     }
 
     float ScreenLayout::scaleBasedOnResolution(
