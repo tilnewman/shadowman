@@ -64,6 +64,7 @@ namespace shadowman
             parseAndScaleRect(const Context & t_context, const nlohmann::json & t_json) const;
 
         void parseSmokeLayer(const Context & t_context, const nlohmann::json & t_json) const;
+        void parsePickupLayer(const Context & t_context, const nlohmann::json & t_json) const;
 
       private:
         std::string m_pathStr;

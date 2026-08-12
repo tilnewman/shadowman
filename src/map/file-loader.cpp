@@ -8,6 +8,7 @@
 #include "map/textures.hpp"
 #include "shadowman/settings.hpp"
 #include "subsystem/context.hpp"
+#include "subsystem/pickup.hpp"
 #include "subsystem/screen-layout.hpp"
 #include "subsystem/smoke.hpp"
 #include "util/check-macros.hpp"
@@ -171,6 +172,10 @@ namespace shadowman
             {
                 parseSmokeLayer(t_context, layerJson);
             }
+            else if (layerName == "pickup")
+            {
+                parsePickupLayer(t_context, layerJson);
+            }
             else
             {
                 std::cout << "FileLoader::parseLayers()  While parsing level file \"" << m_pathStr
@@ -186,6 +191,17 @@ namespace shadowman
             const std::string details = objJson["name"];
             const sf::FloatRect rect{ parseAndScaleRect(t_context, objJson) };
             t_context.smoke.add(t_context, rect, details);
+        }
+    }
+
+    void
+        FileLoader::parsePickupLayer(const Context & t_context, const nlohmann::json & t_json) const
+    {
+        for (const nlohmann::json & objJson : t_json["objects"])
+        {
+            const std::string details = objJson["name"];
+            const sf::FloatRect rect{ parseAndScaleRect(t_context, objJson) };
+            t_context.pickup.add(t_context, details, rect);
         }
     }
 

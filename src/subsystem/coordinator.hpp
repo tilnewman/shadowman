@@ -14,6 +14,7 @@
 #include "subsystem/font.hpp"
 #include "subsystem/framerate-display.hpp"
 #include "subsystem/info-region.hpp"
+#include "subsystem/pickup.hpp"
 #include "subsystem/screen-layout.hpp"
 #include "subsystem/smoke.hpp"
 #include "util/music-player.hpp"
@@ -66,6 +67,7 @@ namespace shadowman
         std::unique_ptr<SmokeManager> m_smokeManager;
         std::unique_ptr<PlayerInfo> m_playerInfoUPtr;
         std::unique_ptr<InfoRegion> m_infoRegionUPtr;
+        std::unique_ptr<PickupManager> m_pickupManagerUPtr;
 
         std::unique_ptr<Context> m_contextUPtr;
     };
