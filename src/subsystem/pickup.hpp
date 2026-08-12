@@ -51,6 +51,15 @@ namespace shadowman
         }
     }
 
+    struct FlareAnim
+    {
+        FlareAnim(const sf::Sprite & t_sprite);
+
+        [[nodiscard]] bool isAlive() const { return (sprite.getColor().a > 10u); }
+
+        sf::Sprite sprite;
+    };
+
     class PickupAnim
     {
       public:
@@ -69,12 +78,13 @@ namespace shadowman
         [[nodiscard]] constexpr bool isAlive() const noexcept { return m_isAlive; }
         inline void kill() { m_isAlive = false; }
         void update(const Context & t_context, const float t_elapsedSec);
+        const sf::Sprite makeFlareSprite() const;
 
         void draw(const Context & t_context, sf::RenderTarget & t_target, sf::RenderStates t_states)
             const;
 
       private:
-        const sf::IntRect textureRect() const;
+        const sf::IntRect textureRect(const std::size_t t_frameIndex) const;
         std::size_t frameCount() const;
 
       private:
@@ -103,6 +113,7 @@ namespace shadowman
       private:
         sf::Texture m_heartTexture;
         std::vector<PickupAnim> m_anims;
+        std::vector<FlareAnim> m_flareAnims;
     };
 
 } // namespace shadowman

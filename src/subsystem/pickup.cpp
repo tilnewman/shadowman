@@ -16,6 +16,12 @@
 namespace shadowman
 {
 
+    FlareAnim::FlareAnim(const sf::Sprite & t_sprite)
+        : sprite(t_sprite)
+    {}
+
+    //
+
     PickupAnim::PickupAnim(
         const Context & t_context,
         const Pickup t_type,
@@ -27,20 +33,20 @@ namespace shadowman
         , m_frameIndex{ 0 }
         , m_isAlive{ true }
     {
-        m_sprite.setTextureRect(textureRect());
+        m_sprite.setTextureRect(textureRect(m_frameIndex));
         const float scale{ t_context.layout.scaleBasedOnResolution(t_context, 2.0f) };
         m_sprite.setScale({ scale, scale });
         util::setOriginToCenter(m_sprite);
         m_sprite.setPosition(t_position);
     }
 
-    const sf::IntRect PickupAnim::textureRect() const
+    const sf::IntRect PickupAnim::textureRect(const std::size_t t_frameIndex) const
     {
         sf::IntRect rect;
         rect.size.x     = static_cast<int>(m_sprite.getTexture().getSize().y);
         rect.size.y     = rect.size.x;
         rect.position.y = 0;
-        rect.position.x = (rect.size.x * static_cast<int>(m_frameIndex));
+        rect.position.x = (rect.size.x * static_cast<int>(t_frameIndex));
         return rect;
     }
 
@@ -63,7 +69,7 @@ namespace shadowman
                 m_frameIndex = 0;
             }
 
-            m_sprite.setTextureRect(textureRect());
+            m_sprite.setTextureRect(textureRect(m_frameIndex));
         }
     }
 
@@ -75,6 +81,13 @@ namespace shadowman
         sf::Sprite tempSprite{ m_sprite };
         tempSprite.move(t_context.level.mapToOffscreenOffset());
         t_target.draw(tempSprite, t_states);
+    }
+
+    const sf::Sprite PickupAnim::makeFlareSprite() const
+    {
+        sf::Sprite sprite{ m_sprite };
+        sprite.setTextureRect(textureRect(0));
+        return sprite;
     }
 
     //
@@ -97,6 +110,22 @@ namespace shadowman
         {
             anim.update(t_context, t_elapsedSec);
         }
+
+        for (FlareAnim & anim : m_flareAnims)
+        {
+            const float scaler { 1.07f };
+            anim.sprite.scale({scaler, scaler});
+
+            std::uint8_t alpha{ anim.sprite.getColor().a };
+            if (alpha > 10u)
+            {
+                alpha -= 8;
+            }
+            sf::Color newColor{ 255u, 255u, 255u, alpha };
+            anim.sprite.setColor(newColor);
+        }
+
+        std::erase_if(m_flareAnims, [](const FlareAnim & anim) { return not anim.isAlive(); });
     }
 
     void PickupManager::add(
@@ -118,6 +147,13 @@ namespace shadowman
         {
             anim.draw(t_context, t_target, t_states);
         }
+
+        for (const FlareAnim & anim : m_flareAnims)
+        {
+            sf::Sprite tempSprite{ anim.sprite };
+            tempSprite.move(t_context.level.mapToOffscreenOffset());
+            t_target.draw(tempSprite, t_states);
+        }
     }
 
     void PickupManager::playerPickup(const Context & t_context, const sf::FloatRect & t_playerRect)
@@ -133,6 +169,7 @@ namespace shadowman
 
                 anim.kill();
                 t_context.audio.play("pickup");
+                m_flareAnims.emplace_back(anim.makeFlareSprite());
             }
         }
 
