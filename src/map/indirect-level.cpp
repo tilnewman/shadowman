@@ -7,6 +7,7 @@
 #include "enemy/fly-manager.hpp"
 #include "shadowman/settings.hpp"
 #include "subsystem/context.hpp"
+#include "subsystem/info-region.hpp"
 #include "subsystem/screen-layout.hpp"
 #include "subsystem/smoke.hpp"
 #include "util/check-macros.hpp"
@@ -217,6 +218,7 @@ namespace shadowman
         drawLowerLayers(m_renderTexture, m_renderStates);
         t_context.fly.draw(t_context, m_renderTexture, m_renderStates);
         t_context.smoke.draw(t_context, m_renderTexture, m_renderStates);
+        t_context.info_region.draw(m_renderTexture, m_renderStates);
         t_context.avatar.draw(t_context, m_renderTexture, m_renderStates);
         drawUpperLayers(m_renderTexture, m_renderStates);
         m_renderTexture.display();

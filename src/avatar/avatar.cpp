@@ -3,6 +3,7 @@
 //
 #include "avatar.hpp"
 
+#include "avatar/player-info.hpp"
 #include "enemy/fly-manager.hpp"
 #include "map/indirect-level.hpp"
 #include "map/level-files.hpp"
@@ -153,6 +154,7 @@ namespace shadowman
             if (collRect.findIntersection(enemyCollRect))
             {
                 t_context.audio.play("player-hurt");
+                t_context.player_info.healthAdjust(-1);
 
                 // turn toward enemy who just attacked the player
                 const bool isEnemyRight{ util::center(enemyCollRect).x > util::center(collRect).x };
@@ -162,7 +164,7 @@ namespace shadowman
                 }
 
                 // TODO move away from attack
-                sf::Vector2f move{ t_context.setting.avatar_hurt_move * t_elapsedSec};
+                sf::Vector2f move{ t_context.setting.avatar_hurt_move * t_elapsedSec };
                 if (m_isFacingRight)
                 {
                     move.x *= 1.0f;

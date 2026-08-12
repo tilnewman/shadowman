@@ -8,6 +8,7 @@
 #include "map/indirect-level.hpp"
 #include "shadowman/settings.hpp"
 #include "subsystem/context.hpp"
+#include "subsystem/info-region.hpp"
 #include "subsystem/smoke.hpp"
 #include "util/music-player.hpp"
 
@@ -33,6 +34,7 @@ namespace shadowman
         t_context.fly.update(t_context, t_elapsedSec);
         t_context.level.update(t_context, t_elapsedSec);
         t_context.smoke.update(t_context, t_elapsedSec);
+        t_context.info_region.update(t_context);
     }
 
     void StatePlay::handleEvent(const Context & t_context, const sf::Event & t_event)

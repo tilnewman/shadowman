@@ -4,6 +4,7 @@
 // coordinator.hpp
 //
 #include "avatar/avatar.hpp"
+#include "avatar/player-info.hpp"
 #include "enemy/fly-manager.hpp"
 #include "map/indirect-level.hpp"
 #include "map/level-files.hpp"
@@ -12,6 +13,7 @@
 #include "subsystem/context.hpp"
 #include "subsystem/font.hpp"
 #include "subsystem/framerate-display.hpp"
+#include "subsystem/info-region.hpp"
 #include "subsystem/screen-layout.hpp"
 #include "subsystem/smoke.hpp"
 #include "util/music-player.hpp"
@@ -62,6 +64,8 @@ namespace shadowman
         std::unique_ptr<LevelFileManager> m_levelFileManagerUPtr;
         std::unique_ptr<FlyManager> m_flyManagerUPtr;
         std::unique_ptr<SmokeManager> m_smokeManager;
+        std::unique_ptr<PlayerInfo> m_playerInfoUPtr;
+        std::unique_ptr<InfoRegion> m_infoRegionUPtr;
 
         std::unique_ptr<Context> m_contextUPtr;
     };
