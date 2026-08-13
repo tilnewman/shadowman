@@ -93,15 +93,25 @@ namespace shadowman
     //
 
     PickupManager::PickupManager()
-        : m_heartTexture{}
+        : m_textures{}
     {}
 
     void PickupManager::setup(const Context & t_context)
     {
-        util::TextureLoader::load(
-            m_heartTexture,
-            (t_context.setting.media_path / "image" / "heart" / "heart-pickup.png"),
-            true);
+        const std::size_t pickupCount{ static_cast<std::size_t>(Pickup::Count) };
+        m_textures.reserve(pickupCount); // prevent any reallocations
+        for (std::size_t pickupIndex{ 0 }; pickupIndex < pickupCount; ++pickupIndex)
+        {
+            const Pickup pickup{ static_cast<Pickup>(pickupIndex) };
+
+            std::string filename{ toString(pickup) };
+            filename += ".png";
+
+            util::TextureLoader::load(
+                m_textures.emplace_back(),
+                (t_context.setting.media_path / "image" / "pickup" / filename),
+                true);
+        }
     }
 
     void PickupManager::update(const Context & t_context, const float t_elapsedSec)
@@ -119,7 +129,7 @@ namespace shadowman
             std::uint8_t alpha{ anim.sprite.getColor().a };
             if (alpha > 10u)
             {
-                alpha -= 8;
+                alpha -= 8u;
             }
             sf::Color newColor{ 255u, 255u, 255u, alpha };
             anim.sprite.setColor(newColor);
@@ -132,12 +142,12 @@ namespace shadowman
         const Context & t_context, const std::string & t_name, const sf::FloatRect & t_rect)
     {
         const Pickup type{ fromString(t_name) };
-        M_CHECK((type != Pickup::Count), "Unknown pickup type name \"" << t_name << "\"");
 
-        if (Pickup::Heart == type)
-        {
-            m_anims.emplace_back(t_context, type, m_heartTexture, util::center(t_rect));
-        }
+        M_CHECK(
+            (type != Pickup::Count), "Unknown pickup type name \"" << t_name << "\" in level file");
+
+        m_anims.emplace_back(
+            t_context, type, m_textures.at(static_cast<std::size_t>(type)), util::center(t_rect));
     }
 
     void PickupManager::draw(
@@ -160,14 +170,31 @@ namespace shadowman
     {
         for (PickupAnim & anim : m_anims)
         {
-            if ((t_context.player_info.health() < t_context.player_info.healthMax()) and
-                t_playerRect.findIntersection(anim.collisionRect()))
+            if (not t_playerRect.findIntersection(anim.collisionRect()))
             {
-                if (Pickup::Heart == anim.type())
+                continue;
+            }
+
+            bool wasPickedUp{ false };
+            if (Pickup::Heart == anim.type())
+            {
+                if (t_context.player_info.health() < t_context.player_info.healthMax())
                 {
+                    wasPickedUp = true;
                     t_context.player_info.healthAdjust(1);
                 }
+            }
+            else if (Pickup::Crystal == anim.type())
+            {
+                wasPickedUp = true;
+            }
+            else if (Pickup::Plus == anim.type())
+            {
+                wasPickedUp = true;
+            }
 
+            if (wasPickedUp)
+            {
                 anim.kill();
                 t_context.audio.play("pickup");
                 m_flareAnims.emplace_back(anim.makeFlareSprite());

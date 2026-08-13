@@ -24,6 +24,8 @@ namespace shadowman
     enum class Pickup : unsigned char
     {
         Heart = 0,
+        Crystal,
+        Plus,
         Count
     };
 
@@ -32,6 +34,14 @@ namespace shadowman
         if (Pickup::Heart == t_pickup)
         {
             return "heart";
+        }
+        else if (Pickup::Crystal == t_pickup)
+        {
+            return "crystal";
+        }
+        else if (Pickup::Plus == t_pickup)
+        {
+            return "plus";
         }
         else
         {
@@ -44,6 +54,14 @@ namespace shadowman
         if ("heart" == t_name)
         {
             return Pickup::Heart;
+        }
+        else if ("crystal" == t_name)
+        {
+            return Pickup::Crystal;
+        }
+        else if ("plus" == t_name)
+        {
+            return Pickup::Plus;
         }
         else
         {
@@ -117,7 +135,7 @@ namespace shadowman
         }
 
       private:
-        sf::Texture m_heartTexture;
+        std::vector<sf::Texture> m_textures;
         std::vector<PickupAnim> m_anims;
         std::vector<FlareAnim> m_flareAnims;
     };

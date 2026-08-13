@@ -996,12 +996,23 @@
                 {
                  "height":64,
                  "id":28,
-                 "name":"heart",
+                 "name":"plus",
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":64,
-                 "x":992,
+                 "x":960,
+                 "y":2112
+                }, 
+                {
+                 "height":64,
+                 "id":30,
+                 "name":"crystal",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":64,
+                 "x":1024,
                  "y":2112
                 }],
          "opacity":1,
@@ -1011,7 +1022,7 @@
          "y":0
         }],
  "nextlayerid":14,
- "nextobjectid":30,
+ "nextobjectid":31,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",
