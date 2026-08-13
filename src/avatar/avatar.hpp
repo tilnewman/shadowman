@@ -128,7 +128,7 @@ namespace shadowman
             case AvatarAction::Walk:   { return "walk";   }
             case AvatarAction::Run:    { return "run";    }
             case AvatarAction::Attack: { return "attack"; }
-            case AvatarAction::Death:  { return "death"; }
+            case AvatarAction::Death:  { return "death";  }
             case AvatarAction::Hurt:   
             default:                   { return "hurt";   }
         }

@@ -146,7 +146,7 @@ namespace shadowman
 
     void Avatar::processEnemyCollisions(const Context & t_context, const float t_elapsedSec)
     {
-        if (AvatarAction::Hurt == m_action)
+        if ((AvatarAction::Hurt == m_action) or (AvatarAction::Death == m_action))
         {
             return;
         }
@@ -160,6 +160,8 @@ namespace shadowman
         {
             if (collRect.findIntersection(enemyCollRect))
             {
+                t_context.audio.play("player-hurt");
+
                 // turn toward enemy who just attacked the player
                 const bool isEnemyRight{ util::center(enemyCollRect).x > util::center(collRect).x };
                 if (isEnemyRight != m_isFacingRight)
@@ -170,7 +172,7 @@ namespace shadowman
                 // move away from the attack
                 sf::Vector2f positionOffset{ sf::Vector2f{ 100.0f, -100.0f } * t_elapsedSec };
                 sf::Vector2f velocityOffset{ t_context.setting.avatar_hurt_move * t_elapsedSec };
-                if (not m_isFacingRight)
+                if (m_isFacingRight)
                 {
                     positionOffset.x *= -1.0f;
                     velocityOffset.x *= -1.0f;
@@ -178,10 +180,16 @@ namespace shadowman
                 m_sprite.move(positionOffset);
                 m_velocity += velocityOffset;
 
-                resetAnimation(t_context, AvatarAction::Hurt, AvatarAnim::Hurt);
-
-                t_context.audio.play("player-hurt");
+                // hurt or killed?
                 t_context.player_info.healthAdjust(-1);
+                if (t_context.player_info.health() > 0)
+                {
+                    resetAnimation(t_context, AvatarAction::Hurt, AvatarAnim::Hurt);
+                }
+                else
+                {
+                    resetAnimation(t_context, AvatarAction::Death, AvatarAnim::Die);
+                }
 
                 return; // only one enemy can hurt a player at a time
             }
@@ -190,7 +198,7 @@ namespace shadowman
 
     void Avatar::processExitCollision(const Context & t_context)
     {
-        if (AvatarAction::Hurt == m_action)
+        if ((AvatarAction::Hurt == m_action) or (AvatarAction::Death == m_action))
         {
             return;
         }
@@ -342,6 +350,10 @@ namespace shadowman
         {
             m_sprite.setColor(sf::Color(255, 127, 127));
         }
+        else if (AvatarAnim::Die == m_anim)
+        {
+            m_sprite.setColor(sf::Color::Red);
+        }
         else
         {
             m_sprite.setColor(sf::Color::White);
@@ -366,8 +378,6 @@ namespace shadowman
         // std::string str{ toString(m_action) };
         // str += ", ";
         // str += toString(m_anim);
-        // str += ", ";
-        // str += ((m_isDeathAnimComplete) ? "true" : "false");
         // m_debugText.setString(str);
         // util::setOriginToPosition(m_debugText);
         // m_debugText.setPosition({ util::right(tempSprite), tempSprite.getPosition().y });
@@ -486,7 +496,6 @@ namespace shadowman
         m_isDeathAnimComplete = false;
         resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::Idle);
         m_sprite.setPosition(t_position);
-        m_sprite.setColor(sf::Color::White);
 
         if (not m_isFacingRight)
         {
@@ -508,7 +517,6 @@ namespace shadowman
             {
                 m_velocity = { 0.0f, 0.0f };
                 resetAnimation(t_context, AvatarAction::Death, AvatarAnim::Die);
-                m_sprite.setColor(sf::Color::Red);
                 t_context.audio.stop("walk");
                 t_context.audio.play("player-death");
                 return;
@@ -518,11 +526,6 @@ namespace shadowman
 
     void Avatar::processCollisions(const Context & t_context)
     {
-        if (AvatarAction::Death == m_action)
-        {
-            return;
-        }
-
         const sf::FloatRect avatarRect{ collisionRect() };
         const sf::Vector2f avatarCenter{ util::center(avatarRect) };
 
@@ -578,7 +581,8 @@ namespace shadowman
         {
             // falling and hit something below
 
-            if (not m_isLanded)
+            if (not m_isLanded and (AvatarAction::Hurt != m_action) and
+                (AvatarAction::Death != m_action))
             {
                 t_context.audio.play("land");
                 resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::Idle);

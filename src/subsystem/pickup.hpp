@@ -110,6 +110,12 @@ namespace shadowman
         void draw(const Context & t_context, sf::RenderTarget & t_target, sf::RenderStates t_states)
             const;
 
+        constexpr void clear() noexcept
+        {
+            m_anims.clear();
+            m_flareAnims.clear();
+        }
+
       private:
         sf::Texture m_heartTexture;
         std::vector<PickupAnim> m_anims;

@@ -4,6 +4,7 @@
 #include "indirect-level.hpp"
 
 #include "avatar/avatar.hpp"
+#include "avatar/player-info.hpp"
 #include "enemy/fly-manager.hpp"
 #include "shadowman/settings.hpp"
 #include "subsystem/context.hpp"
@@ -56,6 +57,8 @@ namespace shadowman
 
     void IndirectLevel::reset(const Context & t_context)
     {
+        t_context.player_info.reset();
+        t_context.pickup.clear();
         t_context.fly.clear();
 
         m_lowerTileLayers.clear();
