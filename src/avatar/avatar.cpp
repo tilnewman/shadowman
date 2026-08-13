@@ -160,9 +160,6 @@ namespace shadowman
         {
             if (collRect.findIntersection(enemyCollRect))
             {
-                t_context.audio.play("player-hurt");
-                t_context.player_info.healthAdjust(-1);
-
                 // turn toward enemy who just attacked the player
                 const bool isEnemyRight{ util::center(enemyCollRect).x > util::center(collRect).x };
                 if (isEnemyRight != m_isFacingRight)
@@ -170,15 +167,22 @@ namespace shadowman
                     turn();
                 }
 
-                // TODO move away from attack
-                sf::Vector2f move{ t_context.setting.avatar_hurt_move * t_elapsedSec };
-                if (m_isFacingRight)
+                // move away from the attack
+                sf::Vector2f positionOffset{ sf::Vector2f{ 100.0f, -100.0f } * t_elapsedSec };
+                sf::Vector2f velocityOffset{ t_context.setting.avatar_hurt_move * t_elapsedSec };
+                if (not m_isFacingRight)
                 {
-                    move.x *= 1.0f;
+                    positionOffset.x *= -1.0f;
+                    velocityOffset.x *= -1.0f;
                 }
-                m_velocity += move;
+                m_sprite.move(positionOffset);
+                m_velocity += velocityOffset;
 
                 resetAnimation(t_context, AvatarAction::Hurt, AvatarAnim::Hurt);
+
+                t_context.audio.play("player-hurt");
+                t_context.player_info.healthAdjust(-1);
+
                 return; // only one enemy can hurt a player at a time
             }
         }
