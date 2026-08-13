@@ -113,8 +113,8 @@ namespace shadowman
 
         for (FlareAnim & anim : m_flareAnims)
         {
-            const float scaler { 1.07f };
-            anim.sprite.scale({scaler, scaler});
+            const float scaler{ 1.07f };
+            anim.sprite.scale({ scaler, scaler });
 
             std::uint8_t alpha{ anim.sprite.getColor().a };
             if (alpha > 10u)
@@ -160,7 +160,8 @@ namespace shadowman
     {
         for (PickupAnim & anim : m_anims)
         {
-            if (t_playerRect.findIntersection(anim.collisionRect()))
+            if ((t_context.player_info.health() < t_context.player_info.healthMax()) and
+                t_playerRect.findIntersection(anim.collisionRect()))
             {
                 if (Pickup::Heart == anim.type())
                 {
