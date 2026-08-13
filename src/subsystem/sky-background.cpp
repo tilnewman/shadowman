@@ -217,15 +217,16 @@ namespace shadowman
                 &m_skyVerts[0], m_skyVerts.size(), sf::PrimitiveType::Triangles, t_states);
         }
 
-        if (m_willShowMoon)
-        {
-            t_target.draw(m_moonSprite, t_states);
-        }
-
-        if (m_willShowSun)
-        {
-            t_target.draw(m_sunSprite, t_states);
-        }
+        // moving these around with the player makes no sense and looks weird...
+        // if (m_willShowMoon)
+        //{
+        //    t_target.draw(m_moonSprite, t_states);
+        //}
+        //
+        // if (m_willShowSun)
+        //{
+        //    t_target.draw(m_sunSprite, t_states);
+        //}
 
         for (const CloudAnim & anim : m_cloudAnims)
         {
