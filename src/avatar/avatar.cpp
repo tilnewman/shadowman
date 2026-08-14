@@ -139,6 +139,11 @@ namespace shadowman
         processKillCollisions(t_context);
         processExitCollision(t_context);
         processTeleporters(t_context, t_elapsedSec);
+
+        if (m_isLanded and sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+        {
+            t_context.level.shakeScreen(true);
+        }
     }
 
     void Avatar::processPickups(const Context & t_context)
@@ -659,6 +664,8 @@ namespace shadowman
             {
                 m_velocity.x = 0.0f;
             }
+
+            t_context.level.shakeScreen(false);
         }
         else if (t_intersectionRect.size.x < tolerance)
         {

@@ -46,6 +46,7 @@ namespace shadowman
         , m_moveScreenRectDown{}
         , m_fileLoader{}
         , m_willPreventMovingLeft{ true } // this is a right moving side-scroller after all
+        , m_screenShaker{}
     {
         // harmless guesses based on what I know is in typical map files
         m_lowerTileLayers.reserve(16);
@@ -55,6 +56,8 @@ namespace shadowman
 
     void IndirectLevel::reset(const Context & t_context)
     {
+        m_screenShaker.setup(t_context);
+
         t_context.player_info.reset();
         t_context.pickup.clear();
         t_context.fly.clear();
@@ -312,7 +315,7 @@ namespace shadowman
         sf::RenderTarget & t_target, sf::RenderStates t_states) const
     {
         sf::Sprite sprite(m_renderTexture.getTexture(), sf::IntRect{ m_offscreenDrawRect });
-        sprite.setPosition(m_mapScreenPosOffset);
+        sprite.setPosition(m_mapScreenPosOffset + m_screenShaker.offset());
         t_target.draw(sprite, t_states);
     }
 
@@ -381,6 +384,8 @@ namespace shadowman
         {
             layerUPtr->update(t_context, t_frameTimeSec);
         }
+
+        m_screenShaker.update(t_frameTimeSec);
     }
 
     void IndirectLevel::playerMove(

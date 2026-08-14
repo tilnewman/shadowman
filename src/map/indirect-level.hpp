@@ -5,6 +5,7 @@
 //
 #include "map/file-loader.hpp"
 #include "map/tile-layer.hpp"
+#include "subsystem/screen-shaker.hpp"
 #include "util/sfml-util.hpp"
 
 #include <memory>
@@ -131,6 +132,18 @@ namespace shadowman
             const sf::FloatRect & t_playerMapRect,
             const sf::Vector2f & t_move);
 
+        constexpr void shakeScreen(const bool m_isEnabled)
+        {
+            if (m_isEnabled)
+            {
+                m_screenShaker.start();
+            }
+            else
+            {
+                m_screenShaker.stop();
+            }
+        }
+
       private:
         void setupOffscreenTileRange(const Context & t_context, const sf::Vector2f & t_entryPos);
         void reset(const Context & t_context);
@@ -196,6 +209,7 @@ namespace shadowman
 
         FileLoader m_fileLoader;
         bool m_willPreventMovingLeft;
+        ScreenShaker m_screenShaker;
     };
 
 } // namespace shadowman
