@@ -44,10 +44,9 @@ namespace shadowman
         }
     {}
 
-    void SkyBackground::setup(const Context & t_context, const sf::Vector2f & t_size)
+    void SkyBackground::setup(const Context & t_context)
     {
-        m_offscreenRect.position = { 0.0f, 0.0f };
-        m_offscreenRect.size     = t_size;
+        m_offscreenRect = t_context.layout.mapRect();
 
         const SkyColorSet colors{ t_context.random.from(m_skyColors) };
 
@@ -217,16 +216,15 @@ namespace shadowman
                 &m_skyVerts[0], m_skyVerts.size(), sf::PrimitiveType::Triangles, t_states);
         }
 
-        // moving these around with the player makes no sense and looks weird...
-        // if (m_willShowMoon)
-        //{
-        //    t_target.draw(m_moonSprite, t_states);
-        //}
-        //
-        // if (m_willShowSun)
-        //{
-        //    t_target.draw(m_sunSprite, t_states);
-        //}
+        if (m_willShowMoon)
+        {
+            t_target.draw(m_moonSprite, t_states);
+        }
+
+        if (m_willShowSun)
+        {
+            t_target.draw(m_sunSprite, t_states);
+        }
 
         for (const CloudAnim & anim : m_cloudAnims)
         {

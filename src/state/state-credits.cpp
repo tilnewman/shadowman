@@ -213,7 +213,7 @@ namespace shadowman
             "J. Victor Gaultney, Annie Olsen, Iska Routamaa, Becca Hirsbrunner (SIL Open Font)",
             m_credits.back().bottom() + vertPad);
 
-        m_skyBackground.setup(t_context, t_context.layout.wholeRect().size);
+        m_skyBackground.setup(t_context);
 
         t_context.music.start("credits.ogg");
     }

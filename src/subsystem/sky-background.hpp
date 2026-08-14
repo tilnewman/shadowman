@@ -39,7 +39,7 @@ namespace shadowman
       public:
         SkyBackground();
 
-        void setup(const Context & t_context, const sf::Vector2f & t_size);
+        void setup(const Context & t_context);
         void update(const Context & t_context, const float t_elapsedSec);
         void draw(sf::RenderTarget & t_target, sf::RenderStates t_states) const;
         void move(const sf::Vector2f & t_move);

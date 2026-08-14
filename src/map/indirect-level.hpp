@@ -5,7 +5,6 @@
 //
 #include "map/file-loader.hpp"
 #include "map/tile-layer.hpp"
-#include "subsystem/sky-background.hpp"
 #include "util/sfml-util.hpp"
 
 #include <memory>
@@ -168,9 +167,6 @@ namespace shadowman
         sf::IntRect m_offscreenTileRange;
         sf::FloatRect m_offscreenDrawRect;
 
-        // the onscreen map background (will be visible if m_isMapRectBigEnoughHoriz/Vert)
-        sf::RectangleShape m_backgroundRectangle;
-
         // dirty flag for the offscreen verts, so we don't have to re-append them every frame
         bool m_didOffscreenVertsChange;
 
@@ -188,8 +184,6 @@ namespace shadowman
         sf::FloatRect m_exitRect;
 
         FileLoader m_fileLoader;
-        SkyBackground m_skyBackground;
-
         bool m_willPreventMovingLeft;
     };
 

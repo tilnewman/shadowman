@@ -37,7 +37,6 @@ namespace shadowman
         , m_renderStates{}
         , m_offscreenTileRange{}
         , m_offscreenDrawRect{}
-        , m_backgroundRectangle{}
         , m_didOffscreenVertsChange{ false }
         , m_isMapRectBigEnoughHoriz{ false }
         , m_isMapRectBigEnoughVert{ false }
@@ -46,7 +45,6 @@ namespace shadowman
         , m_moveScreenRectUp{}
         , m_moveScreenRectDown{}
         , m_fileLoader{}
-        , m_skyBackground{}
         , m_willPreventMovingLeft{ true } // this is a right moving side-scroller after all
     {
         // harmless guesses based on what I know is in typical map files
@@ -73,12 +71,6 @@ namespace shadowman
         const sf::FloatRect screenRect{ t_context.layout.mapRect() };
         m_mapScreenPosOffset = screenRect.position;
         m_offscreenDrawRect  = { { 0.0f, 0.0f }, screenRect.size };
-
-        m_backgroundRectangle.setFillColor(sf::Color::Black);
-        m_backgroundRectangle.setPosition(screenRect.position);
-        m_backgroundRectangle.setSize(screenRect.size);
-        m_backgroundRectangle.setOutlineColor(t_context.setting.map_outline_color);
-        m_backgroundRectangle.setOutlineThickness(1.0f);
 
         // create moveMap rects
         const sf::FloatRect innerScreenRect{ util::scaleRectInPlaceCopy(
@@ -128,8 +120,6 @@ namespace shadowman
         const sf::Vector2f entryPos{ util::center(m_enterRect) };
         setupOffscreenTileRange(t_context, entryPos);
         t_context.avatar.setPositionOnNewLevel(t_context, entryPos);
-
-        m_skyBackground.setup(t_context, offscreenTextureSize());
 
         const sf::Vector2u renderTextureSize{ offscreenTextureSize() };
         const bool didTextureResizeSucceed{ m_renderTexture.resize(renderTextureSize) };
@@ -217,8 +207,7 @@ namespace shadowman
             m_didOffscreenVertsChange = false;
         }
 
-        m_renderTexture.clear(sf::Color::Black);
-        m_skyBackground.draw(m_renderTexture, m_renderStates);
+        m_renderTexture.clear(sf::Color::Transparent);
         drawLowerLayers(m_renderTexture, m_renderStates);
         t_context.fly.draw(t_context, m_renderTexture, m_renderStates);
         t_context.smoke.draw(t_context, m_renderTexture, m_renderStates);
@@ -310,7 +299,6 @@ namespace shadowman
     void IndirectLevel::moveAll(const Context &, const sf::Vector2f & t_move)
     {
         moveAllLayers(t_move);
-        m_skyBackground.move(t_move);
     }
 
     void IndirectLevel::draw(
@@ -323,8 +311,6 @@ namespace shadowman
     void IndirectLevel::drawToOnscreenTexture(
         sf::RenderTarget & t_target, sf::RenderStates t_states) const
     {
-        t_target.draw(m_backgroundRectangle, t_states);
-
         sf::Sprite sprite(m_renderTexture.getTexture(), sf::IntRect{ m_offscreenDrawRect });
         sprite.setPosition(m_mapScreenPosOffset);
         t_target.draw(sprite, t_states);
@@ -386,8 +372,6 @@ namespace shadowman
 
     void IndirectLevel::update(const Context & t_context, const float t_frameTimeSec)
     {
-        m_skyBackground.update(t_context, t_frameTimeSec);
-
         for (auto & layerUPtr : m_lowerTileLayers)
         {
             layerUPtr->update(t_context, t_frameTimeSec);

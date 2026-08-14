@@ -10,6 +10,7 @@
 #include "subsystem/context.hpp"
 #include "subsystem/info-region.hpp"
 #include "subsystem/pickup.hpp"
+#include "subsystem/screen-layout.hpp"
 #include "subsystem/smoke.hpp"
 #include "util/music-player.hpp"
 
@@ -19,12 +20,15 @@
 namespace shadowman
 {
 
-    StatePlay::StatePlay() {}
+    StatePlay::StatePlay()
+        : m_skyBackground{}
+    {}
 
     void StatePlay::onEnter(const Context & t_context)
     {
         t_context.level.load(t_context, "level-1.json");
         t_context.music.start("music.ogg");
+        m_skyBackground.setup(t_context);
     }
 
     void StatePlay::onExit(const Context & t_context) { t_context.music.stop("music.ogg"); }
@@ -37,6 +41,7 @@ namespace shadowman
         t_context.smoke.update(t_context, t_elapsedSec);
         t_context.info_region.update(t_context);
         t_context.pickup.update(t_context, t_elapsedSec);
+        m_skyBackground.update(t_context, t_elapsedSec);
     }
 
     void StatePlay::handleEvent(const Context & t_context, const sf::Event & t_event)
@@ -47,6 +52,7 @@ namespace shadowman
     void StatePlay::draw(
         const Context & t_context, sf::RenderTarget & t_target, sf::RenderStates t_states) const
     {
+        m_skyBackground.draw(t_target, t_states);
         t_context.level.draw(t_context, t_target, t_states);
     }
 
