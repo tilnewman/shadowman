@@ -177,7 +177,7 @@ namespace shadowman
               t_context.random.fromTo(sunRect.position.y, util::bottom(sunRect)) });
 
         // will display sun or moon?
-        if (t_context.random.boolean())
+        if (t_context.random.fromTo(1,100) > 25)
         {
             if (t_context.random.boolean())
             {
