@@ -38,6 +38,7 @@ namespace shadowman
         , m_isFacingRight{ true }
         , m_isDeathAnimComplete{ false }
         , m_deathDelaySec{ 0.0f }
+        , m_teleportElapsedSec{ 0.0f }
         , m_jumpTexture{}
         , m_animTextures{}
         , m_debugText{ util::SfmlDefaults::instance().font() }
@@ -137,7 +138,7 @@ namespace shadowman
         processPickups(t_context);
         processKillCollisions(t_context);
         processExitCollision(t_context);
-        processTeleporters(t_context);
+        processTeleporters(t_context, t_elapsedSec);
     }
 
     void Avatar::processPickups(const Context & t_context)
@@ -145,7 +146,7 @@ namespace shadowman
         t_context.pickup.playerPickup(t_context, collisionRect());
     }
 
-    void Avatar::processTeleporters(const Context & t_context)
+    void Avatar::processTeleporters(const Context & t_context, const float t_elapsedSec)
     {
         if (m_isLanded and (AvatarAction::Idle == m_action) and
             sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
@@ -159,7 +160,8 @@ namespace shadowman
                     (teleportRect.contains(util::center(collRect))))
                 {
                     t_context.audio.play("teleport");
-                    m_action = AvatarAction::Teleport;
+                    m_action             = AvatarAction::Teleport;
+                    m_teleportElapsedSec = 0.0f;
                     break;
                 }
             }
@@ -168,24 +170,32 @@ namespace shadowman
         if (AvatarAction::Teleport == m_action)
         {
             std::uint8_t alpha{ m_sprite.getColor().a };
-            if (alpha > 0)
+            if (alpha >= 2)
             {
-                --alpha;
+                alpha -= 2;
+            }
+            else
+            {
+                alpha = 0;
             }
 
             m_sprite.setColor(sf::Color(255, 255, 255, alpha));
 
             if (alpha == 0)
             {
-                t_context.level_file.increment();
-                const std::string nextLevelFilename{ t_context.level_file.current() };
-                if (nextLevelFilename.empty())
+                m_teleportElapsedSec += t_elapsedSec;
+                if (m_teleportElapsedSec > 1.0f)
                 {
-                    t_context.state.setChangePending(State::Credits);
-                }
-                else
-                {
-                    t_context.level.load(t_context, nextLevelFilename);
+                    t_context.level_file.increment();
+                    const std::string nextLevelFilename{ t_context.level_file.current() };
+                    if (nextLevelFilename.empty())
+                    {
+                        t_context.state.setChangePending(State::Credits);
+                    }
+                    else
+                    {
+                        t_context.level.load(t_context, nextLevelFilename);
+                    }
                 }
             }
         }
@@ -543,6 +553,7 @@ namespace shadowman
         m_velocity            = { 0.0f, 0.0f };
         m_isLanded            = false;
         m_isDeathAnimComplete = false;
+        m_teleportElapsedSec  = 0.0f;
         resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::Idle);
         m_sprite.setPosition(t_position);
         m_sprite.setColor(sf::Color::White);

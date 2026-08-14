@@ -168,7 +168,7 @@ namespace shadowman
         void resetAnimation(
             const Context & t_context, const AvatarAction t_action, const AvatarAnim t_anim);
 
-        void processTeleporters(const Context & t_context);
+        void processTeleporters(const Context & t_context, const float t_elapsedSec);
         void processPickups(const Context & t_context);
         void processEnemyCollisions(const Context & t_context, const float t_elapsedSec);
         void processExitCollision(const Context & t_context);
@@ -203,6 +203,7 @@ namespace shadowman
         bool m_isFacingRight;
         bool m_isDeathAnimComplete;
         float m_deathDelaySec;
+        float m_teleportElapsedSec;
         sf::Texture m_jumpTexture;
         std::vector<std::vector<sf::Texture>> m_animTextures;
 
