@@ -137,6 +137,7 @@ namespace shadowman
         processPickups(t_context);
         processKillCollisions(t_context);
         processExitCollision(t_context);
+        processTeleporters(t_context);
     }
 
     void Avatar::processPickups(const Context & t_context)
@@ -144,9 +145,56 @@ namespace shadowman
         t_context.pickup.playerPickup(t_context, collisionRect());
     }
 
+    void Avatar::processTeleporters(const Context & t_context)
+    {
+        if (m_isLanded and (AvatarAction::Idle == m_action) and
+            sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+        {
+            const sf::FloatRect collRect{ collisionRect() };
+            for (const sf::FloatRect & teleportRect : t_context.level.teleportRects())
+            {
+                if ((collRect.position.x > teleportRect.position.x) and
+                    (util::right(collRect) < util::right(teleportRect)) and
+                    (collRect.position.y > teleportRect.position.y) and
+                    (teleportRect.contains(util::center(collRect))))
+                {
+                    t_context.audio.play("teleport");
+                    m_action = AvatarAction::Teleport;
+                    break;
+                }
+            }
+        }
+
+        if (AvatarAction::Teleport == m_action)
+        {
+            std::uint8_t alpha{ m_sprite.getColor().a };
+            if (alpha > 0)
+            {
+                --alpha;
+            }
+
+            m_sprite.setColor(sf::Color(255, 255, 255, alpha));
+
+            if (alpha == 0)
+            {
+                t_context.level_file.increment();
+                const std::string nextLevelFilename{ t_context.level_file.current() };
+                if (nextLevelFilename.empty())
+                {
+                    t_context.state.setChangePending(State::Credits);
+                }
+                else
+                {
+                    t_context.level.load(t_context, nextLevelFilename);
+                }
+            }
+        }
+    }
+
     void Avatar::processEnemyCollisions(const Context & t_context, const float t_elapsedSec)
     {
-        if ((AvatarAction::Hurt == m_action) or (AvatarAction::Death == m_action))
+        if ((AvatarAction::Hurt == m_action) or (AvatarAction::Death == m_action) or
+            (AvatarAction::Teleport == m_action))
         {
             return;
         }
@@ -198,7 +246,8 @@ namespace shadowman
 
     void Avatar::processExitCollision(const Context & t_context)
     {
-        if ((AvatarAction::Hurt == m_action) or (AvatarAction::Death == m_action))
+        if ((AvatarAction::Hurt == m_action) or (AvatarAction::Death == m_action) or
+            (AvatarAction::Teleport == m_action))
         {
             return;
         }
@@ -251,7 +300,7 @@ namespace shadowman
     {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::F) and
             (AvatarAction::Attack != m_action) and (AvatarAction::Death != m_action) and
-            (AvatarAction::Hurt != m_action))
+            (AvatarAction::Hurt != m_action) and (AvatarAction::Teleport != m_action))
         {
             const AvatarAnim randomAnim{ t_context.random.from(
                 { AvatarAnim::Stab, AvatarAnim::Stab2, AvatarAnim::Slash, AvatarAnim::Slash2 }) };
@@ -496,6 +545,7 @@ namespace shadowman
         m_isDeathAnimComplete = false;
         resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::Idle);
         m_sprite.setPosition(t_position);
+        m_sprite.setColor(sf::Color::White);
 
         if (not m_isFacingRight)
         {
@@ -505,7 +555,7 @@ namespace shadowman
 
     void Avatar::processKillCollisions(const Context & t_context)
     {
-        if (AvatarAction::Death == m_action)
+        if ((AvatarAction::Death == m_action) or (AvatarAction::Teleport == m_action))
         {
             return;
         }
@@ -618,7 +668,7 @@ namespace shadowman
     void Avatar::updateHorizMotion(const Context & t_context, const float t_frameTimeSec)
     {
         if ((AvatarAction::Death == m_action) or (AvatarAction::Hurt == m_action) or
-            (AvatarAction::Attack == m_action) or
+            (AvatarAction::Attack == m_action) or (AvatarAction::Teleport == m_action) or
             sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A))
         {
             return;

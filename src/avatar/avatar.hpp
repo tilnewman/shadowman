@@ -115,7 +115,8 @@ namespace shadowman
         Run,
         Attack,
         Hurt,
-        Death
+        Death,
+        Teleport
     };
 
     [[nodiscard]] constexpr std::string_view toString(const AvatarAction t_action) noexcept
@@ -123,14 +124,15 @@ namespace shadowman
         // clang-format off
         switch(t_action)
         {
-            case AvatarAction::Idle:   { return "idle";   }
-            case AvatarAction::Jump:   { return "jump";   }
-            case AvatarAction::Walk:   { return "walk";   }
-            case AvatarAction::Run:    { return "run";    }
-            case AvatarAction::Attack: { return "attack"; }
-            case AvatarAction::Death:  { return "death";  }
+            case AvatarAction::Idle:     { return "idle";      }
+            case AvatarAction::Jump:     { return "jump";      }
+            case AvatarAction::Walk:     { return "walk";      }
+            case AvatarAction::Run:      { return "run";       }
+            case AvatarAction::Attack:   { return "attack";    }
+            case AvatarAction::Death:    { return "death";     }
+            case AvatarAction::Teleport: { return "teleport";  }
             case AvatarAction::Hurt:   
-            default:                   { return "hurt";   }
+            default:                     { return "hurt";      }
         }
         // clang-format on
     }
@@ -166,6 +168,7 @@ namespace shadowman
         void resetAnimation(
             const Context & t_context, const AvatarAction t_action, const AvatarAnim t_anim);
 
+        void processTeleporters(const Context & t_context);
         void processPickups(const Context & t_context);
         void processEnemyCollisions(const Context & t_context, const float t_elapsedSec);
         void processExitCollision(const Context & t_context);

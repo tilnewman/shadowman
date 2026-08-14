@@ -160,6 +160,13 @@ namespace shadowman
                 parseRectLayer(t_context, layerJson, rects);
                 t_context.level.killCollisions(rects);
             }
+            else if (layerName == "teleporter")
+            {
+                std::vector<sf::FloatRect> rects;
+                rects.reserve(32);
+                parseRectLayer(t_context, layerJson, rects);
+                t_context.level.teleportRects(rects);
+            }
             else if (layerName == "spawn")
             {
                 parseSpawnLayer(t_context, layerJson);

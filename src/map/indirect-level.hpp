@@ -72,6 +72,16 @@ namespace shadowman
             m_collisions = t_rects;
         }
 
+        [[nodiscard]] inline const std::vector<sf::FloatRect> & teleportRects() const
+        {
+            return m_teleportRects;
+        }
+
+        inline void teleportRects(const std::vector<sf::FloatRect> & t_rects)
+        {
+            m_teleportRects = t_rects;
+        }
+
         [[nodiscard]] inline const std::vector<sf::FloatRect> & killCollisions() const
         {
             return m_killCollisions;
@@ -154,6 +164,7 @@ namespace shadowman
         // all of these are in map coordinates
         std::vector<sf::FloatRect> m_collisions;
         std::vector<sf::FloatRect> m_killCollisions;
+        std::vector<sf::FloatRect> m_teleportRects;
 
         // lower layers draw first, then pre anims, then player/nps, then upper layers, post anims
         std::vector<std::unique_ptr<ITileLayer>> m_lowerTileLayers;
