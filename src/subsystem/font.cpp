@@ -11,31 +11,29 @@ namespace shadowman
 {
 
     FontManager::FontManager()
-        : m_titleFont{}
-        , m_generalFont{}
-        , m_titleExtents{}
+        : m_generalFont{}
         , m_generalExtents{}
+        , m_anarchyFont{}
+        , m_anarchyExtents{}
+        , m_dashleyFont{}
+        , m_dashleyExtents{}
     {}
 
     void FontManager::setup(const Settings & t_settings)
     {
-        const std::string titleFontPath{
-            (t_settings.media_path / "font" / "mops-antiqua.ttf").string()
+        const auto loadFont = [&](sf::Font & font, const std::string & filename) {
+            const std::string path{ (t_settings.media_path / "font" / filename).string() };
+            const bool loadSuccess{ font.openFromFile(path) };
+            M_CHECK(loadSuccess, "Failed to load font at: " << path);
         };
 
-        const bool titleFontLoadSuccess{ m_titleFont.openFromFile(titleFontPath) };
-        M_CHECK(titleFontLoadSuccess, "Failed to load title font at: " << titleFontPath);
-        setupFontExtents(t_settings, Font::Title, m_titleExtents);
+        loadFont(m_generalFont, "gentium-plus.ttf");
+        loadFont(m_anarchyFont, "anarchysans.otf");
+        loadFont(m_dashleyFont, "dashley.ttf");
 
-        //
-
-        const std::string generalFontPath{
-            (t_settings.media_path / "font" / "gentium-plus.ttf").string()
-        };
-
-        const bool generalFontLoadSuccess{ m_generalFont.openFromFile(generalFontPath) };
-        M_CHECK(generalFontLoadSuccess, "Failed to load general font at: " << generalFontPath);
         setupFontExtents(t_settings, Font::General, m_generalExtents);
+        setupFontExtents(t_settings, Font::AnarchySans, m_anarchyExtents);
+        setupFontExtents(t_settings, Font::Dashley, m_dashleyExtents);
     }
 
     const sf::Text FontManager::makeText(
@@ -55,43 +53,36 @@ namespace shadowman
 
     const FontExtent FontManager::extent(const Font t_font, const FontSize t_size) const noexcept
     {
-        if (t_font == Font::Title)
-        {
+        const auto extentSize = [&](const FontExtentSet & set) {
             if (FontSize::Huge == t_size)
             {
-                return m_titleExtents.huge;
+                return set.huge;
             }
             else if (FontSize::Large == t_size)
             {
-                return m_titleExtents.large;
+                return set.large;
             }
             else if (FontSize::Medium == t_size)
             {
-                return m_titleExtents.medium;
+                return set.medium;
             }
             else
             {
-                return m_titleExtents.small;
+                return set.small;
             }
+        };
+
+        if (t_font == Font::AnarchySans)
+        {
+            return extentSize(m_anarchyExtents);
+        }
+        else if (t_font == Font::Dashley)
+        {
+            return extentSize(m_dashleyExtents);
         }
         else
         {
-            if (FontSize::Huge == t_size)
-            {
-                return m_generalExtents.huge;
-            }
-            else if (FontSize::Large == t_size)
-            {
-                return m_generalExtents.large;
-            }
-            else if (FontSize::Medium == t_size)
-            {
-                return m_generalExtents.medium;
-            }
-            else
-            {
-                return m_generalExtents.small;
-            }
+            return extentSize(m_generalExtents);
         }
     }
 

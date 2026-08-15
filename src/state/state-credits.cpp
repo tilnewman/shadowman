@@ -32,9 +32,9 @@ namespace shadowman
         const float t_vertPos)
         : texture{}
         , sprite{ texture }
-        , name{ t_context.font.makeText(Font::Title, FontSize::Large, t_name, sf::Color::Black) }
+        , name{ t_context.font.makeText(Font::General, FontSize::Large, t_name, sf::Color::Black) }
         , description{ t_context.font.makeText(
-              Font::General, FontSize::Medium, t_description, sf::Color::Black) }
+              Font::Dashley, FontSize::Medium, t_description, sf::Color::Black) }
     {
         util::TextureLoader::load(texture, t_imageFilePath, true);
 
@@ -131,7 +131,7 @@ namespace shadowman
         const float vertPad{ screenRect.size.y * 0.11f };
 
         m_titleText =
-            t_context.font.makeText(Font::Title, FontSize::Huge, "Credits", sf::Color::Black);
+            t_context.font.makeText(Font::AnarchySans, FontSize::Huge, "Credits", sf::Color::Black);
 
         m_titleText.setPosition(
             { (util::center(screenRect).x - (m_titleText.getGlobalBounds().size.x * 0.5f)),

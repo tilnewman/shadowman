@@ -20,7 +20,8 @@ namespace shadowman
     enum class Font
     {
         General,
-        Title
+        AnarchySans,
+        Dashley
     };
 
     //
@@ -101,9 +102,13 @@ namespace shadowman
 
         [[nodiscard]] inline const sf::Font & get(const Font t_font) const noexcept
         {
-            if (t_font == Font::Title)
+            if (t_font == Font::Dashley)
             {
-                return m_titleFont;
+                return m_dashleyFont;
+            }
+            else if (t_font == Font::AnarchySans)
+            {
+                return m_anarchyFont;
             }
             else
             {
@@ -133,10 +138,14 @@ namespace shadowman
             const Settings & t_settings, const Font t_font, FontExtentSet & t_extentSet);
 
       private:
-        sf::Font m_titleFont;
         sf::Font m_generalFont;
-        FontExtentSet m_titleExtents;
         FontExtentSet m_generalExtents;
+
+        sf::Font m_anarchyFont;
+        FontExtentSet m_anarchyExtents;
+
+        sf::Font m_dashleyFont;
+        FontExtentSet m_dashleyExtents;
     };
 
 } // namespace shadowman
