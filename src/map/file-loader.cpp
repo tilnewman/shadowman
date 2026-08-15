@@ -160,16 +160,9 @@ namespace shadowman
                 parseRectLayer(t_context, layerJson, rects);
                 t_context.level.killCollisions(rects);
             }
-            else if (layerName == "teleporter")
+            else if (layerName == "teleport")
             {
-                std::vector<sf::FloatRect> rects;
-                rects.reserve(32);
-                parseRectLayer(t_context, layerJson, rects);
-                t_context.level.teleportRects(rects);
-            }
-            else if (layerName == "spawn")
-            {
-                parseSpawnLayer(t_context, layerJson);
+                parseTeleportLayer(t_context, layerJson);
             }
             else if (layerName == "enemy")
             {
@@ -231,7 +224,7 @@ namespace shadowman
         }
     }
 
-    void FileLoader::parseSpawnLayer(const Context & t_context, const nlohmann::json & t_json)
+    void FileLoader::parseTeleportLayer(const Context & t_context, const nlohmann::json & t_json)
     {
         for (const nlohmann::json & spawnJson : t_json["objects"])
         {
@@ -249,7 +242,7 @@ namespace shadowman
             else
             {
                 util::log() << "While parsing level file \"" << m_pathStr
-                            << "\".  Ignored unknown spawn rect named \"" << name << "\".\n";
+                            << "\".  Ignored unknown teleport rect named \"" << name << "\".\n";
             }
         }
 

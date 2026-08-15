@@ -73,15 +73,11 @@ namespace shadowman
             m_collisions = t_rects;
         }
 
-        [[nodiscard]] inline const std::vector<sf::FloatRect> & teleportRects() const
-        {
-            return m_teleportRects;
-        }
+        [[nodiscard]] inline const sf::FloatRect enterRect() const { return m_enterRect; }
+        inline void enterRect(const sf::FloatRect & t_rect) { m_enterRect = t_rect; }
 
-        inline void teleportRects(const std::vector<sf::FloatRect> & t_rects)
-        {
-            m_teleportRects = t_rects;
-        }
+        [[nodiscard]] inline const sf::FloatRect exitRect() const { return m_exitRect; }
+        inline void exitRect(const sf::FloatRect & t_rect) { m_exitRect = t_rect; }
 
         [[nodiscard]] inline const std::vector<sf::FloatRect> & killCollisions() const
         {
@@ -112,12 +108,6 @@ namespace shadowman
         {
             return (m_mapScreenPosOffset + mapToOffscreenOffset());
         }
-
-        [[nodiscard]] inline const sf::FloatRect enterRect() const { return m_enterRect; }
-        inline void enterRect(const sf::FloatRect & t_rect) { m_enterRect = t_rect; }
-
-        [[nodiscard]] inline const sf::FloatRect exitRect() const { return m_exitRect; }
-        inline void exitRect(const sf::FloatRect & t_rect) { m_exitRect = t_rect; }
 
         // the map loader calls this to set things up very early in the process of loading
         void setLevelDetails(
@@ -178,7 +168,8 @@ namespace shadowman
         // all of these are in map coordinates
         std::vector<sf::FloatRect> m_collisions;
         std::vector<sf::FloatRect> m_killCollisions;
-        std::vector<sf::FloatRect> m_teleportRects;
+        sf::FloatRect m_enterRect;
+        sf::FloatRect m_exitRect;
 
         // lower layers draw first, then pre anims, then player/nps, then upper layers, post anims
         std::vector<std::unique_ptr<ITileLayer>> m_lowerTileLayers;
@@ -204,9 +195,6 @@ namespace shadowman
         sf::FloatRect m_moveScreenRectRight;
         sf::FloatRect m_moveScreenRectUp;
         sf::FloatRect m_moveScreenRectDown;
-
-        sf::FloatRect m_enterRect;
-        sf::FloatRect m_exitRect;
 
         FileLoader m_fileLoader;
         bool m_willPreventMovingLeft;

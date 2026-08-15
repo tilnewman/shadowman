@@ -171,7 +171,6 @@ namespace shadowman
         void processTeleporters(const Context & t_context, const float t_elapsedSec);
         void processPickups(const Context & t_context);
         void processEnemyCollisions(const Context & t_context, const float t_elapsedSec);
-        void processExitCollision(const Context & t_context);
         void preventBacktracking(const Context & t_context);
         void processCollisions(const Context & t_context);
         void processKillCollisions(const Context & t_context);
