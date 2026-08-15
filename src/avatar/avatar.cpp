@@ -39,6 +39,7 @@ namespace shadowman
         , m_isDeathAnimComplete{ false }
         , m_deathDelaySec{ 0.0f }
         , m_teleportElapsedSec{ 0.0f }
+        , m_isTeleportingIn{ true }
         , m_jumpTexture{}
         , m_animTextures{}
         , m_debugText{ util::SfmlDefaults::instance().font() }
@@ -166,37 +167,60 @@ namespace shadowman
                 t_context.audio.play("teleport");
                 m_action             = AvatarAction::Teleport;
                 m_teleportElapsedSec = 0.0f;
+                m_isTeleportingIn    = false;
             }
         }
 
         if (AvatarAction::Teleport == m_action)
         {
-            std::uint8_t alpha{ m_sprite.getColor().a };
-            if (alpha >= 2)
+            if (m_isTeleportingIn)
             {
-                alpha -= 2;
+                std::uint8_t alpha{ m_sprite.getColor().a };
+                if (alpha <= 252)
+                {
+                    alpha += 2;
+                }
+                else
+                {
+                    alpha = 255;
+                }
+
+                m_sprite.setColor(sf::Color(255, 255, 255, alpha));
+
+                if (255 == alpha)
+                {
+                    resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::Idle);
+                }
             }
             else
             {
-                alpha = 0;
-            }
-
-            m_sprite.setColor(sf::Color(255, 255, 255, alpha));
-
-            if (0 == alpha)
-            {
-                m_teleportElapsedSec += t_elapsedSec;
-                if (m_teleportElapsedSec > 1.0f)
+                std::uint8_t alpha{ m_sprite.getColor().a };
+                if (alpha >= 2)
                 {
-                    t_context.level_file.increment();
-                    const std::string nextLevelFilename{ t_context.level_file.current() };
-                    if (nextLevelFilename.empty())
+                    alpha -= 2;
+                }
+                else
+                {
+                    alpha = 0;
+                }
+
+                m_sprite.setColor(sf::Color(255, 255, 255, alpha));
+
+                if (0 == alpha)
+                {
+                    m_teleportElapsedSec += t_elapsedSec;
+                    if (m_teleportElapsedSec > 1.0f)
                     {
-                        t_context.state.setChangePending(State::Credits);
-                    }
-                    else
-                    {
-                        t_context.level.load(t_context, nextLevelFilename);
+                        t_context.level_file.increment();
+                        const std::string nextLevelFilename{ t_context.level_file.current() };
+                        if (nextLevelFilename.empty())
+                        {
+                            t_context.state.setChangePending(State::Credits);
+                        }
+                        else
+                        {
+                            t_context.level.load(t_context, nextLevelFilename);
+                        }
                     }
                 }
             }
@@ -357,6 +381,11 @@ namespace shadowman
 
     void Avatar::updatePosition(const Context &, const float t_elapsedSec)
     {
+        if (AvatarAction::Teleport == m_action)
+        {
+            return;
+        }
+
         m_velocity.y += (m_movement.gravity * t_elapsedSec);
         m_sprite.move(m_velocity);
     }
@@ -530,10 +559,12 @@ namespace shadowman
         m_velocity            = { 0.0f, 0.0f };
         m_isLanded            = false;
         m_isDeathAnimComplete = false;
+        m_isTeleportingIn     = true;
         m_teleportElapsedSec  = 0.0f;
-        resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::Idle);
+        resetAnimation(t_context, AvatarAction::Teleport, AvatarAnim::Idle);
         m_sprite.setPosition(t_position);
-        m_sprite.setColor(sf::Color::White);
+        m_sprite.setColor(sf::Color::Transparent);
+        t_context.audio.play("teleport");
 
         if (not m_isFacingRight)
         {
@@ -564,6 +595,11 @@ namespace shadowman
 
     void Avatar::processCollisions(const Context & t_context)
     {
+        if (AvatarAction::Teleport == m_action)
+        {
+            return;
+        }
+
         const sf::FloatRect avatarRect{ collisionRect() };
         const sf::Vector2f avatarCenter{ util::center(avatarRect) };
 

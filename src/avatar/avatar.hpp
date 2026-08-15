@@ -203,6 +203,7 @@ namespace shadowman
         bool m_isDeathAnimComplete;
         float m_deathDelaySec;
         float m_teleportElapsedSec;
+        bool m_isTeleportingIn;
         sf::Texture m_jumpTexture;
         std::vector<std::vector<sf::Texture>> m_animTextures;
 
