@@ -209,8 +209,16 @@ namespace shadowman
             t_context,
             (t_context.setting.media_path / "image" / "credit" / "font.png").string(),
             0.5f,
-            "Gentium Plus",
-            "J. Victor Gaultney, Annie Olsen, Iska Routamaa, Becca Hirsbrunner (SIL Open Font)",
+            "Anarchy Sans",
+            "George Pizzuci a.k.a. Doctor Wat  (CC-BY-3.0)",
+            m_credits.back().bottom() + vertPad);
+
+        m_credits.emplace_back(
+            t_context,
+            (t_context.setting.media_path / "image" / "credit" / "font.png").string(),
+            0.5f,
+            "Dashley",
+            "Brad Barnes  (SIL Open Font License)",
             m_credits.back().bottom() + vertPad);
 
         m_skyBackground.setup(t_context);
