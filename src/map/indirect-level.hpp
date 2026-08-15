@@ -132,7 +132,7 @@ namespace shadowman
             const sf::FloatRect & t_playerMapRect,
             const sf::Vector2f & t_move);
 
-        constexpr void shakeScreen(const bool m_isEnabled)
+        constexpr void shakeScreen(const Context & t_context, const bool m_isEnabled)
         {
             if (m_isEnabled)
             {
@@ -141,6 +141,7 @@ namespace shadowman
             else
             {
                 m_screenShaker.stop();
+                m_screenShaker.setup(t_context);
             }
         }
 

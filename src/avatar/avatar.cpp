@@ -142,7 +142,7 @@ namespace shadowman
 
         if (m_isLanded and sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
         {
-            t_context.level.shakeScreen(true);
+            t_context.level.shakeScreen(t_context, true);
         }
     }
 
@@ -665,7 +665,7 @@ namespace shadowman
                 m_velocity.x = 0.0f;
             }
 
-            t_context.level.shakeScreen(false);
+            t_context.level.shakeScreen(t_context, false);
         }
         else if (t_intersectionRect.size.x < tolerance)
         {
