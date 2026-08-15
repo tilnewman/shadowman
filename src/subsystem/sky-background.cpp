@@ -158,7 +158,7 @@ namespace shadowman
         // sun
         m_sunSprite.setTexture(m_sunTexture, true);
         util::setOriginToCenter(m_sunSprite);
-        const float sunScale{ t_context.layout.scaleBasedOnResolution(t_context, 0.75f) };
+        const float sunScale{ t_context.layout.scaleBasedOnResolution(t_context, 0.95f) };
         m_sunSprite.scale({ sunScale, sunScale });
 
         if (t_context.random.boolean())
