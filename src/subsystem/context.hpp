@@ -26,6 +26,7 @@ namespace shadowman
     class PlayerInfo;
     class InfoRegion;
     class PickupManager;
+    class CrateManager;
 
     struct Context
     {
@@ -44,7 +45,8 @@ namespace shadowman
             SmokeManager & t_smokeManager,
             PlayerInfo & t_playerInfo,
             InfoRegion & t_infoRegion,
-            PickupManager & t_pickupManager)
+            PickupManager & t_pickupManager,
+            CrateManager & t_crateManager)
             : setting{ t_settings }
             , random{ t_random }
             , audio{ t_soundPlayer }
@@ -60,6 +62,7 @@ namespace shadowman
             , player_info{ t_playerInfo }
             , info_region{ t_infoRegion }
             , pickup{ t_pickupManager }
+            , crate{ t_crateManager }
         {}
 
         const Settings & setting;
@@ -77,6 +80,7 @@ namespace shadowman
         PlayerInfo & player_info;
         InfoRegion & info_region;
         PickupManager & pickup;
+        CrateManager & crate;
     };
 
 } // namespace shadowman

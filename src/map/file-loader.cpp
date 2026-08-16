@@ -8,6 +8,7 @@
 #include "map/textures.hpp"
 #include "shadowman/settings.hpp"
 #include "subsystem/context.hpp"
+#include "subsystem/crates.hpp"
 #include "subsystem/pickup.hpp"
 #include "subsystem/screen-layout.hpp"
 #include "subsystem/smoke.hpp"
@@ -159,6 +160,13 @@ namespace shadowman
                 rects.reserve(100);
                 parseRectLayer(t_context, layerJson, rects);
                 t_context.level.killCollisions(rects);
+            }
+            else if (layerName == "push-pull")
+            {
+                std::vector<sf::FloatRect> rects;
+                rects.reserve(64);
+                parseRectLayer(t_context, layerJson, rects);
+                t_context.crate.add(t_context, rects);
             }
             else if (layerName == "teleport")
             {

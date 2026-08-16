@@ -781,6 +781,28 @@
         }, 
         {
          "draworder":"topdown",
+         "id":15,
+         "name":"push-pull",
+         "objects":[
+                {
+                 "height":128,
+                 "id":34,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":128,
+                 "x":1376,
+                 "y":2080
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
          "id":14,
          "name":"teleport",
          "objects":[
@@ -999,8 +1021,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":15,
- "nextobjectid":34,
+ "nextlayerid":16,
+ "nextobjectid":35,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

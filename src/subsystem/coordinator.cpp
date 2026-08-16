@@ -34,6 +34,7 @@ namespace shadowman
         , m_playerInfoUPtr{}
         , m_infoRegionUPtr{}
         , m_pickupManagerUPtr{}
+        , m_crateManager{}
         , m_contextUPtr{}
     {}
 
@@ -63,6 +64,7 @@ namespace shadowman
         m_playerInfoUPtr       = std::make_unique<PlayerInfo>();
         m_infoRegionUPtr       = std::make_unique<InfoRegion>();
         m_pickupManagerUPtr    = std::make_unique<PickupManager>();
+        m_crateManager         = std::make_unique<CrateManager>();
 
         m_contextUPtr = std::make_unique<Context>(
             m_setting,
@@ -79,7 +81,8 @@ namespace shadowman
             *m_smokeManager,
             *m_playerInfoUPtr,
             *m_infoRegionUPtr,
-            *m_pickupManagerUPtr);
+            *m_pickupManagerUPtr,
+            *m_crateManager);
 
         m_soundPlayerUPtr->mediaPath(m_setting.media_path / "sound");
         m_soundPlayerUPtr->loadAll();
@@ -95,6 +98,7 @@ namespace shadowman
         m_smokeManager->setup(*m_contextUPtr);
         m_infoRegionUPtr->setup(*m_contextUPtr);
         m_pickupManagerUPtr->setup(*m_contextUPtr);
+        m_crateManager->setup(*m_contextUPtr);
         MapTextureManager::instance().setup();
 
         m_stateManagerUPtr->setChangePending(State::Introduction);
@@ -125,6 +129,7 @@ namespace shadowman
         m_playerInfoUPtr.reset();
         m_infoRegionUPtr.reset();
         m_pickupManagerUPtr.reset();
+        m_crateManager.reset();
 
         util::SfmlDefaults::instance().teardown();
 

@@ -8,6 +8,7 @@
 #include "map/indirect-level.hpp"
 #include "shadowman/settings.hpp"
 #include "subsystem/context.hpp"
+#include "subsystem/crates.hpp"
 #include "subsystem/info-region.hpp"
 #include "subsystem/pickup.hpp"
 #include "subsystem/screen-layout.hpp"
@@ -41,6 +42,7 @@ namespace shadowman
         t_context.smoke.update(t_context, t_elapsedSec);
         t_context.info_region.update(t_context);
         t_context.pickup.update(t_context, t_elapsedSec);
+        t_context.crate.update(t_context, t_elapsedSec);
         m_skyBackground.update(t_context, t_elapsedSec);
     }
 

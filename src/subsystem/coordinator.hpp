@@ -11,6 +11,7 @@
 #include "shadowman/settings.hpp"
 #include "state/state-manager.hpp"
 #include "subsystem/context.hpp"
+#include "subsystem/crates.hpp"
 #include "subsystem/font.hpp"
 #include "subsystem/framerate-display.hpp"
 #include "subsystem/info-region.hpp"
@@ -68,6 +69,7 @@ namespace shadowman
         std::unique_ptr<PlayerInfo> m_playerInfoUPtr;
         std::unique_ptr<InfoRegion> m_infoRegionUPtr;
         std::unique_ptr<PickupManager> m_pickupManagerUPtr;
+        std::unique_ptr<CrateManager> m_crateManager;
 
         std::unique_ptr<Context> m_contextUPtr;
     };
