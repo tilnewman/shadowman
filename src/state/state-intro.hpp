@@ -5,6 +5,9 @@
 //
 #include "state.hpp"
 #include "subsystem/sky-background.hpp"
+#include "subsystem/text-layout.hpp"
+
+#include <vector>
 
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
@@ -29,7 +32,7 @@ namespace shadowman
         StateIntro();
         ~StateIntro() final = default;
 
-        State which() const final { return State::Introduction; }          
+        State which() const final { return State::Introduction; }
         void onEnter(const Context & t_context) final;
         void onExit(const Context & t_context) final;
         void update(const Context & t_context, const float t_elapsedSec) final;
@@ -44,6 +47,8 @@ namespace shadowman
         sf::RectangleShape m_fadeRectangle;
         float m_elapsedSec;
         SkyBackground m_skyBackground;
+        TextLayoutPack m_textPack;
+        bool m_willFadeOut;
     };
 
 } // namespace shadowman
