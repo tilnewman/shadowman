@@ -35,10 +35,7 @@ namespace shadowman
         Stab,
         Stab2,
         Walk,
-        WalkSlash,
         WalkSneak,
-        WalkStab,
-        WalkStab2,
         Count
     };
 
@@ -60,10 +57,7 @@ namespace shadowman
             case AvatarAnim::Stab:      { return "stab";       }
             case AvatarAnim::Stab2:     { return "stab2";      }
             case AvatarAnim::Walk:      { return "walk";       }
-            case AvatarAnim::WalkSlash: { return "walk-slash"; }
             case AvatarAnim::WalkSneak: { return "walk-sneak"; }
-            case AvatarAnim::WalkStab:  { return "walk-stab";  }
-            case AvatarAnim::WalkStab2: { return "walk-stab2"; }
             case AvatarAnim::Count:
             default:      { return "error_unkonwn_avataranim"; }
         }
@@ -82,8 +76,7 @@ namespace shadowman
     [[nodiscard]] constexpr float timePerFrameSec(const AvatarAnim t_anim) noexcept
     {
         if ((AvatarAnim::Walk == t_anim) or (AvatarAnim::Run == t_anim) or
-            (AvatarAnim::WalkSlash == t_anim) or (AvatarAnim::WalkSneak == t_anim) or
-            (AvatarAnim::WalkStab == t_anim) or (AvatarAnim::WalkStab2 == t_anim))
+            (AvatarAnim::WalkSneak == t_anim))
         {
             return 0.03f;
         }
