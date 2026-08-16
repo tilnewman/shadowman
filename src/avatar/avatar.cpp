@@ -565,6 +565,7 @@ namespace shadowman
         m_sprite.setPosition(t_position);
         m_sprite.setColor(sf::Color::Transparent);
         t_context.audio.play("teleport");
+        t_context.player_info.reset();
 
         if (not m_isFacingRight)
         {
@@ -588,6 +589,7 @@ namespace shadowman
                 resetAnimation(t_context, AvatarAction::Death, AvatarAnim::Die);
                 t_context.audio.stop("walk");
                 t_context.audio.play("player-death");
+                t_context.player_info.healthAdjust(-t_context.player_info.healthMax());
                 return;
             }
         }
