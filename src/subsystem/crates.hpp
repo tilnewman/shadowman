@@ -40,6 +40,8 @@ namespace shadowman
         void draw(const Context & t_context, sf::RenderTarget & t_target, sf::RenderStates t_states)
             const;
 
+        void appendCollisionRects(std::vector<sf::FloatRect> & t_rects) const;
+
         constexpr void clear() noexcept { m_crates.clear(); }
 
       private:

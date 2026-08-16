@@ -10,6 +10,7 @@
 #include "shadowman/settings.hpp"
 #include "state/state-manager.hpp"
 #include "subsystem/context.hpp"
+#include "subsystem/crates.hpp"
 #include "subsystem/font.hpp"
 #include "subsystem/pickup.hpp"
 #include "subsystem/screen-layout.hpp"
@@ -620,6 +621,18 @@ namespace shadowman
         flyCollRects.clear();
         t_context.fly.appendCollisionRects(flyCollRects);
         for (const sf::FloatRect & collRect : flyCollRects)
+        {
+            const auto intersectionOpt{ avatarRect.findIntersection(collRect) };
+            if (intersectionOpt)
+            {
+                collide(t_context, intersectionOpt.value(), avatarCenter, detectLanding);
+            }
+        }
+
+        static std::vector<sf::FloatRect> crateCollRects;
+        crateCollRects.clear();
+        t_context.crate.appendCollisionRects(crateCollRects);
+        for (const sf::FloatRect & collRect : crateCollRects)
         {
             const auto intersectionOpt{ avatarRect.findIntersection(collRect) };
             if (intersectionOpt)

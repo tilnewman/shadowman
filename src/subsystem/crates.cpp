@@ -56,4 +56,12 @@ namespace shadowman
         }
     }
 
+    void CrateManager::appendCollisionRects(std::vector<sf::FloatRect> & t_rects) const
+    {
+        for (const Crate & crate : m_crates)
+        {
+            t_rects.emplace_back(crate.sprite.getGlobalBounds());
+        }
+    }
+
 } // namespace shadowman
