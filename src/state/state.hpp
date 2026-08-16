@@ -18,6 +18,7 @@ namespace shadowman
     enum class State : unsigned char
     {
         Startup,
+        Introduction,
         Play,
         Credits,
         Shutdown

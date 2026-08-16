@@ -5,6 +5,7 @@
 
 #include "state/state-credits.hpp"
 #include "state/state-play.hpp"
+#include "state/state-intro.hpp"
 
 #include <stdexcept>
 
@@ -36,10 +37,11 @@ namespace shadowman
         // clang-format off
         switch (state)
         {
-            case State::Startup:  { return std::make_unique<StateStartup>();  }
-            case State::Play:     { return std::make_unique<StatePlay>();     }
-            case State::Credits:  { return std::make_unique<StateCredits>();  }
-            case State::Shutdown: { return std::make_unique<StateShutdown>(); }
+            case State::Startup:      { return std::make_unique<StateStartup>();  }
+            case State::Introduction: { return std::make_unique<StateIntro>();    }
+            case State::Play:         { return std::make_unique<StatePlay>();     }
+            case State::Credits:      { return std::make_unique<StateCredits>();  }
+            case State::Shutdown:     { return std::make_unique<StateShutdown>(); }
             default:                    
             { 
                 throw std::runtime_error("StateManager::factory() given an unknown State.");

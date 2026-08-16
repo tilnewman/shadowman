@@ -84,6 +84,7 @@ namespace shadowman
         m_soundPlayerUPtr->mediaPath(m_setting.media_path / "sound");
         m_soundPlayerUPtr->loadAll();
         m_soundPlayerUPtr->willLoop("walk", true);
+        m_soundPlayerUPtr->willLoop("duuuh", true);
 
         m_musicPlayerUPtr->setup(m_setting.media_path / "music");
 
@@ -96,7 +97,7 @@ namespace shadowman
         m_pickupManagerUPtr->setup(*m_contextUPtr);
         MapTextureManager::instance().setup();
 
-        m_stateManagerUPtr->setChangePending(State::Play);
+        m_stateManagerUPtr->setChangePending(State::Introduction);
     }
 
     void Coordinator::teardown()

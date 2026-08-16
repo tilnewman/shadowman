@@ -1,0 +1,51 @@
+#ifndef STATE_STATE_INTRO_HPP_INCLUDED
+#define STATE_STATE_INTRO_HPP_INCLUDED
+//
+// state-intro.hpp
+//
+#include "state.hpp"
+#include "subsystem/sky-background.hpp"
+
+#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/RenderStates.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Text.hpp>
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Window/Event.hpp>
+
+namespace sf
+{
+    class RenderTarget;
+}
+
+namespace shadowman
+{
+
+    struct Context;
+
+    class StateIntro final : public IState
+    {
+      public:
+        StateIntro();
+        ~StateIntro() final = default;
+
+        State which() const final { return State::Introduction; }          
+        void onEnter(const Context & t_context) final;
+        void onExit(const Context & t_context) final;
+        void update(const Context & t_context, const float t_elapsedSec) final;
+        void handleEvent(const Context & t_context, const sf::Event & t_event) final;
+
+        void draw(const Context & t_context, sf::RenderTarget & t_target, sf::RenderStates t_states)
+            const final;
+
+      private:
+        sf::Texture m_paperTexture;
+        sf::Sprite m_paperSprite;
+        sf::RectangleShape m_fadeRectangle;
+        float m_elapsedSec;
+        SkyBackground m_skyBackground;
+    };
+
+} // namespace shadowman
+
+#endif // STATE_STATE_INTRO_HPP_INCLUDED
