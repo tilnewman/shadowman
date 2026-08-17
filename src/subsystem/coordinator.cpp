@@ -88,6 +88,7 @@ namespace shadowman
         m_soundPlayerUPtr->loadAll();
         m_soundPlayerUPtr->willLoop("walk", true);
         m_soundPlayerUPtr->willLoop("duuuh", true);
+        m_soundPlayerUPtr->willLoop("drag", true);
 
         m_musicPlayerUPtr->setup(m_setting.media_path / "music");
 

@@ -151,6 +151,8 @@ namespace shadowman
             m_pushPullCrateOpt = t_context.crate.findIntersecting(attackRect());
             if (m_pushPullCrateOpt.has_value())
             {
+                t_context.audio.play("drag");
+
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
                 {
                     if (m_isFacingRight)
@@ -183,6 +185,7 @@ namespace shadowman
             {
                 resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::Idle);
                 m_pushPullCrateOpt = std::nullopt;
+                t_context.audio.stop("drag");
             }
             else
             {
@@ -687,13 +690,18 @@ namespace shadowman
             }
         }
 
+        sf::FloatRect pushPullCrateRect{};
+        if (m_pushPullCrateOpt.has_value())
+        {
+            pushPullCrateRect = m_pushPullCrateOpt->get().sprite.getGlobalBounds();
+        }
         static std::vector<sf::FloatRect> crateCollRects;
         crateCollRects.clear();
         t_context.crate.appendCollisionRects(crateCollRects);
         for (const sf::FloatRect & collRect : crateCollRects)
         {
             const auto intersectionOpt{ avatarRect.findIntersection(collRect) };
-            if (intersectionOpt)
+            if (intersectionOpt and (pushPullCrateRect != collRect))
             {
                 collide(t_context, intersectionOpt.value(), avatarCenter, detectLanding);
             }
