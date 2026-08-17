@@ -782,7 +782,7 @@
         {
          "draworder":"topdown",
          "id":15,
-         "name":"push-pull",
+         "name":"crate",
          "objects":[
                 {
                  "height":128,
@@ -794,6 +794,17 @@
                  "width":128,
                  "x":1376,
                  "y":2080
+                }, 
+                {
+                 "height":96,
+                 "id":35,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":96,
+                 "x":1120,
+                 "y":2112
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -981,40 +992,7 @@
          "draworder":"topdown",
          "id":13,
          "name":"pickup",
-         "objects":[
-                {
-                 "height":64,
-                 "id":27,
-                 "name":"heart",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":64,
-                 "x":896,
-                 "y":2112
-                }, 
-                {
-                 "height":64,
-                 "id":28,
-                 "name":"plus",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":64,
-                 "x":960,
-                 "y":2112
-                }, 
-                {
-                 "height":64,
-                 "id":30,
-                 "name":"crystal",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":64,
-                 "x":1024,
-                 "y":2112
-                }],
+         "objects":[],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
@@ -1022,7 +1000,7 @@
          "y":0
         }],
  "nextlayerid":16,
- "nextobjectid":35,
+ "nextobjectid":36,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.11.2",

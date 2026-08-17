@@ -161,7 +161,7 @@ namespace shadowman
                 parseRectLayer(t_context, layerJson, rects);
                 t_context.level.killCollisions(rects);
             }
-            else if (layerName == "push-pull")
+            else if (layerName == "crate")
             {
                 std::vector<sf::FloatRect> rects;
                 rects.reserve(64);
