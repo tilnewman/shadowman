@@ -10,7 +10,6 @@
 #include "shadowman/settings.hpp"
 #include "state/state-manager.hpp"
 #include "subsystem/context.hpp"
-#include "subsystem/crates.hpp"
 #include "subsystem/font.hpp"
 #include "subsystem/pickup.hpp"
 #include "subsystem/screen-layout.hpp"
@@ -43,6 +42,7 @@ namespace shadowman
         , m_isTeleportingIn{ true }
         , m_jumpTexture{}
         , m_animTextures{}
+        , m_pushPullCrateOpt{}
         , m_debugText{ util::SfmlDefaults::instance().font() }
     {}
 
@@ -125,6 +125,7 @@ namespace shadowman
 
         const sf::Vector2f beforePos{ m_sprite.getPosition() };
 
+        processPushPull(t_context, t_elapsedSec);
         updateJumping(t_context, t_elapsedSec);
         updateAttacking(t_context);
         updateHorizMotion(t_context, t_elapsedSec);
@@ -140,10 +141,66 @@ namespace shadowman
         processPickups(t_context);
         processKillCollisions(t_context);
         processTeleporters(t_context, t_elapsedSec);
+    }
 
-        if (m_isLanded and sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space))
+    void Avatar::processPushPull(const Context & t_context, const float t_elapsedSec)
+    {
+        if (m_isLanded and (AvatarAction::Idle == m_action) and
+            sf::Keyboard::isKeyPressed(sf::Keyboard::Key::G))
         {
-            t_context.level.shakeScreen(t_context, true);
+            m_pushPullCrateOpt = t_context.crate.findIntersecting(attackRect());
+            if (m_pushPullCrateOpt.has_value())
+            {
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
+                {
+                    if (m_isFacingRight)
+                    {
+                        resetAnimation(t_context, AvatarAction::Push, AvatarAnim::Push);
+                    }
+                    else
+                    {
+                        resetAnimation(t_context, AvatarAction::Pull, AvatarAnim::Pull);
+                    }
+                }
+                else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
+                {
+                    if (m_isFacingRight)
+                    {
+                        resetAnimation(t_context, AvatarAction::Pull, AvatarAnim::Pull);
+                    }
+                    else
+                    {
+                        resetAnimation(t_context, AvatarAction::Push, AvatarAnim::Push);
+                    }
+                }
+            }
+        }
+
+        if (m_pushPullCrateOpt.has_value())
+        {
+            if (not sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) and
+                not sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
+            {
+                resetAnimation(t_context, AvatarAction::Idle, AvatarAnim::Idle);
+                m_pushPullCrateOpt = std::nullopt;
+            }
+            else
+            {
+                const sf::Vector2f move{ 30.0f, 0.0f };
+                Crate & crate{ m_pushPullCrateOpt.value().get() };
+
+                if ((m_isFacingRight and (AvatarAction::Push == m_action)) or
+                    (not m_isFacingRight and (AvatarAction::Pull == m_action)))
+                {
+                    crate.sprite.move(move * t_elapsedSec);
+                    m_sprite.move(move * t_elapsedSec);
+                }
+                else
+                {
+                    crate.sprite.move(-move * t_elapsedSec);
+                    m_sprite.move(-move * t_elapsedSec);
+                }
+            }
         }
     }
 
@@ -312,7 +369,8 @@ namespace shadowman
     {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::F) and
             (AvatarAction::Attack != m_action) and (AvatarAction::Death != m_action) and
-            (AvatarAction::Hurt != m_action) and (AvatarAction::Teleport != m_action))
+            (AvatarAction::Hurt != m_action) and (AvatarAction::Teleport != m_action) and
+            (AvatarAction::Push != m_action) and (AvatarAction::Pull != m_action))
         {
             const AvatarAnim randomAnim{ t_context.random.from(
                 { AvatarAnim::Stab, AvatarAnim::Stab2, AvatarAnim::Slash, AvatarAnim::Slash2 }) };
@@ -687,8 +745,6 @@ namespace shadowman
             {
                 m_velocity.x = 0.0f;
             }
-
-            t_context.level.shakeScreen(t_context, false);
         }
         else if (t_intersectionRect.size.x < tolerance)
         {
@@ -710,6 +766,7 @@ namespace shadowman
     {
         if ((AvatarAction::Death == m_action) or (AvatarAction::Hurt == m_action) or
             (AvatarAction::Attack == m_action) or (AvatarAction::Teleport == m_action) or
+            (AvatarAction::Push == m_action) or (AvatarAction::Pull == m_action) or
             sf::Keyboard::isKeyPressed(sf::Keyboard::Scancode::A))
         {
             return;

@@ -42,6 +42,9 @@ namespace shadowman
 
         void appendCollisionRects(std::vector<sf::FloatRect> & t_rects) const;
 
+        [[nodiscard]] std::optional<std::reference_wrapper<Crate>>
+            findIntersecting(const sf::FloatRect & t_rect);
+
         constexpr void clear() noexcept { m_crates.clear(); }
 
       private:

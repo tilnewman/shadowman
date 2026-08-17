@@ -64,4 +64,18 @@ namespace shadowman
         }
     }
 
+    std::optional<std::reference_wrapper<Crate>>
+        CrateManager::findIntersecting(const sf::FloatRect & t_rect)
+    {
+        for (Crate & crate : m_crates)
+        {
+            if (t_rect.findIntersection(crate.sprite.getGlobalBounds()))
+            {
+                return crate;
+            }
+        }
+
+        return {};
+    }
+
 } // namespace shadowman

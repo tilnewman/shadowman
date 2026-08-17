@@ -3,6 +3,8 @@
 //
 // avatar.hpp
 //
+#include "subsystem/crates.hpp"
+
 #include <string_view>
 #include <vector>
 
@@ -94,6 +96,10 @@ namespace shadowman
         {
             return 0.1f;
         }
+        else if ((AvatarAnim::Push == t_anim) or (AvatarAnim::Pull == t_anim))
+        {
+            return 0.12f;
+        }
         else
         {
             return 0.08f;
@@ -109,7 +115,9 @@ namespace shadowman
         Attack,
         Hurt,
         Death,
-        Teleport
+        Teleport,
+        Push,
+        Pull
     };
 
     [[nodiscard]] constexpr std::string_view toString(const AvatarAction t_action) noexcept
@@ -124,6 +132,8 @@ namespace shadowman
             case AvatarAction::Attack:   { return "attack";    }
             case AvatarAction::Death:    { return "death";     }
             case AvatarAction::Teleport: { return "teleport";  }
+            case AvatarAction::Push:     { return "push";      }
+            case AvatarAction::Pull:     { return "pull";      }
             case AvatarAction::Hurt:   
             default:                     { return "hurt";      }
         }
@@ -161,6 +171,7 @@ namespace shadowman
         void resetAnimation(
             const Context & t_context, const AvatarAction t_action, const AvatarAnim t_anim);
 
+        void processPushPull(const Context & t_context, const float t_elapsedSec);
         void processTeleporters(const Context & t_context, const float t_elapsedSec);
         void processPickups(const Context & t_context);
         void processEnemyCollisions(const Context & t_context, const float t_elapsedSec);
@@ -199,6 +210,7 @@ namespace shadowman
         bool m_isTeleportingIn;
         sf::Texture m_jumpTexture;
         std::vector<std::vector<sf::Texture>> m_animTextures;
+        std::optional<std::reference_wrapper<Crate>> m_pushPullCrateOpt;
 
         mutable sf::Text m_debugText;
     };
