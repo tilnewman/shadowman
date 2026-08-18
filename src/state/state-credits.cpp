@@ -161,7 +161,7 @@ namespace shadowman
             (t_context.setting.media_path / "image" / "credit" / "shadow-man.png").string(),
             0.7f,
             "Shadow Male Character Sprite Sheet",
-            "www.graphicriver.net",
+            "By gamespaceasset - infogameasset@gmail.com - www.graphicriver.net",
             m_credits.back().bottom() + vertPad);
 
         m_credits.emplace_back(
@@ -170,7 +170,7 @@ namespace shadowman
                 .string(),
             1.25f,
             "Light Adventure Game Tileset",
-            "www.graphicriver.net",
+            "By Fikri  - www.behance.net/fikriar - www.graphicriver.net",
             m_credits.back().bottom() + vertPad);
 
         m_credits.emplace_back(
@@ -178,7 +178,15 @@ namespace shadowman
             (t_context.setting.media_path / "image" / "credit" / "shadow-game.png").string(),
             0.9f,
             "Shadow Game Tileset",
-            "www.graphicriver.net",
+            "By WonderArt - www.graphicriver.net",
+            m_credits.back().bottom() + vertPad);
+
+        m_credits.emplace_back(
+            t_context,
+            (t_context.setting.media_path / "image" / "credit" / "darkest-dungeon.png").string(),
+            0.5f,
+            "Darkest Dungeon Tileset",
+            "By cobectbhax - www.graphicriver.net",
             m_credits.back().bottom() + vertPad);
 
         m_credits.emplace_back(
