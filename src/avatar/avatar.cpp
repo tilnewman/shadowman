@@ -140,7 +140,38 @@ namespace shadowman
 
         processPickups(t_context);
         processKillCollisions(t_context);
+        processAcidCollisions(t_context);
         processTeleporters(t_context, t_elapsedSec);
+    }
+
+    void Avatar::kill(const Context & t_context)
+    {
+        m_velocity = { 0.0f, 0.0f };
+        resetAnimation(t_context, AvatarAction::Death, AvatarAnim::Die);
+        t_context.audio.stop("walk");
+        t_context.audio.play("player-death");
+        t_context.player_info.healthAdjust(-t_context.player_info.healthMax());
+    }
+
+    void Avatar::processAcidCollisions(const Context & t_context)
+    {
+        if (AvatarAction::Death == m_action)
+        {
+            return;
+        }
+
+        const sf::FloatRect collRect{ collisionRect() };
+
+        for (const sf::FloatRect & acidRect : t_context.level.acidRects())
+        {
+            if (collRect.findIntersection(acidRect))
+            {
+                kill(t_context);
+                t_context.audio.play("acid");
+                t_context.audio.play("dunk-bubble");
+                return;
+            }
+        }
     }
 
     void Avatar::processPushPull(const Context & t_context, const float t_elapsedSec)
@@ -665,11 +696,7 @@ namespace shadowman
         {
             if (avatarRect.findIntersection(killRect))
             {
-                m_velocity = { 0.0f, 0.0f };
-                resetAnimation(t_context, AvatarAction::Death, AvatarAnim::Die);
-                t_context.audio.stop("walk");
-                t_context.audio.play("player-death");
-                t_context.player_info.healthAdjust(-t_context.player_info.healthMax());
+                kill(t_context);
                 return;
             }
         }

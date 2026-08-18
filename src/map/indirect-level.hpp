@@ -89,6 +89,16 @@ namespace shadowman
             m_killCollisions = t_rects;
         }
 
+        [[nodiscard]] inline const std::vector<sf::FloatRect> & acidRects() const
+        {
+            return m_acidRects;
+        }
+
+        inline void acidRects(const std::vector<sf::FloatRect> & t_rects)
+        {
+            m_acidRects = t_rects;
+        }
+
         inline void appendToLowerTileLayers(std::unique_ptr<ITileLayer> t_uptr)
         {
             m_lowerTileLayers.emplace_back(std::move(t_uptr));
@@ -170,6 +180,7 @@ namespace shadowman
         std::vector<sf::FloatRect> m_killCollisions;
         sf::FloatRect m_enterRect;
         sf::FloatRect m_exitRect;
+        std::vector<sf::FloatRect> m_acidRects;
 
         // lower layers draw first, then pre anims, then player/nps, then upper layers, post anims
         std::vector<std::unique_ptr<ITileLayer>> m_lowerTileLayers;

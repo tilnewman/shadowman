@@ -171,6 +171,7 @@ namespace shadowman
         void resetAnimation(
             const Context & t_context, const AvatarAction t_action, const AvatarAnim t_anim);
 
+        void processAcidCollisions(const Context & t_context);
         void processPushPull(const Context & t_context, const float t_elapsedSec);
         void processTeleporters(const Context & t_context, const float t_elapsedSec);
         void processPickups(const Context & t_context);
@@ -186,6 +187,7 @@ namespace shadowman
         void updateHorizMotion(const Context & t_context, const float t_frameTimeSec);
         void scaleSprite(const Context & t_context);
         void clacMovementDetails(const Context & t_context);
+        void kill(const Context & t_context);
         void turn();
 
         void collide(

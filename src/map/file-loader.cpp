@@ -168,6 +168,13 @@ namespace shadowman
                 parseRectLayer(t_context, layerJson, rects);
                 t_context.crate.add(t_context, rects);
             }
+            else if (layerName == "acid")
+            {
+                std::vector<sf::FloatRect> rects;
+                rects.reserve(32);
+                parseRectLayer(t_context, layerJson, rects);
+                t_context.level.acidRects(rects);
+            }
             else if (layerName == "teleport")
             {
                 parseTeleportLayer(t_context, layerJson);
