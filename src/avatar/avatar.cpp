@@ -152,15 +152,25 @@ namespace shadowman
             if (m_pushPullCrateOpt.has_value())
             {
                 t_context.audio.play("drag");
+                const sf::FloatRect collRect{ collisionRect() };
+                const sf::FloatRect crateRect{ m_pushPullCrateOpt->get().sprite.getGlobalBounds() };
 
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right))
                 {
                     if (m_isFacingRight)
                     {
+                        m_sprite.setPosition(
+                            { ((crateRect.position.x - collRect.size.x) - 4.0f),
+                              m_sprite.getPosition().y });
+
                         resetAnimation(t_context, AvatarAction::Push, AvatarAnim::Push);
                     }
                     else
                     {
+                        m_sprite.setPosition(
+                            { ((util::right(crateRect) + collRect.size.x) + 15.0f),
+                              m_sprite.getPosition().y });
+
                         resetAnimation(t_context, AvatarAction::Pull, AvatarAnim::Pull);
                     }
                 }
@@ -168,10 +178,18 @@ namespace shadowman
                 {
                     if (m_isFacingRight)
                     {
+                        m_sprite.setPosition(
+                            { ((crateRect.position.x - collRect.size.x) - 18.0f),
+                              m_sprite.getPosition().y });
+
                         resetAnimation(t_context, AvatarAction::Pull, AvatarAnim::Pull);
                     }
                     else
                     {
+                        m_sprite.setPosition(
+                            { ((util::right(crateRect) + collRect.size.x) + 5.0f),
+                              m_sprite.getPosition().y });
+
                         resetAnimation(t_context, AvatarAction::Push, AvatarAnim::Push);
                     }
                 }
