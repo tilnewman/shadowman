@@ -6,6 +6,7 @@
 #include "avatar/avatar.hpp"
 #include "enemy/fly-manager.hpp"
 #include "map/indirect-level.hpp"
+#include "map/level-files.hpp"
 #include "shadowman/settings.hpp"
 #include "subsystem/context.hpp"
 #include "subsystem/crates.hpp"
@@ -27,7 +28,7 @@ namespace shadowman
 
     void StatePlay::onEnter(const Context & t_context)
     {
-        t_context.level.load(t_context, "level-1.json");
+        t_context.level.load(t_context, t_context.level_file.current());
         t_context.music.start("music.ogg");
         m_skyBackground.setup(t_context);
     }

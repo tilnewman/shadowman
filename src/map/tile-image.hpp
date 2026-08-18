@@ -18,6 +18,7 @@ namespace shadowman
         Rock,
         Misc,
         Misc2,
+        Ground,
         Count
     };
 
@@ -33,6 +34,7 @@ namespace shadowman
             case TileImage::Rock:      { return "rock";      }
             case TileImage::Misc:      { return "misc";      }
             case TileImage::Misc2:     { return "misc2";     }
+            case TileImage::Ground:    { return "ground";    }
             case TileImage::Count:
             default:     { return "Error_TileImage_Unknown"; }
         }
@@ -49,6 +51,7 @@ namespace shadowman
         else if (t_filename == "rock")      { return TileImage::Rock;      }
         else if (t_filename == "misc")      { return TileImage::Misc;      }
         else if (t_filename == "misc2")     { return TileImage::Misc2;     }
+        else if (t_filename == "ground")    { return TileImage::Ground;    }
         else                                { return TileImage::Count;     }
         // clang-format on
     }
