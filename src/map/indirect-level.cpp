@@ -62,6 +62,7 @@ namespace shadowman
         t_context.player_info.reset();
         t_context.pickup.clear();
         t_context.fly.clear();
+        t_context.crate.clear();
 
         m_lowerTileLayers.clear();
         m_upperTileLayers.clear();
