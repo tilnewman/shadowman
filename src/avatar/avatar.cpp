@@ -227,7 +227,7 @@ namespace shadowman
             }
         }
 
-        if (m_pushPullCrateOpt.has_value())
+        if (m_pushPullCrateOpt)
         {
             if (not sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Right) and
                 not sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Left))
@@ -239,7 +239,7 @@ namespace shadowman
             else
             {
                 const sf::Vector2f move{ 30.0f, 0.0f };
-                Crate & crate{ m_pushPullCrateOpt.value().get() };
+                Crate & crate{ m_pushPullCrateOpt->get() };
 
                 if ((m_isFacingRight and (AvatarAction::Push == m_action)) or
                     (not m_isFacingRight and (AvatarAction::Pull == m_action)))
@@ -719,7 +719,7 @@ namespace shadowman
             const auto intersectionOpt{ avatarRect.findIntersection(collRect) };
             if (intersectionOpt)
             {
-                collide(t_context, intersectionOpt.value(), avatarCenter, detectLanding);
+                collide(t_context, *intersectionOpt, avatarCenter, detectLanding);
             }
         }
 
@@ -731,7 +731,7 @@ namespace shadowman
             const auto intersectionOpt{ avatarRect.findIntersection(collRect) };
             if (intersectionOpt)
             {
-                collide(t_context, intersectionOpt.value(), avatarCenter, detectLanding);
+                collide(t_context, *intersectionOpt, avatarCenter, detectLanding);
             }
         }
 
@@ -748,7 +748,7 @@ namespace shadowman
             const auto intersectionOpt{ avatarRect.findIntersection(collRect) };
             if (intersectionOpt and (pushPullCrateRect != collRect))
             {
-                collide(t_context, intersectionOpt.value(), avatarCenter, detectLanding);
+                collide(t_context, *intersectionOpt, avatarCenter, detectLanding);
             }
         }
 
